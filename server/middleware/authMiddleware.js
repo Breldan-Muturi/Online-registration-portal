@@ -9,9 +9,18 @@ export const protect = asyncHandler(async (req, res, next) => {
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
   ) {
+    token = req.headers.authorization.split(" ")[1];
+  } else if (req.cookies["jwt"]) {
+    token = req.cookies["jwt"];
+  }
+
+  if (!token) {
+    res.status(401);
+    throw new Error("Not Authorized, no token");
+  } else {
     try {
-      token = req.headers.authorization.split(" ")[1];
       const decoded = jwt.verify(token, process.env.ACCESS_TOKEN);
+      console.log("Decoded JWT");
       req.user = await User.findById(decoded.UserInfo.id).select("-password");
       next();
       console.log(req.user);
@@ -20,10 +29,5 @@ export const protect = asyncHandler(async (req, res, next) => {
       res.status(401);
       throw new Error("Not Authorized");
     }
-  }
-
-  if (!token) {
-    res.status(401);
-    throw new Error("Not Authorized, no token");
   }
 });
