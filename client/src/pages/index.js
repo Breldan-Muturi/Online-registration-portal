@@ -1,0 +1,10 @@
+export { default as Applications } from "./Applications";
+export { default as CompletedCourses } from "./CompletedCourses";
+export { default as CustomApplication } from "./Custom Application/CustomApplication";
+export { default as DashboardPage } from "./Dashboard/Dashboard";
+export { default as MyProfile } from "./MyProfile/MyProfile";
+export { default as OrganizationSettings } from "./OrganizationSettings/OrganizationSettings";
+export { default as Organizations } from "./Organizations/Organizations";
+export { default as Payments } from "./Payments";
+export { default as CourseSettings } from "./CourseSettings/CourseSettings";
+export { default as SingleCourse } from "./SingleCourse/SingleCourse";
