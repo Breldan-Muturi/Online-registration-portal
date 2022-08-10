@@ -1,16 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { auth, provider } from "../../App/firebase";
 import { signInWithPopup } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setFirstName,
-  setLastName,
-  setEmail,
-  setPassword,
-  setConfirmPassword,
   toggleModal,
   toggleAuthMode,
-  resetForm,
   togglePasswordVisible,
   toggleConfirmVisible,
   setCredentials,
@@ -44,37 +38,46 @@ import {
 } from "@material-ui/icons";
 import GoogleButton from "react-google-button";
 import useStyles from "./styles";
-import { selectCurrentUser } from "../../features/user/userApiSlice";
 
 export default function TransitionsModal() {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const {
-    firstName,
-    lastName,
-    email,
-    password,
-    confirmPassword,
-    isOpen,
-    authMode,
-    passwordVisible,
-    confirmVisible,
-  } = useSelector((state) => state.auth);
-  const user = null;
-  // const  = userData.entities;
-  console.log(user);
+  const { user, isOpen, authMode, passwordVisible, confirmVisible } =
+    useSelector((state) => state.auth);
   const [login, { isLoading: isLoginLoading }] = useLoginMutation();
   const [register, { isLoading: isRegisterLoading }] = useRegisterMutation();
   const [googleAuth] = useGoogleAuthMutation();
+
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const { firstName, lastName, email, password, confirmPassword } = formData;
 
   useEffect(() => {
     if (!user) {
       dispatch(toggleModal());
     }
-    return () => {
-      dispatch(resetForm());
-    };
+    return () =>
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
   }, [user, dispatch]);
+
+  const onChange = (e) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   const onRegister = async (e) => {
     e.preventDefault();
@@ -82,15 +85,21 @@ export default function TransitionsModal() {
       console.log("Passwords do not match!");
     }
     try {
-      const userData = await register({
+      const registerData = await register({
         firstName,
         lastName,
         email,
         password,
       }).unwrap();
-      dispatch(setCredentials({ ...userData }));
+      dispatch(setCredentials({ ...registerData }));
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
       dispatch(toggleModal());
-      dispatch(resetForm());
     } catch (err) {
       if (!err?.originalStatus) {
         console.log("No server response");
@@ -103,15 +112,20 @@ export default function TransitionsModal() {
       }
     }
   };
+
   const onLogin = async (e) => {
     e.preventDefault();
     try {
-      const userData = await login({ email, password }).unwrap();
-      console.log(userData);
-      dispatch(setCredentials({ ...userData, user }));
-      console.log(dispatch(setCredentials({ ...userData, user })));
+      const loginData = await login({ email, password }).unwrap();
+      dispatch(setCredentials(loginData));
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
       dispatch(toggleModal());
-      dispatch(resetForm());
     } catch (err) {
       if (!err?.originalStatus) {
         console.log("No server response");
@@ -125,23 +139,27 @@ export default function TransitionsModal() {
     }
   };
 
-  const signInWithGoogle = async () => {
-    signInWithPopup(auth, provider).then((result) => {
-      const displayName = result.user.displayName.split(" ");
-      const userData = googleAuth({
-        firstName: displayName[0],
-        lastName: displayName[displayName.length - 1],
-        email: result.user.email,
-        avatar: result.user.photoURL,
-      }).unwrap();
-      dispatch(setCredentials({ ...userData, user }));
-      dispatch(toggleModal());
-    });
+  const signInWithGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const displayName = result.user.displayName.split(" ");
+        const googleData = googleAuth({
+          firstName: displayName[0],
+          lastName: displayName[displayName.length - 1],
+          email: result.user.email,
+          avatar: result.user.photoURL,
+        });
+        return googleData;
+      })
+      .then((googleData) => {
+        dispatch(setCredentials(googleData.data));
+        dispatch(toggleModal());
+      });
   };
 
   return (
     <div>
-      {user === null ? (
+      {!user ? (
         <Button
           className={classes.auth}
           variant="contained"
@@ -201,7 +219,7 @@ export default function TransitionsModal() {
               </Tabs>
             </AppBar>
             <form
-              onSubmit={authMode === "Login" ? onRegister : onLogin}
+              onSubmit={authMode === "login" ? onLogin : onRegister}
               className={classes.div}
             >
               <Grid container spacing={2}>
@@ -218,7 +236,7 @@ export default function TransitionsModal() {
                         fullWidth
                         label="First Name"
                         autoFocus
-                        onChange={(e) => dispatch(setFirstName(e.target.value))}
+                        onChange={onChange}
                       />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -231,7 +249,7 @@ export default function TransitionsModal() {
                         fullWidth
                         label="Last Name"
                         autoComplete="lname"
-                        onChange={(e) => dispatch(setLastName(e.target.value))}
+                        onChange={onChange}
                       />
                     </Grid>
                   </>
@@ -245,7 +263,7 @@ export default function TransitionsModal() {
                     label="Enter Email"
                     fullWidth
                     required
-                    onChange={(e) => dispatch(setEmail(e.target.value))}
+                    onChange={onChange}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -274,7 +292,7 @@ export default function TransitionsModal() {
                     }}
                     fullWidth
                     required
-                    onChange={(e) => dispatch(setPassword(e.target.value))}
+                    onChange={onChange}
                   />
                 </Grid>
                 {authMode === "register" && (
@@ -286,9 +304,7 @@ export default function TransitionsModal() {
                       label="Confirm Password"
                       fullWidth
                       required
-                      onChange={(e) =>
-                        dispatch(setConfirmPassword(e.target.value))
-                      }
+                      onChange={onChange}
                       type={confirmVisible ? "text" : "password"}
                       InputProps={{
                         endAdornment: (

@@ -19,4 +19,7 @@ export default makeStyles((theme) => ({
   selectedContainerDragged: {
     backgroundColor: green[100],
   },
+  message: {
+    padding: theme.spacing(3),
+  },
 }));

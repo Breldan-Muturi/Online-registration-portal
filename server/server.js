@@ -4,6 +4,7 @@ import colors from "colors";
 import mongoose from "mongoose";
 import connectDB from "./config/db.js";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import { errorHandler } from "./middleware/errorMiddleware.js";
 import { credentials } from "./middleware/credentials.js";
 import { corsOptions } from "./config/corsOptions.js";
@@ -17,9 +18,8 @@ import topicRoute from "./routes/topicRoute.js";
 import completionRoute from "./routes/completionRoute.js";
 import paymentRoute from "./routes/paymentRoute.js";
 import applicationRoute from "./routes/applicationRoute.js";
-import { handlejwtVerification } from "./middleware/handleJwtVerification.js";
-import cookieParser from "cookie-parser";
-import refreshTokenRoute from "./routes/refreshTokenRoute.js";
+import { verifyJWT } from "./middleware/verifyJWT.js";
+import refreshRoute from "./routes/refresh.js";
 
 const app = express();
 dotenv.config();
@@ -32,7 +32,7 @@ app.use(express.json());
 // and fetch cookies credentials requirement
 app.use(credentials);
 app.use(cors(corsOptions));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 
 //middleware for cookies
 app.use(cookieParser());
@@ -40,9 +40,9 @@ app.use(cookieParser());
 app.use("/api/auth", authRoute);
 app.use("/api/courses", courseRoute);
 app.use("/api/sessions", sessionRoute);
-app.use("/refresh", refreshTokenRoute);
-app.use(handlejwtVerification);
-app.use("api/users", userRoute);
+app.use("/api/refresh", refreshRoute);
+app.use(verifyJWT);
+app.use("/api/users", userRoute);
 app.use("/api/organizations", organizationRoute);
 app.use("/api/topics", topicRoute);
 app.use("/api/completions", completionRoute);

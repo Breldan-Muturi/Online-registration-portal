@@ -4,10 +4,11 @@ import { CourseList, SessionList } from "../../components";
 import { Typography } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import { selectAllSessions } from "../../features/session/sessionSlice";
+import { selectCurrentUser } from "../../features/auth/authSlice";
 
 const DashboardPage = () => {
   const classes = useStyles();
-  const user = null;
+  const user = useSelector(selectCurrentUser);
   const sessions = useSelector(selectAllSessions);
   return (
     <>

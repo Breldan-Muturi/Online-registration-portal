@@ -24,22 +24,25 @@ import {
   FileCopy,
   PostAdd,
 } from "@material-ui/icons";
-import { logOut } from "../../features/auth/authSlice";
+import { logOut, selectCurrentUser } from "../../features/auth/authSlice";
 import { toggleSidebar } from "../../features/sidebar/sideSlice";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleModal } from "../../features/auth/authSlice";
+import { useLogoutMutation } from "../../features/auth/authApiSlice";
 
 const Sidebar = () => {
-  const user = null;
+  const [logout] = useLogoutMutation();
   const { isOpen } = useSelector((state) => state.side);
+  const user = useSelector(selectCurrentUser);
   const classes = useStyles({ isOpen });
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
-  const onLogout = () => {
-    dispatch(logOut());
+  const onLogout = async () => {
     navigate("/");
+    dispatch(logOut());
+    await logout();
   };
 
   const menuItems = [
@@ -133,7 +136,7 @@ const Sidebar = () => {
         ))}
       </List>
       <List className={classes.actions}>
-        {user !== null && (
+        {user && (
           <ListItem button className={classes.item} onClick={onLogout}>
             <Tooltip
               arrow

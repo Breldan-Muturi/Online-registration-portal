@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAllTopics } from "../../features/topic/topicApiSlice";
-import { Grid, Typography } from "@material-ui/core";
+import {
+  selectAllTopics,
+  useGetTopicsQuery,
+} from "../../features/topic/topicApiSlice";
+import { CircularProgress, Grid, Typography } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { TopicCard } from "..";
@@ -9,6 +12,7 @@ import { setSelectedTopicIds } from "../../features/application/customApplicatio
 import useStyles from "./styles";
 
 const TopicCardList = ({ selectedTopicIds, courses }) => {
+  const { isLoading, isSuccess, isError, error } = useGetTopicsQuery();
   const classes = useStyles();
   console.log(selectedTopicIds);
   const dispatch = useDispatch();
@@ -70,90 +74,112 @@ const TopicCardList = ({ selectedTopicIds, courses }) => {
       spacing={3}
       justifyContent="space-evenly"
     >
-      <DragDropContext onDragEnd={handleSetTopics}>
-        <Droppable droppableId="topicItems">
-          {(provided, snapshot) => (
-            <Grid
-              item
-              container
-              direction="column"
-              classes={{
-                root: classes.droppable,
-                container: snapshot.isDraggingOver
-                  ? classes.availableContainerDragged
-                  : classes.availableContainer,
-              }}
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              <Typography>Available Topics</Typography>
-              {availableTopics
-                .slice((availablePage - 1) * 4, (availablePage - 1) * 4 + 4)
-                .map((mappedTopic, index) => {
-                  const course = courses.find(
-                    (findCourse) => mappedTopic.courseId === findCourse._id
-                  );
-                  return (
-                    <TopicCard
-                      key={mappedTopic._id}
-                      index={index}
-                      topic={mappedTopic}
-                      course={course}
-                    />
-                  );
-                })}
-              {provided.placeholder}
-              {Math.ceil(availableTopics?.length / 4) > 1 && (
-                <Pagination
-                  count={Math.ceil(availableTopics?.length / 4)}
-                  onChange={(_, value) => setAvailablePage(value)}
-                />
-              )}
-            </Grid>
-          )}
-        </Droppable>
-        <Droppable droppableId="topicSelected">
-          {(provided, snapshot) => (
-            <Grid
-              item
-              container
-              direction="column"
-              classes={{
-                root: classes.droppable,
-                container: snapshot.isDraggingOver
-                  ? classes.selectedContainerDragged
-                  : classes.selectedContainer,
-              }}
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              <Typography>Selected Topics</Typography>
-              {selectedTopics
-                ?.slice((selectedPage - 1) * 4, (selectedPage - 1) * 4 + 4)
-                .map((mappedTopic, index) => {
-                  const course = courses.find(
-                    (findCourse) => mappedTopic.courseId === findCourse._id
-                  );
-                  return (
-                    <TopicCard
-                      key={mappedTopic._id}
-                      index={index}
-                      topic={mappedTopic}
-                      course={course}
-                    />
-                  );
-                })}
-              {provided.placeholder}
-              {Math.ceil(selectedTopics?.length / 4) > 1 && (
-                <Pagination
-                  count={Math.ceil(selectedTopics?.length / 4)}
-                  onChange={(_, value) => setSelectedPage(value)}
-                />
-              )}
-            </Grid>
-          )}
-        </Droppable>
-      </DragDropContext>
+      {isError && (
+        <Typography color="error" className={classes.message}>
+          Could not fetch portal topics: <br /> {error}
+        </Typography>
+      )}
+      {isLoading && (
+        <Grid
+          item
+          container
+          direction="row"
+          justifyContent="flex-start"
+          alignItems="center"
+          spacing={3}
+        >
+          <CircularProgress />
+          <Typography className={classes.message}>
+            Loading Portal Topics
+          </Typography>
+        </Grid>
+      )}
+      {isSuccess && (
+        <DragDropContext onDragEnd={handleSetTopics}>
+          <Droppable droppableId="topicItems">
+            {(provided, snapshot) => (
+              <Grid
+                item
+                container
+                direction="column"
+                classes={{
+                  root: classes.droppable,
+                  container: snapshot.isDraggingOver
+                    ? classes.availableContainerDragged
+                    : classes.availableContainer,
+                }}
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                <Typography>Available Topics</Typography>
+                {availableTopics
+                  .slice((availablePage - 1) * 4, (availablePage - 1) * 4 + 4)
+                  .map((mappedTopic, index) => {
+                    const course = courses.find(
+                      (findCourse) => mappedTopic.courseId === findCourse._id
+                    );
+                    return (
+                      <TopicCard
+                        key={mappedTopic._id}
+                        index={index}
+                        topic={mappedTopic}
+                        course={course}
+                      />
+                    );
+                  })}
+                {provided.placeholder}
+                {Math.ceil(availableTopics?.length / 4) > 1 && (
+                  <Pagination
+                    count={Math.ceil(availableTopics?.length / 4)}
+                    onChange={(_, value) => setAvailablePage(value)}
+                  />
+                )}
+              </Grid>
+            )}
+          </Droppable>
+          <Droppable droppableId="topicSelected">
+            {(provided, snapshot) => (
+              <Grid
+                item
+                container
+                direction="column"
+                classes={{
+                  root: classes.droppable,
+                  container: snapshot.isDraggingOver
+                    ? classes.selectedContainerDragged
+                    : classes.selectedContainer,
+                }}
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                <Typography>Selected Topics</Typography>
+                {selectedTopics
+                  ?.slice((selectedPage - 1) * 4, (selectedPage - 1) * 4 + 4)
+                  .map((mappedTopic, index) => {
+                    const course = courses.find(
+                      (findCourse) => mappedTopic.courseId === findCourse._id
+                    );
+                    return (
+                      <TopicCard
+                        key={mappedTopic._id}
+                        index={index}
+                        topic={mappedTopic}
+                        course={course}
+                      />
+                    );
+                  })}
+                {provided.placeholder}
+                {Math.ceil(selectedTopics?.length / 4) > 1 && (
+                  <Pagination
+                    count={Math.ceil(selectedTopics?.length / 4)}
+                    onChange={(_, value) => setSelectedPage(value)}
+                  />
+                )}
+              </Grid>
+            )}
+          </Droppable>
+        </DragDropContext>
+      )}
     </Grid>
   );
 };

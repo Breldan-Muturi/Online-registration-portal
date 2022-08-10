@@ -6,6 +6,7 @@ import sideReducer from "../features/sidebar/sideSlice";
 import organizationReducer from "../features/organization/organizationSlice";
 import sessionReducer from "../features/session/sessionSlice";
 import topicReducer from "../features/topic/topicSlice";
+import userReducer from "../features/user/userSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     session: sessionReducer,
     organization: organizationReducer,
     topic: topicReducer,
+    user: userReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),

@@ -9,3 +9,4 @@ export { default as TopicCardList } from "./TopicDnD/TopicCardList";
 export { default as TopicList } from "./TopicList/TopicList";
 export { default as TopicModal } from "./TopicModal/TopicModal";
 export { default as Layout } from "./Layout/Layout";
+export { default as PersistentLogin } from "./PersistentLogin/PersistentLogin";

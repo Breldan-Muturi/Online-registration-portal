@@ -29,23 +29,14 @@ export const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    const roles = Object.values(user.roles).filter(Boolean);
-    //Create JWTs
-    const accessToken = jwt.sign(
-      {
-        UserInfo: {
-          id: user._id,
-          roles: roles,
-        },
-      },
-      process.env.ACCESS_TOKEN,
-      { expiresIn: "300s" }
-    );
+    const accessToken = jwt.sign({ id: user.id }, process.env.ACCESS_TOKEN, {
+      expiresIn: "300s",
+    });
     const refreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_TOKEN, {
       expiresIn: "1d",
     });
     user.refreshToken = refreshToken;
-    const loginUser = await user.save();
+    await user.save();
 
     //Create secure cookie with refresh token
     res.cookie("jwt", refreshToken, {
@@ -54,9 +45,18 @@ export const registerUser = asyncHandler(async (req, res) => {
       sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000,
     });
-    console.log({ user, roles, accessToken });
     //Send authorization roles and access token to user
-    res.json({ roles, accessToken });
+    res.json({
+      user: {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        avatar: user.avatar,
+        roles: user.roles,
+      },
+      accessToken,
+    });
   } else {
     res.status(400);
     throw new Error("Invalid user data");

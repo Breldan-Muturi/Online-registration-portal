@@ -2,6 +2,9 @@ import { apiSlice } from "../api/apiSlice";
 
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    refreshToken: builder.query({
+      query: () => "/api/refresh",
+    }),
     login: builder.mutation({
       query: (credentials) => ({
         url: "/api/auth/login",
@@ -18,7 +21,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
     }),
     googleAuth: builder.mutation({
       query: (credentials) => ({
-        url: "/api/auth/googleAuth",
+        url: "/api/auth/google",
         method: "POST",
         body: { ...credentials },
       }),
@@ -34,6 +37,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
 });
 
 export const {
+  useRefreshTokenQuery,
   useLoginMutation,
   useRegisterMutation,
   useGoogleAuthMutation,

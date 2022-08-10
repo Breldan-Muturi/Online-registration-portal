@@ -8,12 +8,8 @@ import { store } from "./App/store";
 import { theme } from "./App/theme";
 import { courseApiSlice } from "./features/course/courseApiSlice";
 import { getSessions } from "./features/session/sessionSlice";
-import { topicApiSlice } from "./features/topic/topicApiSlice";
-import { userApiSlice } from "./features/user/userApiSlice";
 
-store.dispatch(topicApiSlice.endpoints.getTopics.initiate());
 store.dispatch(courseApiSlice.endpoints.getCourses.initiate());
-store.dispatch(userApiSlice.endpoints.currentUser.initiate());
 store.dispatch(getSessions());
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

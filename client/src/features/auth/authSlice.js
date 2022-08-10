@@ -1,11 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
+  user: null,
   isOpen: false,
   authMode: "login",
   passwordVisible: false,
@@ -17,28 +13,6 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setFirstName: (state, action) => {
-      state.firstName = action.payload;
-    },
-    setLastName: (state, action) => {
-      state.lastName = action.payload;
-    },
-    setEmail: (state, action) => {
-      state.email = action.payload;
-    },
-    setPassword: (state, action) => {
-      state.password = action.payload;
-    },
-    setConfirmPassword: (state, action) => {
-      state.confirmPassword = action.payload;
-    },
-    resetForm: (state) => {
-      state.firstName = "";
-      state.lastName = "";
-      state.email = "";
-      state.password = "";
-      state.confirmPassword = "";
-    },
     toggleModal: (state) => {
       state.isOpen = !state.isOpen;
     },
@@ -54,19 +28,15 @@ export const authSlice = createSlice({
       state.confirmVisible = !state.confirmVisible;
     },
     setCredentials: (state, action) => {
-      state.token = action.payload;
+      const { user, accessToken } = action.payload;
+      state.user = user;
+      state.token = accessToken;
     },
     logOut: (state) => initialState,
   },
 });
 
 export const {
-  setFirstName,
-  setLastName,
-  setEmail,
-  setPassword,
-  setConfirmPassword,
-  resetForm,
   toggleModal,
   toggleAuthMode,
   togglePasswordVisible,
@@ -77,3 +47,4 @@ export const {
 export default authSlice.reducer;
 
 export const selectCurrentToken = (state) => state.auth.token;
+export const selectCurrentUser = (state) => state.auth.user;

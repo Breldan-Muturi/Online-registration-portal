@@ -15,7 +15,6 @@ const CourseList = (user) => {
   const { isLoading, isSuccess, isError, error } = useGetCoursesQuery();
   const courseIds = useSelector(selectCourseIds);
   const courseData = useSelector(selectCoursesData);
-  console.log(courseData);
   const [coursePage, setCoursePage] = useState(1);
 
   return (

@@ -16,7 +16,6 @@ export const topicApiSlice = apiSlice.injectEndpoints({
       providesTags: (result, error, arg) => [
         { type: "Topic", id: "LIST" },
         ...result.ids.map((id) => ({ type: "Topic", id })),
-        console.log({ ...result.ids }),
       ],
     }),
 

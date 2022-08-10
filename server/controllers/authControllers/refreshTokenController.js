@@ -1,66 +1,75 @@
-import User from "../../models/userModel.js";
 import jwt from "jsonwebtoken";
+import User from "../../models/userModel.js";
 
-export const handleRefreshToken = (req, res) => {
+export const handleRefreshToken = async (req, res) => {
   const cookies = req.cookies;
+  console.log(cookies.jwt);
   if (!cookies?.jwt) return res.sendStatus(401);
   const refreshToken = cookies.jwt;
-
   res.clearCookie("jwt", {
     httpOnly: true,
     sameSite: "none",
     secure: true,
+    maxAge: 24 * 60 * 60 * 1000,
   });
+  const user = await User.findOne({ refreshToken }).exec();
 
-  const user = User.findOne({ refreshToken });
-
-  // Detect refresh token reuse
+  //Detected Refresh token reuse
   if (!user) {
     jwt.verify(
       refreshToken,
       process.env.REFRESH_TOKEN,
       async (err, decoded) => {
-        if (err) return res.sendStatus(403);
-        const hackedUser = await User.findOne({ userId: decoded._id });
+        if (err) return res.sendStatus(403); //Forbidden
+        const hackedUser = await User.findOne({ id: decoded.id }).exec();
         hackedUser.refreshToken = [];
-        const result = await hackedUser.save();
+        await hackedUser.save();
       }
     );
-    return res.sendStatus(403);
+    return res.sendStatus(403); //Forbidden
   }
 
   const newRefreshTokenArray = user.refreshToken.filter(
-    (filteredRefreshToken) => filteredRefreshToken !== refreshToken
+    (rt) => rt !== refreshToken
   );
 
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN, async (err, decoded) => {
-    if (err) {
+    if (err && user.id !== decoded.id) {
       user.refreshToken = [...newRefreshTokenArray];
-      await (await user).save();
+      await user.save();
     }
-    if (err || user._id !== decoded._id) return res.sendStatus(403);
-    const roles = Object.values(user.roles);
-    const accessToken = jwt.sign(
-      { UserInfo: { userId: decoded._id, roles: roles } },
-      process.env.ACCESS_TOKEN,
+    if (err || user.id !== decoded.id) return res.sendStatus(403);
+
+    //Roles were still active
+    const accessToken = jwt.sign({ id: decoded.id }, process.env.ACCESS_TOKEN, {
+      expiresIn: "300s",
+    });
+    const newRefreshToken = jwt.sign(
+      { id: user.id },
+      process.env.REFRESH_TOKEN,
       {
-        expiresIn: "300s",
+        expiresIn: "1d",
       }
     );
-    const newRefreshToken = jwt.sign(
-      { userId: user._id },
-      process.env.REFRESH_TOKEN,
-      { expiresIn: "1d" }
-    );
-    //Saving refresh token with current user
     user.refreshToken = [...newRefreshTokenArray, newRefreshToken];
-    //Create secure cookie with refresh token
+    await user.save();
+
     res.cookie("jwt", newRefreshToken, {
       httpOnly: true,
-      secure: true,
       sameSite: "none",
+      secure: "true",
       maxAge: 24 * 60 * 60 * 1000,
     });
-    res.json({ roles, accessToken });
+    res.json({
+      user: {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        avatar: user.avatar,
+        roles: user.roles,
+      },
+      accessToken,
+    });
   });
 };
