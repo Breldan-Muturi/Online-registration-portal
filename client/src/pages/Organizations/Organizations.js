@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Pagination from "@material-ui/lab/Pagination";
 import useStyles from "./styles";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   Box,
   Grid,
@@ -19,23 +19,21 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import { Assignment, Delete } from "@material-ui/icons";
-import { getOrganizations } from "../../features/organization/organizationSlice";
+import {
+  selectAllOrganizations,
+  useGetOrganizationsQuery,
+} from "../../features/organization/organizationApiSlice";
 
 const Organizations = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getOrganizations());
-  }, [dispatch]);
+  const { isLoading, isSuccess, isError, error } = useGetOrganizationsQuery();
+  const organizations = useSelector(selectAllOrganizations);
   const { user } = useSelector((state) => state.auth);
-  const { organizations, status, message } = useSelector(
-    (state) => state.organization
-  );
   const [organizationPage, setOrganizationPage] = useState(1);
 
   return (
     <Box p={3} className={classes.box}>
-      {organizations?.length > 0 && status === "success" && (
+      {organizations?.length > 0 && isSuccess && (
         <Grid container>
           <List
             spacing={3}
@@ -118,20 +116,20 @@ const Organizations = () => {
         </Grid>
       )}
       <Grid container direction="column">
-        {organizations?.length === 0 && status === "success" && (
+        {organizations?.length === 0 && isSuccess && (
           <Typography color="error">
             You are not currently listed on any registered organizations.
           </Typography>
         )}
-        {status === "loading" && (
+        {isLoading && (
           <>
             <CircularProgress />
             <Typography>Loading your organizations</Typography>
           </>
         )}
-        {status === "failed" && (
+        {isError && (
           <Typography>
-            Something went wrong while fetching your organizations: {message}
+            Something went wrong while fetching your organizations: {error}
           </Typography>
         )}
       </Grid>

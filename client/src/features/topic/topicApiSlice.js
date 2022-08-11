@@ -15,7 +15,7 @@ export const topicApiSlice = apiSlice.injectEndpoints({
       transformResponse: (res) => topicsAdapter.setAll(initialState, res),
       providesTags: (result, error, arg) => [
         { type: "Topic", id: "LIST" },
-        ...result.ids.map((id) => ({ type: "Topic", id })),
+        ...result.ids?.map((id) => ({ type: "Topic", id })),
       ],
     }),
 

@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useCreateSessionMutation } from "../../features/session/sessionApiSlice";
 import {
   setStartDate,
   setEndDate,
@@ -18,14 +19,15 @@ import {
   setOnPremiesSlots,
   setOnlineFee,
   setOnlineSlots,
-  createSession,
   toggleModal,
 } from "../../features/session/sessionSlice";
 import useStyles from "./styles";
 
 const SessionModal = ({ courseId }) => {
   const classes = useStyles();
+  const [createSession] = useCreateSessionMutation();
   const dispatch = useDispatch();
+
   const {
     startDate,
     endDate,
@@ -36,7 +38,8 @@ const SessionModal = ({ courseId }) => {
     onlineSlots,
     isOpen,
   } = useSelector((state) => state.session);
-  const onSubmit = (e) => {
+
+  const onSubmit = async (e) => {
     e.preventDefault();
     const sessionData = {
       startDate,
@@ -48,7 +51,7 @@ const SessionModal = ({ courseId }) => {
       onlineSlots,
       courseId,
     };
-    dispatch(createSession(sessionData));
+    await createSession(sessionData);
     dispatch(toggleModal());
   };
   return (

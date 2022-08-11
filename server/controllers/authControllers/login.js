@@ -5,7 +5,6 @@ import User from "../../models/userModel.js";
 
 export const loginUser = asyncHandler(async (req, res) => {
   const cookies = req.cookies;
-  console.log(`cookie available at login: ${JSON.stringify(cookies)}`);
   const { email, password } = req.body;
   if ((!email, !password)) {
     res.sendStatus(400);
@@ -36,7 +35,6 @@ export const loginUser = asyncHandler(async (req, res) => {
       const refreshToken = cookies.jwt;
       const foundUser = await User.findOne({ refreshToken }).exec();
       if (!foundUser) {
-        console.log("Attempted refresh token reuse at login");
         newRefreshTokenArray = [];
       }
       res.clearCookie("jwt", {

@@ -5,7 +5,6 @@ import User from "../../models/userModel.js";
 
 export const googleAuth = asyncHandler(async (req, res) => {
   const cookies = req.cookies;
-  console.log(`cookie available at login: ${JSON.stringify(cookies)}`);
   const userExists = await User.findOne({ email: req.body.email });
   if (userExists) {
     const accessToken = jwt.sign(
@@ -27,7 +26,6 @@ export const googleAuth = asyncHandler(async (req, res) => {
       const refreshToken = cookies.jwt;
       const foundUser = await User.findOne({ refreshToken }).exec();
       if (!foundUser) {
-        console.log("Attempted refresh token reuse at login");
         newRefreshTokenArray = [];
       }
       res.clearCookie("jwt", {

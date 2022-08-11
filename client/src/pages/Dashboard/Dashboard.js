@@ -3,7 +3,7 @@ import useStyles from "./styles";
 import { CourseList, SessionList } from "../../components";
 import { Typography } from "@material-ui/core";
 import { useSelector } from "react-redux";
-import { selectAllSessions } from "../../features/session/sessionSlice";
+import { selectAllSessions } from "../../features/session/sessionApiSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 
 const DashboardPage = () => {

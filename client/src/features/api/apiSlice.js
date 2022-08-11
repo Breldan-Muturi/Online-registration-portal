@@ -17,13 +17,9 @@ const baseQuery = fetchBaseQuery({
 const baseQueryWithReauth = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
   if (result?.error?.originalStatus === 403) {
-    console.log("Sending refresh token");
     const refreshResult = await baseQuery("/refresh", api, extraOptions);
-    console.log(refreshResult);
     if (refreshResult?.data) {
-      //store the new token
       api.dispatch(setCredentials(...refreshResult.data));
-      //retry the original query with new access token
       result = await baseQuery(args, api, extraOptions);
     } else {
       api.dispatch(logOut());
@@ -35,6 +31,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["Courses", "Topic"],
+  tagTypes: ["Courses", "Topic", "Organization", "Session"],
   endpoints: (builder) => ({}),
 });

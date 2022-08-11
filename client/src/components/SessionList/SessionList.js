@@ -6,16 +6,14 @@ import useStyles from "./styles";
 import Pagination from "@material-ui/lab/Pagination";
 import { useParams } from "react-router-dom";
 import {
+  useGetSessionsQuery,
   selectAllSessions,
-  getSessionsStatus,
-  getSessionsError,
-} from "../../features/session/sessionSlice";
+} from "../../features/session/sessionApiSlice";
 
 const SessionList = () => {
+  const { isLoading, isSuccess, isError, error } = useGetSessionsQuery();
   const { courseId } = useParams();
   const sessions = useSelector(selectAllSessions);
-  const status = useSelector(getSessionsStatus);
-  const message = useSelector(getSessionsError);
   const listSessions = courseId
     ? sessions.filter((session) => session.courseId === courseId)
     : sessions;
@@ -25,7 +23,7 @@ const SessionList = () => {
 
   return (
     <Box p={3} className={classes.box}>
-      {listSessions?.length > 0 && status === "success" && (
+      {listSessions?.length > 0 && isSuccess && (
         <>
           <Grid container alignItems="stretch" direction="row" spacing={3}>
             {listSessions
@@ -43,12 +41,12 @@ const SessionList = () => {
         </>
       )}
       <Grid container direction="column">
-        {listSessions?.length === 0 && status === "success" && (
+        {listSessions?.length === 0 && isSuccess && (
           <Typography color="error">
             There are no scheduled sessions for this course
           </Typography>
         )}
-        {status === "loading" && (
+        {isLoading && (
           <Grid
             item
             container
@@ -60,10 +58,10 @@ const SessionList = () => {
             <Typography>Loading Portal Sessions</Typography>
           </Grid>
         )}
-        {status === "failed" && (
+        {isError && (
           <Typography>
             Something went wrong while getting sessions:
-            <br /> {message}
+            <br /> {error}
           </Typography>
         )}
         {courseId && <SessionModal courseId={courseId} />}

@@ -9,7 +9,7 @@ import {
 import useStyles from "./styles";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { selectAllSessions } from "../../features/session/sessionSlice";
+import { selectAllSessions } from "../../features/session/sessionApiSlice";
 import { toggleModal } from "../../features/auth/authSlice";
 import { selectCourseById } from "../../features/course/courseApiSlice";
 

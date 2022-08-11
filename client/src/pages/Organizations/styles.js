@@ -4,6 +4,7 @@ export default makeStyles((theme) => ({
   box: {
     display: "flex",
     flexDirection: "column",
+    margin: theme.spacing(4),
     gap: theme.spacing(4),
   },
   subheader: {

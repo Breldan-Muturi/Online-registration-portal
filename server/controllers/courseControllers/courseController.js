@@ -34,8 +34,6 @@ export const createCourse = asyncHandler(async (req, res) => {
     courseImage,
   });
 
-  console.log(course);
-
   res.status(200).json(course);
 });
 

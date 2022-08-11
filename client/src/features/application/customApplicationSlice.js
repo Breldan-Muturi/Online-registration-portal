@@ -56,11 +56,17 @@ export const customApplicationSlice = createSlice({
     setVenue: (state, action) => {
       state.venue = action.payload;
     },
-    setParticipants: (state, action) => {},
-    removeParticipants: (state, action) => {},
+    setParticipants: (state, action) => {
+      state.participants = action.payload;
+    },
+    removeParticipants: (state, action) => {
+      state.participants = state.participants.filter(
+        (filteredParticipant) => filteredParticipant !== action.payload
+      );
+    },
     addAllParticipants: (state, action) => {},
     clearParticipants: (state, action) => {},
-    reset: (state) => initialState,
+    reset: () => initialState,
   },
 });
 

@@ -35,9 +35,10 @@ const TopicCard = ({ index, topic, course }) => {
   };
   return (
     <Draggable key={topic._id} draggableId={topic._id} index={index}>
-      {(provided) => (
+      {(provided, snapshot) => (
         <Card
           key={topic._id}
+          component="div"
           variant="outlined"
           classes={{ root: classes.card }}
           {...provided.draggableProps}

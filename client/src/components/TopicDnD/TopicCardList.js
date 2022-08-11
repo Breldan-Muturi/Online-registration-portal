@@ -14,7 +14,6 @@ import useStyles from "./styles";
 const TopicCardList = ({ selectedTopicIds, courses }) => {
   const { isLoading, isSuccess, isError, error } = useGetTopicsQuery();
   const classes = useStyles();
-  console.log(selectedTopicIds);
   const dispatch = useDispatch();
   const topics = useSelector(selectAllTopics);
   const availableTopics = topics.filter(
@@ -23,11 +22,11 @@ const TopicCardList = ({ selectedTopicIds, courses }) => {
   const selectedTopics = topics.filter((filteredTopic) =>
     selectedTopicIds.includes(filteredTopic._id)
   );
-  console.log(selectedTopics);
   const [availablePage, setAvailablePage] = useState(1);
   const [selectedPage, setSelectedPage] = useState(1);
 
   const handleSetTopics = (result) => {
+    console.log(result);
     const { destination, source } = result;
     console.log(result);
 
@@ -108,8 +107,8 @@ const TopicCardList = ({ selectedTopicIds, courses }) => {
                     ? classes.availableContainerDragged
                     : classes.availableContainer,
                 }}
-                ref={provided.innerRef}
                 {...provided.droppableProps}
+                ref={provided.innerRef}
               >
                 <Typography>Available Topics</Typography>
                 {availableTopics

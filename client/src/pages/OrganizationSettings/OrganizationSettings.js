@@ -32,20 +32,17 @@ const OrganizationSettings = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(createOrganization(organizationData));
-    console.log(organizationData);
-    {
-      status === "success" &&
-        setOrganizationData({
-          createdBy: "",
-          admins: [],
-          name: "",
-          email: "",
-          phoneNumber: "",
-          address: "",
-          county: "",
-          organizationLogo: "",
-        });
-      // navigate('/')
+    if (status === "success") {
+      setOrganizationData({
+        createdBy: "",
+        admins: [],
+        name: "",
+        email: "",
+        phoneNumber: "",
+        address: "",
+        county: "",
+        organizationLogo: "",
+      });
     }
   };
 
