@@ -13,22 +13,11 @@ export const topicApiSlice = apiSlice.injectEndpoints({
     getTopics: builder.query({
       query: () => "/api/topics",
       transformResponse: (res) => topicsAdapter.setAll(initialState, res),
-      providesTags: (result, error, arg) => [
-        { type: "Topic", id: "LIST" },
-        ...result.ids?.map((id) => ({ type: "Topic", id })),
-      ],
     }),
 
     listTopics: builder.query({
       query: (page = 1) => `/api/topics/?page=${page}`,
       transformResponse: (res) => topicsAdapter.setAll(initialState, res),
-      providesTags: (result, error, page) =>
-        result
-          ? [
-              ...result.data.map(({ id }) => ({ type: "Topic", id })),
-              { type: "Topic", id: "PARTIAL-LIST" },
-            ]
-          : [{ type: "Topic", id: "PARTIAL-LIST" }],
     }),
 
     createTopic: builder.mutation({
@@ -37,7 +26,6 @@ export const topicApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: topic,
       }),
-      invalidatesTags: [{ type: "Topic", id: "LIST" }],
     }),
 
     deleteTopic: builder.mutation({
@@ -46,10 +34,6 @@ export const topicApiSlice = apiSlice.injectEndpoints({
         method: "DELETE",
         body: { _id },
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "Topic", id: arg.id },
-        { type: "Topic", id: "PARTIAL-LIST" },
-      ],
     }),
   }),
 });

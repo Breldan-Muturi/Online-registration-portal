@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useRefreshTokenQuery } from "../../features/auth/authApiSlice";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -15,14 +15,13 @@ const PersistentLogin = () => {
   const { data: refreshData, isLoading } = useRefreshTokenQuery();
   const token = useSelector(selectCurrentToken);
 
-  const verifyRefreshToken = useCallback(async () => {
-    await refreshData;
-    !token && dispatch(setCredentials(refreshData));
-  }, [token, dispatch, refreshData]);
-
   useEffect(() => {
-    verifyRefreshToken();
-  }, [verifyRefreshToken]);
+    const verifyRefreshToken = async () => {
+      await refreshData;
+      dispatch(setCredentials(refreshData));
+    };
+    !token && verifyRefreshToken();
+  }, [dispatch, token, refreshData]);
 
   return (
     <>

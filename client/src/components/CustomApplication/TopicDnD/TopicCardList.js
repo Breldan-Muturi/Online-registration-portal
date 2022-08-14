@@ -3,19 +3,22 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectAllTopics,
   useGetTopicsQuery,
-} from "../../features/topic/topicApiSlice";
+} from "../../../features/topic/topicApiSlice";
 import { CircularProgress, Grid, Typography } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
-import { TopicCard } from "..";
-import { setSelectedTopicIds } from "../../features/application/customApplicationSlice";
+import { TopicCard } from "../../index";
+import { setSelectedTopicIds } from "../../../features/application/customApplicationSlice";
 import useStyles from "./styles";
+import { selectAllCourses } from "../../../features/course/courseApiSlice";
 
-const TopicCardList = ({ selectedTopicIds, courses }) => {
-  const { isLoading, isSuccess, isError, error } = useGetTopicsQuery();
+const TopicCardList = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const courses = useSelector(selectAllCourses);
+  const { isLoading, isSuccess, isError, error } = useGetTopicsQuery();
   const topics = useSelector(selectAllTopics);
+  const { selectedTopicIds } = useSelector((state) => state.customApplication);
   const availableTopics = topics.filter(
     (filteredTopic) => !selectedTopicIds.includes(filteredTopic._id)
   );
@@ -75,7 +78,7 @@ const TopicCardList = ({ selectedTopicIds, courses }) => {
     >
       {isError && (
         <Typography color="error" className={classes.message}>
-          Could not fetch portal topics: <br /> {error}
+          {`Could not fetch portal topics: <br /> ${error}`}
         </Typography>
       )}
       {isLoading && (
@@ -107,8 +110,8 @@ const TopicCardList = ({ selectedTopicIds, courses }) => {
                     ? classes.availableContainerDragged
                     : classes.availableContainer,
                 }}
-                {...provided.droppableProps}
                 ref={provided.innerRef}
+                {...provided.droppableProps}
               >
                 <Typography>Available Topics</Typography>
                 {availableTopics
@@ -148,8 +151,8 @@ const TopicCardList = ({ selectedTopicIds, courses }) => {
                     ? classes.selectedContainerDragged
                     : classes.selectedContainer,
                 }}
-                ref={provided.innerRef}
                 {...provided.droppableProps}
+                ref={provided.innerRef}
               >
                 <Typography>Selected Topics</Typography>
                 {selectedTopics

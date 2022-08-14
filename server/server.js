@@ -18,8 +18,8 @@ import topicRoute from "./routes/topicRoute.js";
 import completionRoute from "./routes/completionRoute.js";
 import paymentRoute from "./routes/paymentRoute.js";
 import applicationRoute from "./routes/applicationRoute.js";
-import { verifyJWT } from "./middleware/verifyJWT.js";
 import refreshRoute from "./routes/refresh.js";
+import { verifyJWT } from "./middleware/verifyJWT.js";
 
 const app = express();
 dotenv.config();
@@ -31,12 +31,17 @@ app.use(express.json());
 //Handle options credentials check - before CORS!
 // and fetch cookies credentials requirement
 app.use(credentials);
+
+//Cross Origin Resource Sharing
 app.use(cors(corsOptions));
+
+//built-in middleware to handle urlencoded form data
 app.use(express.urlencoded({ extended: false }));
 
 //middleware for cookies
 app.use(cookieParser());
 
+//routes
 app.use("/api/auth", authRoute);
 app.use("/api/courses", courseRoute);
 app.use("/api/sessions", sessionRoute);

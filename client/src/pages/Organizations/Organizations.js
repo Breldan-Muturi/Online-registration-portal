@@ -129,7 +129,7 @@ const Organizations = () => {
         )}
         {isError && (
           <Typography>
-            Something went wrong while fetching your organizations: {error}
+            {`Something went wrong while fetching your organizations: ${error}`}
           </Typography>
         )}
       </Grid>

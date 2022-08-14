@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { auth, provider } from "../../App/firebase";
 import { signInWithPopup } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
@@ -57,20 +57,6 @@ export default function TransitionsModal() {
   });
 
   const { firstName, lastName, email, password, confirmPassword } = formData;
-
-  useEffect(() => {
-    if (!user) {
-      dispatch(toggleModal());
-    }
-    return () =>
-      setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      });
-  }, [user, dispatch]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({

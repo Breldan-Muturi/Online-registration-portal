@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Grid,
   Button,
@@ -5,56 +6,46 @@ import {
   Typography,
   CircularProgress,
 } from "@material-ui/core";
-import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createOrganization } from "../../features/organization/organizationSlice";
-// import { useNavigate } from 'react-router-dom'
+import {
+  setName,
+  setEmail,
+  setAddress,
+  setPhoneNumber,
+  setCounty,
+  setOrganizationLogo,
+  reset,
+} from "../../features/organization/organizationSlice";
 import useStyles from "./styles";
 import FileBase from "react-file-base64";
+import { useCreateOrganizationMutation } from "../../features/organization/organizationApiSlice";
+import { selectCurrentUser } from "../../features/auth/authSlice";
 
 const OrganizationSettings = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  // const navigate = useNaviga=te();
-  const { user } = useSelector((state) => state.auth);
-  const { status, message } = useSelector((state) => state.organization);
-  const [organizationData, setOrganizationData] = useState({
-    createdBy: user._id,
-    admins: [user._id],
-    name: "",
-    email: "",
-    phoneNumber: "",
-    address: "",
-    county: "",
-    organizationLogo: "",
-  });
+  const [createOrganization, { isLoading, isSuccess, error }] =
+    useCreateOrganizationMutation();
+  const { name, email, address, phoneNumber, county, organizationLogo } =
+    useSelector((state) => state.organization);
+  const user = useSelector(selectCurrentUser);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(createOrganization(organizationData));
-    if (status === "success") {
-      setOrganizationData({
-        createdBy: "",
-        admins: [],
-        name: "",
-        email: "",
-        phoneNumber: "",
-        address: "",
-        county: "",
-        organizationLogo: "",
-      });
+    await createOrganization({
+      name,
+      email,
+      address,
+      phoneNumber,
+      county,
+      organizationLogo,
+      createdBy: user.id,
+      admins: [user.id],
+    });
+    if (isSuccess) {
+      dispatch(reset());
     }
   };
-
-  const onChange = (e) => {
-    setOrganizationData((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const { name, email, phoneNumber, address, county, organizationLogo } =
-    organizationData;
 
   return (
     <form onSubmit={handleSubmit} className={classes.form}>
@@ -77,7 +68,7 @@ const OrganizationSettings = () => {
             label="Organization name"
             variant="outlined"
             fullWidth
-            onChange={onChange}
+            onChange={(e) => dispatch(setName(e.target.value))}
           />
         </Grid>
         <Grid item xs={4}>
@@ -89,7 +80,7 @@ const OrganizationSettings = () => {
             label="Organization email"
             variant="outlined"
             fullWidth
-            onChange={onChange}
+            onChange={(e) => dispatch(setEmail(e.target.value))}
           />
         </Grid>
         <Grid item xs={4}>
@@ -100,7 +91,7 @@ const OrganizationSettings = () => {
             label="Organization phoneNumber"
             variant="outlined"
             fullWidth
-            onChange={onChange}
+            onChange={(e) => dispatch(setPhoneNumber(e.target.value))}
           />
         </Grid>
         <Grid item xs={8}>
@@ -111,7 +102,7 @@ const OrganizationSettings = () => {
             label="Organization address"
             variant="outlined"
             fullWidth
-            onChange={onChange}
+            onChange={(e) => dispatch(setAddress(e.target.value))}
           />
         </Grid>
         <Grid item xs={4}>
@@ -122,7 +113,7 @@ const OrganizationSettings = () => {
             label="Organization county"
             variant="outlined"
             fullWidth
-            onChange={onChange}
+            onChange={(e) => dispatch(setCounty(e.target.value))}
           />
         </Grid>
         <Grid item xs={12}>
@@ -132,20 +123,17 @@ const OrganizationSettings = () => {
             id="organizationLogo"
             type="file"
             multiple={false}
-            onDone={({ base64 }) =>
-              setOrganizationData({
-                ...organizationData,
-                organizationLogo: base64,
-              })
-            }
+            onDone={({ base64 }) => dispatch(setOrganizationLogo(base64))}
             fullWidth
           />
         </Grid>
-        {status !== "success" && (
+        {!isSuccess && (
           <Grid item container xs={12} direction="row" alignItems="center">
-            {status === "loading" && <CircularProgress />}
-            <Typography color={status === "loading" ? "textPrimary" : "error"}>
-              {status === "loading" ? "Creating new organization." : message}
+            {isLoading && <CircularProgress />}
+            <Typography color={isLoading ? "textPrimary" : "error"}>
+              {isLoading
+                ? "Creating new organization."
+                : `Something went wrong creating the organization <br /> ${error}`}
             </Typography>
           </Grid>
         )}

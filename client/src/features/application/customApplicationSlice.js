@@ -2,6 +2,13 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   sponsorType: "",
+  sponsorOrganization: null,
+  sponsorName: "",
+  sponsorEmail: "",
+  sponsorPhoneNumber: "",
+  sponsorAddress: "",
+  sponsorCounty: "",
+  sponsorLogo: "",
   courseId: "",
   isTopics: false,
   searchTopicsByCourse: [],
@@ -12,6 +19,8 @@ const initialState = {
   deliveryType: "",
   venue: "",
   participants: [],
+  isOnlyParticipant: false,
+  isNewOrganization: false,
 };
 
 export const customApplicationSlice = createSlice({
@@ -20,6 +29,27 @@ export const customApplicationSlice = createSlice({
   reducers: {
     setSponsorType: (state, action) => {
       state.sponsorType = action.payload;
+    },
+    setSponsorOrganization: (state, action) => {
+      state.sponsorOrganization = action.payload;
+    },
+    setSponsorName: (state, action) => {
+      state.sponsorName = action.payload;
+    },
+    setSponsorEmail: (state, action) => {
+      state.sponsorEmail = action.payload;
+    },
+    setSponsorPhoneNumber: (state, action) => {
+      state.sponsorPhoneNumber = action.payload;
+    },
+    setSponsorAddress: (state, action) => {
+      state.sponsorAddress = action.payload;
+    },
+    setSponsorCounty: (state, action) => {
+      state.sponsorCounty = action.payload;
+    },
+    setSponsorLogo: (state, action) => {
+      state.sponsorLogo = action.payload;
     },
     setCourseId: (state, action) => {
       state.courseId = action.payload;
@@ -59,19 +89,34 @@ export const customApplicationSlice = createSlice({
     setParticipants: (state, action) => {
       state.participants = action.payload;
     },
+    addSingleParticipant: (state, action) => {
+      const participants = [];
+      state.participants = participants.concat(action.payload);
+    },
     removeParticipants: (state, action) => {
       state.participants = state.participants.filter(
         (filteredParticipant) => filteredParticipant !== action.payload
       );
     },
-    addAllParticipants: (state, action) => {},
-    clearParticipants: (state, action) => {},
+    toggleIsOnlyParticipant: (state) => {
+      state.isOnlyParticipant = !state.isOnlyParticipant;
+    },
+    toggleIsNewOrganization: (state) => {
+      state.isNewOrganization = !state.isNewOrganization;
+    },
     reset: () => initialState,
   },
 });
 
 export const {
   setSponsorType,
+  setSponsorOrganization,
+  setSponsorName,
+  setSponsorEmail,
+  setSponsorPhoneNumber,
+  setSponsorAddress,
+  setSponsorCounty,
+  setSponsorLogo,
   setCourseId,
   toggleIsTopics,
   setTopicsCourse,
@@ -86,9 +131,10 @@ export const {
   setDeliveryType,
   setVenue,
   setParticipants,
+  addSingleParticipant,
   removeParticipants,
-  addAllParticipants,
-  clearParticipants,
+  toggleIsOnlyParticipant,
+  toggleIsNewOrganization,
   reset,
 } = customApplicationSlice.actions;
 

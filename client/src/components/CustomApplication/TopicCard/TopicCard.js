@@ -22,7 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addSelectedTopicId,
   removeSelectedTopicId,
-} from "../../features/application/customApplicationSlice";
+} from "../../../features/application/customApplicationSlice";
 
 const TopicCard = ({ index, topic, course }) => {
   const classes = useStyles();
@@ -35,15 +35,14 @@ const TopicCard = ({ index, topic, course }) => {
   };
   return (
     <Draggable key={topic._id} draggableId={topic._id} index={index}>
-      {(provided, snapshot) => (
+      {(provided) => (
         <Card
           key={topic._id}
-          component="div"
           variant="outlined"
           classes={{ root: classes.card }}
+          ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          ref={provided.innerRef}
         >
           <CardHeader
             classes={{ root: classes.header }}
@@ -81,25 +80,22 @@ const TopicCard = ({ index, topic, course }) => {
             </CardContent>
           </Collapse>
           <CardActions classes={{ root: classes.actions }}>
-            {!isAdded ? (
-              <Button
-                size="small"
-                color="primary"
-                startIcon={<AddCircleOutline />}
-                onClick={() => dispatch(addSelectedTopicId(topic._id))}
-              >
-                Add Topic
-              </Button>
-            ) : (
-              <Button
-                size="small"
-                color="secondary"
-                startIcon={<HighlightOffOutlined />}
-                onClick={() => dispatch(removeSelectedTopicId(topic._id))}
-              >
-                Remove Topic
-              </Button>
-            )}
+            <Button
+              size="small"
+              color={isAdded ? "secondary" : "primary"}
+              startIcon={
+                isAdded ? <HighlightOffOutlined /> : <AddCircleOutline />
+              }
+              onClick={() =>
+                dispatch(
+                  isAdded
+                    ? removeSelectedTopicId(topic._id)
+                    : addSelectedTopicId(topic._id)
+                )
+              }
+            >
+              {isAdded ? "Remove Topic" : "Add Topic"}
+            </Button>
           </CardActions>
         </Card>
       )}

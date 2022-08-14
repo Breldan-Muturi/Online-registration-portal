@@ -6,7 +6,6 @@ import {
   FormControl,
   Grid,
   InputLabel,
-  List,
   ListItemAvatar,
   ListItemText,
   MenuItem,
@@ -18,12 +17,12 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   removeParticipants,
   setParticipants,
-} from "../../features/application/customApplicationSlice";
+} from "../../../features/application/customApplicationSlice";
 import {
   selectAllUsers,
   useGetUsersQuery,
-} from "../../features/user/usersApiSlice";
-import useStyles from "./styles";
+} from "../../../features/user/usersApiSlice";
+import { useStyles, MenuProps } from "./styles";
 
 const UserList = () => {
   const dispatch = useDispatch();
@@ -33,11 +32,10 @@ const UserList = () => {
   const { participants } = useSelector((state) => state.customApplication);
   console.log(participants);
   const isAllSelected =
-    users?.length > 0 && participants.length === users?.length;
+    users?.length > 0 && participants?.length === users?.length;
 
   const handleParticipants = (event) => {
     const value = event.target.value;
-    console.log(value);
     if (value[value.length - 1] === "all") {
       dispatch(
         setParticipants(
@@ -53,7 +51,7 @@ const UserList = () => {
   };
   return (
     <Grid item container xs={12} sm={6}>
-      {/* {isLoading && (
+      {isLoading && (
         <Grid
           container
           className={classes.notify}
@@ -69,9 +67,9 @@ const UserList = () => {
       )}
       {isError && (
         <Typography color="error" className={classes.notify}>
-          Something went wrong <br /> {error}
+          {`Something went wrong <br /> ${error}`}
         </Typography>
-      )} */}
+      )}
       {isSuccess && (
         <FormControl variant="outlined" fullWidth>
           <InputLabel
@@ -109,10 +107,16 @@ const UserList = () => {
                   ))}
               </div>
             )}
+            MenuProps={MenuProps}
           >
             <MenuItem key="all" value="all">
               <ListItemText primary="Select all available participants" />
               <Checkbox
+                color="primary"
+                classes={{ indeterminate: classes.indeterminateColor }}
+                indeterminate={
+                  users.length > 0 && users.length > participants.length
+                }
                 edge="end"
                 inputProps={{
                   "aria-labelledby": "Select all participants",
@@ -139,6 +143,7 @@ const UserList = () => {
                     secondary={mappedUser.email}
                   />
                   <Checkbox
+                    color="primary"
                     edge="end"
                     inputProps={{ "aria-labelledby": labelId }}
                     checked={participants.includes(mappedUser._id)}

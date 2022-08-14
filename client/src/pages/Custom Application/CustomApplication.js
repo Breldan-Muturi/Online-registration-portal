@@ -14,7 +14,13 @@ import {
 } from "@material-ui/core";
 import { sponsors, deliveryTypes, venues } from "./options";
 import useStyles from "./styles";
-import { TopicCardList, UserList } from "../../components";
+import {
+  OrganizationCustom,
+  OrganizationList,
+  SelectedUsers,
+  TopicCardList,
+  UserList,
+} from "../../components";
 import {
   setCourseId,
   setDeliveryType,
@@ -23,9 +29,15 @@ import {
   setEndDate,
   setStartDate,
   setVenue,
+  setParticipants,
+  addSingleParticipant,
+  toggleIsOnlyParticipant,
+  toggleIsNewOrganization,
 } from "../../features/application/customApplicationSlice";
+import { selectCurrentUser } from "../../features/auth/authSlice";
 
 const CustomApplication = () => {
+  const user = useSelector(selectCurrentUser);
   const { isSuccess } = useGetCoursesQuery();
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -36,13 +48,14 @@ const CustomApplication = () => {
     isTopics,
     searchTopicsByCourse,
     searchTopicsByTitle,
-    selectedTopicIds,
     startDate,
     endDate,
     deliveryType,
     venue,
+    participants,
+    isOnlyParticipant,
+    isNewOrganization,
   } = useSelector((state) => state.customApplication);
-
   const handleTopicsCourse = (event) => {};
 
   return (
@@ -81,6 +94,23 @@ const CustomApplication = () => {
             ))}
           </TextField>
         </Grid>
+        <OrganizationList />
+        <Grid item xs={12}>
+          <FormControlLabel
+            name="isNewOrganization"
+            value={isNewOrganization}
+            control={
+              <Checkbox
+                checked={isNewOrganization}
+                onChange={() => dispatch(toggleIsNewOrganization())}
+                name="isNewOrganization"
+                color="primary"
+              />
+            }
+            label="Add a different organization to sponsor this application."
+          />
+        </Grid>
+        <OrganizationCustom />
         {!isTopics && (
           <Grid item xs={12} sm={6}>
             <TextField
@@ -94,7 +124,7 @@ const CustomApplication = () => {
               helperText="Select the application course"
               variant="outlined"
             >
-              {!isSuccess && <MenuItem disabled> Loading courses</MenuItem>}
+              {!isSuccess && <MenuItem disabled>Loading courses</MenuItem>}
               {isSuccess &&
                 courses.map((mappedCourse) => (
                   <MenuItem key={mappedCourse._id} value={mappedCourse._id}>
@@ -104,7 +134,7 @@ const CustomApplication = () => {
             </TextField>
           </Grid>
         )}
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <FormControlLabel
             name="isTopics"
             value={isTopics}
@@ -155,10 +185,7 @@ const CustomApplication = () => {
                 onChange={(e) => dispatch(searchTopicsByTitle(e.target.value))}
               />
             </Grid>
-            <TopicCardList
-              selectedTopicIds={selectedTopicIds}
-              courses={courses}
-            />
+            <TopicCardList />
           </>
         )}
         <Grid item xs={3}>
@@ -219,14 +246,46 @@ const CustomApplication = () => {
             ))}
           </TextField>
         </Grid>
-        <Grid item container direction="column" xs={12}>
-          <Typography variant="h3">Participation Details</Typography>
-          <Typography>Select participants from your organizations.</Typography>
-          <Typography variant="subtitle2" color="primary">
-            Enter your desired participants email address.
-          </Typography>
+        {!isOnlyParticipant && (
+          <>
+            <Grid item container direction="column" xs={12}>
+              <Typography variant="h3">Participation Details</Typography>
+              <Typography>
+                Select participants from your organizations.
+              </Typography>
+              <Typography variant="subtitle2" color="primary">
+                Enter your desired participants email address.
+              </Typography>
+            </Grid>
+            <UserList />
+          </>
+        )}
+        <SelectedUsers />
+        <Grid item xs={12}>
+          <FormControlLabel
+            name="isOnlyParticipant"
+            value="isOnlyParticipant"
+            control={
+              <Checkbox
+                checked={
+                  participants.length === 1 && participants.includes(user.id)
+                }
+                onChange={() => (
+                  // eslint-disable-next-line
+                  dispatch(toggleIsOnlyParticipant()),
+                  dispatch(
+                    participants.includes(user.id)
+                      ? setParticipants([])
+                      : addSingleParticipant(user.id)
+                  )
+                )}
+                name="isOnlyParticipant"
+                color="primary"
+              />
+            }
+            label="I am the only participant for this application."
+          />
         </Grid>
-        <UserList />
       </Grid>
     </form>
   );
