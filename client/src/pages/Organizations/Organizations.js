@@ -5,14 +5,11 @@ import { useSelector } from "react-redux";
 import {
   Box,
   Grid,
-  ListSubheader,
-  List,
   ListItem,
   ListItemText,
   Typography,
   Divider,
   ListItemAvatar,
-  Avatar,
   ListItemSecondaryAction,
   IconButton,
   Tooltip,
@@ -23,6 +20,7 @@ import {
   selectAllOrganizations,
   useGetOrganizationsQuery,
 } from "../../features/organization/organizationApiSlice";
+import { CenterList, CustomAvatar, TopicSubheader } from "../../Custom";
 
 const Organizations = () => {
   const classes = useStyles();
@@ -35,19 +33,14 @@ const Organizations = () => {
     <Box p={3} className={classes.box}>
       {organizations?.length > 0 && isSuccess && (
         <Grid container>
-          <List
+          <CenterList
             spacing={3}
             aria-labelledby="My organizations"
             subheader={
-              <ListSubheader
-                component="h3"
-                className={classes.subheader}
-                id="my-organizations"
-              >
+              <TopicSubheader component="h3" id="my-organizations">
                 My Organizations
-              </ListSubheader>
+              </TopicSubheader>
             }
-            className={classes.root}
           >
             {organizations
               .slice((organizationPage - 1) * 6, (organizationPage - 1) * 6 + 6)
@@ -55,13 +48,13 @@ const Organizations = () => {
                 <React.Fragment key={mappedOrganization._id}>
                   <ListItem key={mappedOrganization._id}>
                     <ListItemAvatar className={classes.avatar}>
-                      <Avatar
+                      <CustomAvatar
                         className={classes.circle}
                         alt={mappedOrganization.name}
                         src={mappedOrganization.organizationLogo}
                       >
                         {mappedOrganization?.name.substring(0, 2).toUpperCase()}
-                      </Avatar>
+                      </CustomAvatar>
                     </ListItemAvatar>
                     <ListItemText
                       primary={
@@ -112,7 +105,7 @@ const Organizations = () => {
                 onChange={(_, value) => setOrganizationPage(value)}
               />
             )}
-          </List>
+          </CenterList>
         </Grid>
       )}
       <Grid container direction="column">

@@ -6,27 +6,11 @@ import { AuthModal } from "../../containers";
 import { StyledTab, NavIcon } from "../../Custom";
 import { useStyles } from "./styles";
 import MenuIcon from "@mui/icons-material/Menu";
+import { navItems } from "../../helpers";
 
 const Navbar = () => {
   const classes = useStyles();
-  const navItems = [
-    {
-      label: "About us",
-      path: "https://kippra.or.ke",
-    },
-    {
-      label: "Contact us",
-      path: "https://kippra.or.ke/contact-us/",
-    },
-    {
-      label: "Portal User Guide",
-      path: "https://kippraelearning.or.ke",
-    },
-    {
-      label: "eLearning",
-      path: "https://kippraelearning.or.ke",
-    },
-  ];
+
   return (
     <>
       <AppBar component="nav" position="fixed">

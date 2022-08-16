@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Avatar,
   Checkbox,
   CircularProgress,
   FormControl,
@@ -20,6 +19,7 @@ import {
 } from "../../features/organization/organizationApiSlice";
 import { setSponsorOrganization } from "../../features/application/customApplicationSlice";
 import { useStyles, MenuProps } from "./styles";
+import { CustomAvatar } from "../../Custom";
 
 const OrganizationList = () => {
   const classes = useStyles();
@@ -68,13 +68,13 @@ const OrganizationList = () => {
                   value={mappedOrganization}
                 >
                   <ListItemAvatar>
-                    <Avatar
+                    <CustomAvatar
                       className={classes.circle}
                       alt={`${mappedOrganization.name}'s Logo`}
                       src={mappedOrganization.organizationLogo}
                     >
                       {mappedOrganization.name.substring(0, 2).toUpperCase()}
-                    </Avatar>
+                    </CustomAvatar>
                   </ListItemAvatar>
                   <ListItemText
                     labelid={labelId}

@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Button,
   Card,
   CardActions,
@@ -16,6 +15,7 @@ import {
   selectAllUsers,
 } from "../../features/user/usersApiSlice";
 import { useStyles } from "./styles";
+import { CustomAvatar } from "../../Custom";
 
 const SelectedUsers = () => {
   const classes = useStyles();
@@ -57,13 +57,13 @@ const SelectedUsers = () => {
               variant="outlined"
             >
               <div className={classes.info}>
-                <Avatar
+                <CustomAvatar
                   alt={`${mappedUser.firstName} ${mappedUser.lastName}'s profile photo`}
                   src={mappedUser.avatar}
                   className={classes.circle}
                 >
                   {mappedUser.firstName.substring(0, 2).toUpperCase()}
-                </Avatar>
+                </CustomAvatar>
                 <CardContent className={classes.cardContent}>
                   <Typography variant="h3">{`${mappedUser.firstName} ${mappedUser.lastName}`}</Typography>
                   <Typography variant="body2">{mappedUser.email}</Typography>
@@ -80,7 +80,7 @@ const SelectedUsers = () => {
                 </Button>
                 <Button
                   size="small"
-                  color="secondary"
+                  color="error"
                   startIcon={<HighlightOffOutlined />}
                 >
                   Remove participant
@@ -91,5 +91,4 @@ const SelectedUsers = () => {
     </Grid>
   );
 };
-
 export default SelectedUsers;

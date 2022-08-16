@@ -2,7 +2,6 @@ import React from "react";
 import { useSelector } from "react-redux";
 import SendIcon from "@mui/icons-material/Send";
 import {
-  ButtonBase,
   Card,
   CardActions,
   CardContent,
@@ -11,13 +10,14 @@ import {
   Typography,
 } from "@mui/material";
 import useStyles from "./styles";
-import { selectAllCourses } from "../../features/course/courseApiSlice";
+import { selectCourseById } from "../../features/course/courseApiSlice";
+import { ApplyButton } from "../../Custom";
 
 const SessionItem = ({ session }) => {
   const classes = useStyles();
-  //Optimize with a selector for courses by sessionId
-  const courses = useSelector(selectAllCourses);
-  const course = courses?.find((course) => course._id === session.courseId);
+  const course = useSelector((state) =>
+    selectCourseById(state, session.courseId)
+  );
   Number.prototype.format = function () {
     return this.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   };
@@ -31,7 +31,9 @@ const SessionItem = ({ session }) => {
       <CardHeader title={title} classes={{ title: classes.title }} />
       <Divider variant="middle" />
       <CardContent>
-        <Typography className={classes.course}>{course?.title}</Typography>
+        <Typography sx={{ fontWeight: "bold", marginBottom: "16px" }}>
+          {course?.title}
+        </Typography>
         <Typography>
           On Premises Fee: <b>Ksh {session.onPremisesFee.format()}</b>
         </Typography>
@@ -56,12 +58,12 @@ const SessionItem = ({ session }) => {
           </b>
         </Typography>
       </CardContent>
-      <ButtonBase className={classes.button}>
+      <ApplyButton>
         <CardActions className={classes.actions}>
           <Typography>Apply Now</Typography>
           <SendIcon />
         </CardActions>
-      </ButtonBase>
+      </ApplyButton>
     </Card>
   );
 };

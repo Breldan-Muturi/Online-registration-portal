@@ -1,12 +1,13 @@
 import { Grid, Toolbar, Typography } from "@mui/material";
 import React from "react";
 import { useStyles } from "./styles";
+import { FooterBar } from "../../Custom";
 
 const Footer = () => {
   const classes = useStyles();
   return (
     <footer className={classes.footer}>
-      <Toolbar variant="dense" classes={{ root: classes.toolbar }}>
+      <FooterBar variant="dense">
         <Grid container justifyContent="space-between">
           <Typography>
             Copyright © 2022 The Kenya Institute of Public Policy Research and
@@ -16,7 +17,7 @@ const Footer = () => {
             Developed by Sohn and Sol Technologies Limited
           </Typography>
         </Grid>
-      </Toolbar>
+      </FooterBar>
     </footer>
   );
 };

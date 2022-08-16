@@ -24,7 +24,7 @@ import { selectCurrentUser } from "../../features/auth/authSlice";
 const OrganizationSettings = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [createOrganization, { isLoading, isSuccess, error }] =
+  const [createOrganization, { isLoading, isSuccess, isError, error }] =
     useCreateOrganizationMutation();
   const { name, email, address, phoneNumber, county, organizationLogo } =
     useSelector((state) => state.organization);
@@ -127,7 +127,7 @@ const OrganizationSettings = () => {
             fullWidth
           />
         </Grid>
-        {!isSuccess && (
+        {(isLoading || isError) && (
           <Grid item container xs={12} direction="row" alignItems="center">
             {isLoading && <CircularProgress />}
             <Typography color={isLoading ? "textPrimary" : "error"}>

@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  Typography,
-  Toolbar,
-  Tabs,
-  Box,
-  Grid,
-  CircularProgress,
-} from "@mui/material";
+import { Typography, Tabs, Box, Grid, CircularProgress } from "@mui/material";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -17,7 +10,7 @@ import {
 } from "../../features/course/courseApiSlice";
 import CourseSettings from "../CourseSettings/CourseSettings";
 import { useStyles } from "./styles";
-import { StyledTab } from "../../Custom/index";
+import { CourseToolbar, StyledTab } from "../../Custom/index";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -78,7 +71,7 @@ const SingleCourse = () => {
               {course.title}
             </Typography>
           </div>
-          <Toolbar className={classes.toolbar}>
+          <CourseToolbar variant="dense" className={classes.toolbar}>
             <Tabs
               value={value}
               indicatorColor="primary"
@@ -95,7 +88,7 @@ const SingleCourse = () => {
               <StyledTab label="Sessions" {...a11yProps(3)} />
               <StyledTab label="Applications" {...a11yProps(4)} />
             </Tabs>
-          </Toolbar>
+          </CourseToolbar>
           <TabPanel className={classes.panel} value={value} index={0}>
             <Typography>{course.description}</Typography>
           </TabPanel>

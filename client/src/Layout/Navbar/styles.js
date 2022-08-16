@@ -6,8 +6,8 @@ const useStyles = makeStyles((theme) => ({
     zIndex: theme.zIndex.drawer + 1,
   },
   img: {
-    width: "130px",
-    height: "80px",
+    width: "100px",
+    height: "60px",
     margin: "10px",
   },
   title: {

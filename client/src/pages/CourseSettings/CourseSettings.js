@@ -301,7 +301,7 @@ const CourseSettings = ({ course }) => {
             <Button
               onClick={deleteCourse()}
               variant="contained"
-              color="secondary"
+              color="error"
               size="large"
               fullWidth
             >

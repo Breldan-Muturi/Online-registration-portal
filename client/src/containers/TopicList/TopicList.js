@@ -2,8 +2,6 @@ import {
   Box,
   Typography,
   CircularProgress,
-  List,
-  ListSubheader,
   Grid,
   ListItem,
   ListItemText,
@@ -19,6 +17,7 @@ import {
 } from "../../features/topic/topicApiSlice";
 import TopicModal from "../TopicModal/TopicModal";
 import useStyles from "./styles";
+import { TopicSubheader, CenterList } from "../../Custom";
 
 const TopicList = ({ courseId }) => {
   const classes = useStyles();
@@ -44,19 +43,15 @@ const TopicList = ({ courseId }) => {
         {isSuccess && (
           <>
             {topics.length >= 1 ? (
-              <List
+              <CenterList
+                component="article"
                 spacing={3}
                 aria-labelledby={`${course.title} Course Topics`}
                 subheader={
-                  <ListSubheader
-                    component="h3"
-                    className={classes.subheader}
-                    id="topics-list-subheader"
-                  >
+                  <TopicSubheader component="h3" id="topics-list-subheader">
                     {`Topics covered under ${course.title}`}
-                  </ListSubheader>
+                  </TopicSubheader>
                 }
-                className={classes.root}
               >
                 {topics
                   .slice((topicPage - 1) * 6, (topicPage - 1) * 6 + 6)
@@ -84,7 +79,7 @@ const TopicList = ({ courseId }) => {
                     onChange={(_, value) => setTopicPage(value)}
                   />
                 )}
-              </List>
+              </CenterList>
             ) : (
               <Typography color="error">
                 There are no published topics for this course

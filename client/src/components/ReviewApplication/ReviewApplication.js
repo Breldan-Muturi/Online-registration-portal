@@ -66,10 +66,6 @@ const ReviewApplication = () => {
         open={isOpenReview}
         onClose={() => dispatch(toggleIsOpenReview())}
         closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
       >
         <Fade in={isOpenReview}>
           <div className={classes.paper}>

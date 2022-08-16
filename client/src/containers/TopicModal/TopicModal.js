@@ -54,10 +54,6 @@ const TopicModal = ({ courseId }) => {
         className={classes.modal}
         onClose={() => dispatch(toggleModal())}
         closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
       >
         <Fade in={isOpen}>
           <div className={classes.paper}>

@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     paddingLeft: theme.spacing(4),
+    paddingBottom: theme.spacing(2),
     fontWeight: theme.typography.fontWeightBold,
     color: theme.palette.common.white,
     marginTop: "auto",

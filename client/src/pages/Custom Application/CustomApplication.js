@@ -106,7 +106,7 @@ const CustomApplication = () => {
         {activeStep === 1 && (
           <Button
             startIcon={<ArrowBack />}
-            color="secondary"
+            color="error"
             onClick={() => dispatch(setActiveStep(0))}
           >
             Sponsor Information
@@ -117,7 +117,7 @@ const CustomApplication = () => {
             disabled={!goStep2}
             startIcon={activeStep === 2 && <ArrowBack />}
             endIcon={activeStep === 0 && <ArrowForward />}
-            color={activeStep === 0 ? "primary" : "secondary"}
+            color={activeStep === 0 ? "primary" : "error"}
             onClick={() => dispatch(setActiveStep(1))}
           >
             Program Information

@@ -82,7 +82,7 @@ const TopicCard = ({ index, topic, course }) => {
           <CardActions classes={{ root: classes.actions }}>
             <Button
               size="small"
-              color={isAdded ? "secondary" : "primary"}
+              color={isAdded ? "error" : "primary"}
               startIcon={
                 isAdded ? <HighlightOffOutlined /> : <AddCircleOutline />
               }

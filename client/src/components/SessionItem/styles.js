@@ -11,30 +11,10 @@ export default makeStyles((theme) => ({
     fontSize: "1.25rem",
     fontWeight: theme.typography.fontWeightMedium,
   },
-  course: {
-    fontWeight: theme.typography.fontWeightBold,
-    marginBottom: theme.spacing(2),
-  },
-  button: {
-    width: "100%",
-    marginTop: "auto",
-    backgroundColor: theme.palette.primary.main,
-    alignItems: "stretch",
-    transition: theme.transitions.duration.standard,
-    "& > *": {
-      transition: theme.transitions.duration.standard,
-      color: theme.palette.common.white,
-      textTransform: "uppercase",
-    },
-    "& :hover": {
-      backgroundColor: theme.palette.primary.light,
-      "& > *": {
-        color: "#333",
-      },
-    },
-  },
   actions: {
     width: "100%",
+    padding: theme.spacing(2),
     justifyContent: "space-between",
+    backgroundColor: theme.palette.primary.main,
   },
 }));

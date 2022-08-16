@@ -28,7 +28,6 @@ import {
   IconButton,
   CircularProgress,
   Typography,
-  Avatar,
 } from "@mui/material";
 import {
   AccountBox,
@@ -39,6 +38,7 @@ import {
 import GoogleButton from "react-google-button";
 import useStyles from "./styles";
 import { theme } from "../../App/theme";
+import { CustomAvatar } from "../../Custom";
 
 export default function TransitionsModal() {
   const classes = useStyles();
@@ -156,14 +156,14 @@ export default function TransitionsModal() {
         </Button>
       ) : (
         <div className={classes.avatar}>
-          <Avatar
+          <CustomAvatar
             sx={{ bgcolor: theme.palette.primary.light }}
             className={classes.circle}
             alt={user?.firstName}
             src={user?.avatar}
           >
             {user?.firstName?.substring(0, 2).toUpperCase()}
-          </Avatar>
+          </CustomAvatar>
           <Typography color="textPrimary">
             {" "}
             Hi,

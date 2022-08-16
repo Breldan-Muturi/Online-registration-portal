@@ -1,5 +1,4 @@
 import {
-  Box,
   Toolbar,
   List,
   ListItem,
@@ -10,7 +9,6 @@ import {
   ListItemButton,
 } from "@mui/material";
 import React from "react";
-import clsx from "clsx";
 import { useStyles } from "./styles";
 import { menuItems } from "../../helpers";
 import { ExitToApp, KeyboardArrowLeftSharp } from "@mui/icons-material";
@@ -20,6 +18,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleModal } from "../../features/auth/authSlice";
 import { useLogoutMutation } from "../../features/auth/authApiSlice";
+import { grey } from "@mui/material/colors";
+import { SidebarDrawer } from "../../Custom";
 
 const Sidebar = () => {
   const [logout] = useLogoutMutation();
@@ -36,16 +36,11 @@ const Sidebar = () => {
   };
 
   return (
-    <Box
-      className={clsx(classes.drawer, {
-        [classes.drawerOpen]: isOpen,
-        [classes.drawerClose]: !isOpen,
-      })}
-    >
-      <Toolbar className={classes.toolBar} />
+    <SidebarDrawer open={isOpen}>
+      {/* <Toolbar className={classes.toolBar} /> */}
       <List>
         {menuItems.map((item) => (
-          <ListItem button key={item.text}>
+          <ListItem disablePadding key={item.text}>
             <ListItemButton
               onClick={() => {
                 user ? navigate(item.path) : dispatch(toggleModal());
@@ -60,25 +55,25 @@ const Sidebar = () => {
                 TransitionComponent={Fade}
                 TransitionProps={{ timeout: 600 }}
               >
-                <ListItemIcon
-                  className={clsx(classes.item, {
-                    [classes.active]: location.pathname === item.path,
-                  })}
-                >
+                <ListItemIcon sx={{ color: grey[50] }}>
                   {item.icon}
                 </ListItemIcon>
               </Tooltip>
               <ListItemText
-                classes={{ primary: classes.text }}
                 primary={item.text}
+                classes={{ primary: classes.listColor }}
+                primaryTypographyProps={{
+                  fontWeight: "bold",
+                  variant: "body2",
+                }}
               />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
-      <List className={classes.actions}>
+      <List>
         {user && (
-          <ListItem button className={classes.item}>
+          <ListItem disablePadding>
             <ListItemButton onClick={onLogout}>
               <Tooltip
                 arrow
@@ -88,18 +83,22 @@ const Sidebar = () => {
                 TransitionComponent={Fade}
                 TransitionProps={{ timeout: 600 }}
               >
-                <ListItemIcon className={classes.item}>
+                <ListItemIcon sx={{ color: grey[50] }}>
                   <ExitToApp />
                 </ListItemIcon>
               </Tooltip>
               <ListItemText
-                classes={{ primary: classes.text }}
                 primary="Logout"
+                classes={{ primary: classes.listColor }}
+                primaryTypographyProps={{
+                  fontWeight: "bold",
+                  variant: "body2",
+                }}
               />
             </ListItemButton>
           </ListItem>
         )}
-        <ListItem button className={classes.item}>
+        <ListItem disablePadding>
           <ListItemButton onClick={() => dispatch(toggleSidebar())}>
             <Tooltip
               arrow
@@ -109,18 +108,22 @@ const Sidebar = () => {
               TransitionComponent={Fade}
               TransitionProps={{ timeout: 600 }}
             >
-              <ListItemIcon className={classes.item}>
+              <ListItemIcon sx={{ color: grey[50] }}>
                 <KeyboardArrowLeftSharp />
               </ListItemIcon>
             </Tooltip>
             <ListItemText
-              classes={{ primary: classes.text }}
               primary={isOpen ? "Close sidebar" : "Open sidebar"}
+              classes={{ primary: classes.listColor }}
+              primaryTypographyProps={{
+                fontWeight: "bold",
+                variant: "body2",
+              }}
             />
           </ListItemButton>
         </ListItem>
       </List>
-    </Box>
+    </SidebarDrawer>
   );
 };
 
