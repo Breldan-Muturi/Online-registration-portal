@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Typography,
   Toolbar,
@@ -5,18 +6,18 @@ import {
   Box,
   Grid,
   CircularProgress,
-} from "@material-ui/core";
+} from "@mui/material";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { SessionList, TopicList } from "../../components";
+import { SessionList, TopicList } from "../../containers";
 import {
   selectCourseById,
   useGetCoursesQuery,
 } from "../../features/course/courseApiSlice";
 import CourseSettings from "../CourseSettings/CourseSettings";
-import { useStyles, StyledTab } from "./styles";
+import { useStyles } from "./styles";
+import { StyledTab } from "../../Custom/index";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

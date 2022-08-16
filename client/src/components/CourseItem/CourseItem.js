@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Grid,
-  Card,
-  CardContent,
-  CardMedia,
-  Typography,
-} from "@material-ui/core";
+import { Grid, Card, CardContent, CardMedia, Typography } from "@mui/material";
 import useStyles from "./styles";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";

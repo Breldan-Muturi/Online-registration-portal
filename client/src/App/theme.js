@@ -1,4 +1,4 @@
-import { createTheme } from "@material-ui/core";
+import { createTheme } from "@mui/material";
 const kipGreen = "#4EA375";
 const kipLightGreen = "#50BF80";
 const darkText = "rgba(0, 0, 0, 0.87)";
@@ -25,5 +25,6 @@ export const theme = createTheme({
       fontSize: "1.25rem",
       fontWeight: 400,
     },
+    h6: { fontSize: "1.5rem", fontWeight: 500 },
   },
 });

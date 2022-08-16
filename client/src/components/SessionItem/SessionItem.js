@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import SendIcon from "@material-ui/icons/Send";
+import SendIcon from "@mui/icons-material/Send";
 import {
   ButtonBase,
   Card,
@@ -9,7 +9,7 @@ import {
   CardHeader,
   Divider,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import useStyles from "./styles";
 import { selectAllCourses } from "../../features/course/courseApiSlice";
 

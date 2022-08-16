@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Pagination from "@material-ui/lab/Pagination";
+import Pagination from "@mui/lab/Pagination";
 import useStyles from "./styles";
 import { useSelector } from "react-redux";
 import {
@@ -17,8 +17,8 @@ import {
   IconButton,
   Tooltip,
   CircularProgress,
-} from "@material-ui/core";
-import { Assignment, Delete } from "@material-ui/icons";
+} from "@mui/material";
+import { Assignment, Delete } from "@mui/icons-material";
 import {
   selectAllOrganizations,
   useGetOrganizationsQuery,
@@ -52,7 +52,7 @@ const Organizations = () => {
             {organizations
               .slice((organizationPage - 1) * 6, (organizationPage - 1) * 6 + 6)
               .map((mappedOrganization) => (
-                <>
+                <React.Fragment key={mappedOrganization._id}>
                   <ListItem key={mappedOrganization._id}>
                     <ListItemAvatar className={classes.avatar}>
                       <Avatar
@@ -73,7 +73,7 @@ const Organizations = () => {
                       secondary={
                         <>
                           Role:
-                          {mappedOrganization.admins.indexOf(user._id) > -1 ? (
+                          {mappedOrganization.admins.indexOf(user.id) > -1 ? (
                             <>
                               <b> Admin</b>
                               <br />
@@ -104,7 +104,7 @@ const Organizations = () => {
                     organizations.length && (
                     <Divider variant="middle" component="li" />
                   )}
-                </>
+                </React.Fragment>
               ))}
             {Math.ceil(organizations?.length / 6) > 1 && (
               <Pagination

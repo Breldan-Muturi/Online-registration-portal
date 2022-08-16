@@ -1,4 +1,4 @@
-import { withStyles, makeStyles, Tab } from "@material-ui/core";
+import { makeStyles } from "@mui/styles";
 import bgImage from "../../assets/KIPPRAheader.jpeg";
 
 const useStyles = makeStyles((theme) => ({
@@ -37,12 +37,4 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StyledTab = withStyles((theme) => ({
-  root: {
-    textTransform: "capitalize",
-    fontSize: "1rem",
-    fontWeight: theme.typography.fontWeightBold,
-  },
-}))((props) => <Tab {...props} />);
-
-export { useStyles, StyledTab };
+export { useStyles };

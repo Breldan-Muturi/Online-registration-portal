@@ -13,8 +13,8 @@ import {
   InputLabel,
   Select,
   Chip,
-} from "@material-ui/core";
-import CancelIcon from "@material-ui/icons/Cancel";
+} from "@mui/material";
+import CancelIcon from "@mui/icons-material/Cancel";
 import React, { useState } from "react";
 import { v4 } from "uuid";
 import { useSelector } from "react-redux";

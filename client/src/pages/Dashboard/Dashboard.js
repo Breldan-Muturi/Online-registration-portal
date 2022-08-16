@@ -1,7 +1,7 @@
 import React from "react";
 import useStyles from "./styles";
-import { CourseList, SessionList } from "../../components";
-import { Typography } from "@material-ui/core";
+import { CourseList, SessionList } from "../../containers";
+import { Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { selectAllSessions } from "../../features/session/sessionApiSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";

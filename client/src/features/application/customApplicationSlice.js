@@ -8,19 +8,23 @@ const initialState = {
   sponsorPhoneNumber: "",
   sponsorAddress: "",
   sponsorCounty: "",
+  sponsorContactPerson: "",
+  sponsorContactEmail: "",
   sponsorLogo: "",
   courseId: "",
   isTopics: false,
   searchTopicsByCourse: [],
   searchTopicsByTitle: "",
   selectedTopicIds: [],
-  startDate: "",
-  endDate: "",
+  startDate: new Date().toISOString(),
+  endDate: new Date().toISOString(),
   deliveryType: "",
   venue: "",
   participants: [],
   isOnlyParticipant: false,
   isNewOrganization: false,
+  isOpenReview: false,
+  activeStep: 0,
 };
 
 export const customApplicationSlice = createSlice({
@@ -47,6 +51,12 @@ export const customApplicationSlice = createSlice({
     },
     setSponsorCounty: (state, action) => {
       state.sponsorCounty = action.payload;
+    },
+    setSponsorContactPerson: (state, action) => {
+      state.sponsorContactPerson = action.payload;
+    },
+    setSponsorContactEmail: (state, action) => {
+      state.sponsorContactEmail = action.payload;
     },
     setSponsorLogo: (state, action) => {
       state.sponsorLogo = action.payload;
@@ -104,6 +114,12 @@ export const customApplicationSlice = createSlice({
     toggleIsNewOrganization: (state) => {
       state.isNewOrganization = !state.isNewOrganization;
     },
+    toggleIsOpenReview: (state) => {
+      state.isOpenReview = !state.isOpenReview;
+    },
+    setActiveStep: (state, action) => {
+      state.activeStep = action.payload;
+    },
     reset: () => initialState,
   },
 });
@@ -116,6 +132,8 @@ export const {
   setSponsorPhoneNumber,
   setSponsorAddress,
   setSponsorCounty,
+  setSponsorContactPerson,
+  setSponsorContactEmail,
   setSponsorLogo,
   setCourseId,
   toggleIsTopics,
@@ -135,6 +153,8 @@ export const {
   removeParticipants,
   toggleIsOnlyParticipant,
   toggleIsNewOrganization,
+  toggleIsOpenReview,
+  setActiveStep,
   reset,
 } = customApplicationSlice.actions;
 
