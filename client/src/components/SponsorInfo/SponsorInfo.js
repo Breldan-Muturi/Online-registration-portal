@@ -14,7 +14,7 @@ import {
 } from "../../features/application/customApplicationSlice";
 import { OrganizationList, OrganizationCustom } from "../index";
 import { useDispatch, useSelector } from "react-redux";
-import { sponsors } from "./helpers";
+import { SponsorTypes } from "../../helpers";
 
 const SponsorInfo = () => {
   const dispatch = useDispatch();
@@ -42,7 +42,7 @@ const SponsorInfo = () => {
           helperText="Select one of the provided sponsor types"
           variant="outlined"
         >
-          {sponsors.map((mappedSponsor) => (
+          {SponsorTypes.map((mappedSponsor) => (
             <MenuItem key={mappedSponsor.value} value={mappedSponsor.value}>
               {mappedSponsor.label}
             </MenuItem>

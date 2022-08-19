@@ -17,20 +17,18 @@ const ParticipantsInfo = () => {
   return (
     <>
       {!isOnlyParticipant && (
-        <>
-          <Grid item container direction="column" xs={12}>
-            <Typography variant="h3">Participation Details</Typography>
-            <Typography>
-              Select participants from your organizations.
-            </Typography>
-            <Typography variant="subtitle2" color="primary">
-              Enter your desired participants email address.
-            </Typography>
-          </Grid>
-          <UserList />
-        </>
+        <Grid item container direction="column" xs={12}>
+          <Typography variant="h3">Participation Details</Typography>
+          <Typography>Select participants from your organizations.</Typography>
+          <Typography variant="subtitle2" color="primary">
+            Enter your desired participants email address.
+          </Typography>
+        </Grid>
       )}
-      <SelectedUsers />
+      <Grid item container direction="row" justifyContent="space-between">
+        {!isOnlyParticipant && <UserList />}
+        <SelectedUsers />
+      </Grid>
       <Grid item xs={12}>
         <FormControlLabel
           name="isOnlyParticipant"

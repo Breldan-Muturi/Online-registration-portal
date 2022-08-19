@@ -12,8 +12,19 @@ export const organizationApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getOrganizations: builder.query({
       query: () => "/api/organizations",
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
       transformResponse: (responseData) => {
         return organizationsAdapter.setAll(initialState, responseData);
+      },
+      providesTags: (result, error, arg) => {
+        if (result?.ids) {
+          return [
+            { type: "Organization", id: "LIST" },
+            ...result.ids.map((id) => ({ type: "Organization", id })),
+          ];
+        } else return [{ type: "Organization", id: "LIST" }];
       },
     }),
 
@@ -23,14 +34,16 @@ export const organizationApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: organization,
       }),
+      invalidatesTags: [{ type: "Organization", id: "LIST" }],
     }),
 
     updateOrganization: builder.mutation({
       query: (organization) => ({
         url: `/api/organizations/${organization._id}`,
-        method: "PUT",
+        method: "PATCH",
         body: organization,
       }),
+      invalidatesTags: [{ type: "Organization", id: "LIST" }],
     }),
 
     deleteOrganization: builder.mutation({
@@ -39,6 +52,7 @@ export const organizationApiSlice = apiSlice.injectEndpoints({
         method: "DELETE",
         body: { _id },
       }),
+      invalidatesTags: [{ type: "Organization", id: "LIST" }],
     }),
   }),
 });

@@ -85,9 +85,11 @@ export const customApplicationSlice = createSlice({
       state.selectedTopicIds = action.payload;
     },
     setStartDate: (state, action) => {
+      console.log(action.payload);
       state.startDate = action.payload;
     },
     setEndDate: (state, action) => {
+      console.log(action.payload);
       state.endDate = action.payload;
     },
     setDeliveryType: (state, action) => {

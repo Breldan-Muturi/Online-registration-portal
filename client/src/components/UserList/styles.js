@@ -2,6 +2,9 @@ import { makeStyles } from "@mui/styles";
 import { green, red } from "@mui/material/colors";
 
 const useStyles = makeStyles((theme) => ({
+  userList: {
+    maxWidth: "48%",
+  },
   chips: {
     display: "flex",
     flexWrap: "wrap",
@@ -27,7 +30,8 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(2),
   },
   selected: {
-    marginTop: theme.spacing(2),
+    maxWidth: "50%",
+    padding: theme.spacing(2),
     borderRadius: "4px",
   },
   selectedUsers: {

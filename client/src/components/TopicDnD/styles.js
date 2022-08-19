@@ -2,8 +2,11 @@ import { makeStyles } from "@mui/styles";
 import { green, grey } from "@mui/material/colors";
 
 export default makeStyles((theme) => ({
-  dragAndDrop: {},
-  droppable: {
+  dragArea: {
+    padding: theme.spacing(2),
+  },
+  container: {
+    padding: theme.spacing(2),
     maxWidth: "48%",
     borderRadius: "4px",
   },

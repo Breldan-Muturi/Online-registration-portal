@@ -23,9 +23,13 @@ import {
   addSelectedTopicId,
   removeSelectedTopicId,
 } from "../../features/application/customApplicationSlice";
+import { selectCourseById } from "../../features/course/courseApiSlice";
 
-const TopicCard = ({ index, topic, course }) => {
+const TopicCard = ({ index, topic }) => {
   const classes = useStyles();
+  const course = useSelector((state) =>
+    selectCourseById(state, topic.courseId)
+  );
   const dispatch = useDispatch();
   const { selectedTopicIds } = useSelector((state) => state.customApplication);
   const isAdded = selectedTopicIds.includes(topic._id);

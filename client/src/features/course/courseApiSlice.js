@@ -13,10 +13,14 @@ export const courseApiSlice = apiSlice.injectEndpoints({
     getCourses: builder.query({
       query: () => "/api/courses",
       transformResponse: (res) => coursesAdapter.setAll(initialState, res),
-      providesTags: (result, error, arg) => [
-        { type: "Courses", id: "LIST" },
-        ...result.ids.map((id) => ({ type: "Courses", id })),
-      ],
+      providesTags: (result, error, arg) => {
+        if (result?.ids) {
+          return [
+            { type: "Course", id: "LIST" },
+            ...result.ids.map((id) => ({ type: "Course", id })),
+          ];
+        } else return [{ type: "Course", id: "LIST" }];
+      },
     }),
 
     listCourses: builder.query({
@@ -25,10 +29,10 @@ export const courseApiSlice = apiSlice.injectEndpoints({
       providesTags: (result, error, page) =>
         result
           ? [
-              ...result.data.map(({ id }) => ({ type: "Courses", id })),
-              { type: "Courses", id: "PARTIAL-LIST" },
+              ...result.data.map(({ id }) => ({ type: "Course", id })),
+              { type: "Course", id: "PARTIAL-LIST" },
             ]
-          : [{ type: "Courses", id: "PARTIAL-LIST" }],
+          : [{ type: "Course", id: "PARTIAL-LIST" }],
     }),
 
     createCourse: builder.mutation({
@@ -37,18 +41,16 @@ export const courseApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: course,
       }),
-      invalidatesTags: [{ type: "Courses", id: "LIST" }],
+      invalidatesTags: [{ type: "Course", id: "LIST" }],
     }),
 
     updateCourse: builder.mutation({
       query: (course) => ({
         url: `/api/courses/${course._id}`,
-        method: "PUT",
+        method: "PATCH",
         body: course,
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "Courses", id: arg.id },
-      ],
+      invalidatesTags: (result, error, arg) => [{ type: "Course", id: arg.id }],
     }),
 
     deleteCourse: builder.mutation({
@@ -58,8 +60,8 @@ export const courseApiSlice = apiSlice.injectEndpoints({
         body: { _id },
       }),
       invalidatesTags: (result, error, arg) => [
-        { type: "Courses", id: arg.id },
-        { type: "Courses", id: "PARTIAL-LIST" },
+        { type: "Course", id: arg.id },
+        { type: "Course", id: "PARTIAL-LIST" },
       ],
     }),
   }),

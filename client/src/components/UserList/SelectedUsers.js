@@ -5,6 +5,7 @@ import {
   CardContent,
   CircularProgress,
   Grid,
+  Stack,
   Typography,
 } from "@mui/material";
 import { CheckCircle, HighlightOffOutlined } from "@mui/icons-material";
@@ -24,10 +25,7 @@ const SelectedUsers = () => {
   const { participants } = useSelector((state) => state.customApplication);
   return (
     <Grid
-      item
       container
-      xs={12}
-      sm={6}
       direction="column"
       classes={{
         root: classes.selected,

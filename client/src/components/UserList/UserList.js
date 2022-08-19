@@ -24,6 +24,7 @@ import {
   useGetUsersQuery,
 } from "../../features/user/usersApiSlice";
 import { useStyles, MenuProps } from "./styles";
+import { CustomAvatar } from "../../Custom";
 
 const UserList = () => {
   const dispatch = useDispatch();
@@ -50,10 +51,10 @@ const UserList = () => {
     dispatch(removeParticipants(mappedParticipant));
   };
   return (
-    <Grid item container xs={12} sm={6}>
+    <Grid container className={classes.userList}>
       {isLoading && (
         <Grid
-          container
+          item
           className={classes.notify}
           alignItems="center"
           justifyContent="flex-start"
@@ -129,13 +130,13 @@ const UserList = () => {
               return (
                 <MenuItem key={mappedUser._id} value={mappedUser._id}>
                   <ListItemAvatar>
-                    <Avatar
+                    <CustomAvatar
                       className={classes.circle}
                       alt={`${mappedUser.firstName} ${mappedUser.lastName}'s avatar`}
                       src={mappedUser.avatar}
                     >
                       {mappedUser.firstName.substring(0, 2).toUpperCase()}
-                    </Avatar>
+                    </CustomAvatar>
                   </ListItemAvatar>
                   <ListItemText
                     id={labelId}

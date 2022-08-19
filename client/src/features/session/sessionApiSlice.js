@@ -15,10 +15,14 @@ export const sessionApiSlice = apiSlice.injectEndpoints({
       transformResponse: (responseData) => {
         return sessionsAdapter.setAll(initialState, responseData);
       },
-      providesTags: (result, error, args) => [
-        { type: "Session", id: "LIST" },
-        ...result.ids.map((id) => ({ type: "Session", id })),
-      ],
+      providesTags: (result, error, arg) => {
+        if (result?.ids) {
+          return [
+            { type: "Session", id: "LIST" },
+            ...result.ids.map((id) => ({ type: "Session", id })),
+          ];
+        } else return [{ type: "Session", id: "LIST" }];
+      },
     }),
 
     createSession: builder.mutation({
@@ -35,7 +39,7 @@ export const sessionApiSlice = apiSlice.injectEndpoints({
     updateSession: builder.mutation({
       query: (session) => ({
         url: `/api/sessions/${session._id}`,
-        method: "PUT",
+        method: "PATCH",
         body: session,
       }),
       invalidatesTags: (result, error, arg) => [

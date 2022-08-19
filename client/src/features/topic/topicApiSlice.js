@@ -13,6 +13,14 @@ export const topicApiSlice = apiSlice.injectEndpoints({
     getTopics: builder.query({
       query: () => "/api/topics",
       transformResponse: (res) => topicsAdapter.setAll(initialState, res),
+      providesTags: (result, error, arg) => {
+        if (result?.ids) {
+          return [
+            { type: "Topic", id: "LIST" },
+            ...result.ids.map((id) => ({ type: "Topic", id })),
+          ];
+        } else return [{ type: "Topic", id: "LIST" }];
+      },
     }),
 
     listTopics: builder.query({
@@ -26,6 +34,7 @@ export const topicApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: topic,
       }),
+      invalidatesTags: [{ type: "Topic", id: "LIST" }],
     }),
 
     deleteTopic: builder.mutation({
@@ -34,6 +43,7 @@ export const topicApiSlice = apiSlice.injectEndpoints({
         method: "DELETE",
         body: { _id },
       }),
+      invalidatesTags: [{ type: "Topic", id: "LIST" }],
     }),
   }),
 });

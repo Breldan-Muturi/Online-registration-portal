@@ -38,7 +38,7 @@ const ProgramInfo = () => {
   const handleTopicsCourse = () => {};
   return (
     <>
-      <Grid item container direction="column" xs={12}>
+      <Grid item xs={12}>
         <Typography variant="h3">Program Information</Typography>
         <Typography>
           Choose one of the courses listed below or pick specific topics to be
@@ -122,41 +122,46 @@ const ProgramInfo = () => {
         </>
       )}
       <ProgramDates />
-      <Grid item xs={3} className={classes.select}>
-        <TextField
-          select
-          fullWidth
-          id="select-delievery-type"
-          label="Select Delivery Mode"
-          value={deliveryType}
-          onChange={(e) => dispatch(setDeliveryType(e.target.value))}
-          // helperText="Sdelivery"
-          variant="outlined"
-        >
-          {deliveryTypes.map((mappedDelivery) => (
-            <MenuItem key={mappedDelivery.value} value={mappedDelivery.value}>
-              {mappedDelivery.label}
-            </MenuItem>
-          ))}
-        </TextField>
-      </Grid>
-      <Grid item xs={3} className={classes.select}>
-        <TextField
-          select
-          fullWidth
-          id="select-venue"
-          label="Select Program Venue"
-          value={venue}
-          onChange={(e) => dispatch(setVenue(e.target.value))}
-          // helperText="Select in-house training venue"
-          variant="outlined"
-        >
-          {venues.map((mappedVenue) => (
-            <MenuItem key={mappedVenue.value} value={mappedVenue.value}>
-              {mappedVenue.label}
-            </MenuItem>
-          ))}
-        </TextField>
+      <Grid
+        container
+        direction="row"
+        spacing={3}
+        sx={{ width: "50%", marginTop: "16px" }}
+      >
+        <Grid item xs={6}>
+          <TextField
+            select
+            fullWidth
+            id="select-delievery-type"
+            label="Select Delivery Mode"
+            value={deliveryType}
+            onChange={(e) => dispatch(setDeliveryType(e.target.value))}
+            variant="outlined"
+          >
+            {deliveryTypes.map((mappedDelivery) => (
+              <MenuItem key={mappedDelivery.value} value={mappedDelivery.value}>
+                {mappedDelivery.label}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            select
+            fullWidth
+            id="select-venue"
+            label="Select Program Venue"
+            value={venue}
+            onChange={(e) => dispatch(setVenue(e.target.value))}
+            variant="outlined"
+          >
+            {venues.map((mappedVenue) => (
+              <MenuItem key={mappedVenue.value} value={mappedVenue.value}>
+                {mappedVenue.label}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Grid>
       </Grid>
     </>
   );

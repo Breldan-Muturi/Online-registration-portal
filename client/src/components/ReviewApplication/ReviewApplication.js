@@ -1,20 +1,19 @@
-import {
-  AppBar,
-  Backdrop,
-  Button,
-  Fade,
-  Grid,
-  Modal,
-  Typography,
-} from "@mui/material";
+import { AppBar, Button, Fade, Grid, Modal, Typography } from "@mui/material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useStyles from "./styles";
-import { toggleIsOpenReview } from "../../features/application/customApplicationSlice";
+import {
+  reset,
+  toggleIsOpenReview,
+} from "../../features/application/customApplicationSlice";
 import { selectUserById } from "../../features/user/usersApiSlice";
+import { useCreateApplicationMutation } from "../../features/application/applicationApiSlice";
+import { useNavigate } from "react-router-dom";
+import { selectCurrentUser } from "../../features/auth/authSlice";
 
 const ReviewApplication = () => {
   const classes = useStyles();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const {
     sponsorType,
@@ -28,26 +27,56 @@ const ReviewApplication = () => {
     sponsorContactEmail,
     sponsorLogo,
     courseId,
-    isTopics,
-    searchTopicsByCourse,
-    searchTopicsByTitle,
     selectedTopicIds,
     startDate,
     endDate,
     deliveryType,
     venue,
     participants,
-    isOnlyParticipant,
     isNewOrganization,
     isOpenReview,
   } = useSelector((state) => state.customApplication);
   const organizationContact = useSelector((state) =>
     selectUserById(state, sponsorOrganization?.admins[0])
   );
+  const user = useSelector(selectCurrentUser);
+  const createdBy = user.id;
+  const [createApplication, { isLoading, isSuccess, isError, error }] =
+    useCreateApplicationMutation();
 
-  const canSubmit = participants !== [];
+  const canSubmit = participants !== [] && !isLoading;
 
-  console.log(canSubmit);
+  const handleSubmitApplication = async () => {
+    await createApplication({
+      createdBy,
+      sponsorType,
+      sponsorOrganization,
+      sponsorName,
+      sponsorEmail,
+      sponsorPhoneNumber,
+      sponsorAddress,
+      sponsorCounty,
+      contactPerson: isNewOrganization
+        ? sponsorContactPerson
+        : `${organizationContact.firstName} ${organizationContact.lastName}`,
+      contactEmail: isNewOrganization
+        ? sponsorContactEmail
+        : `${organizationContact.email}`,
+      sponsorLogo,
+      courseId,
+      topics: selectedTopicIds,
+      startDate,
+      endDate,
+      delivery: deliveryType,
+      venue,
+      participants,
+    });
+    {
+      isSuccess && dispatch(toggleIsOpenReview());
+      dispatch(reset());
+      navigate("/applications");
+    }
+  };
 
   return (
     <Grid container spacing={2} justifyContent="center">
@@ -123,9 +152,23 @@ const ReviewApplication = () => {
                 Participants Count: <strong>{participants?.length}</strong>
               </Typography>
               <Grid item container justifyContent="center">
-                <Button color="primary" variant="contained">
-                  Submit this Application
-                </Button>
+                {(isLoading || isError) && (
+                  <Typography color={isLoading ? "primary" : "error"}>
+                    {isLoading
+                      ? "Submitting your application"
+                      : "There was an error submitting this application. Please refresh the page and try again"}
+                  </Typography>
+                )}
+                {(!isLoading || !isError) && (
+                  <Button
+                    disabled={!canSubmit}
+                    color="primary"
+                    variant="contained"
+                    onClick={handleSubmitApplication}
+                  >
+                    Submit this Application
+                  </Button>
+                )}
               </Grid>
             </Grid>
           </div>

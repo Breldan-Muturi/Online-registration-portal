@@ -20,14 +20,20 @@ import {
 import { setSponsorOrganization } from "../../features/application/customApplicationSlice";
 import { useStyles, MenuProps } from "./styles";
 import { CustomAvatar } from "../../Custom";
+import { selectCurrentToken } from "../../features/auth/authSlice";
 
 const OrganizationList = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const token = useSelector(selectCurrentToken);
   const { isLoading, isSuccess, isError, error } = useGetOrganizationsQuery();
   const organizations = useSelector(selectAllOrganizations);
   const { sponsorOrganization } = useSelector(
     (state) => state.customApplication
+  );
+  const success = [isSuccess, token, organizations.length].every(Boolean);
+  const noOrganizations = [isSuccess, token, !organizations.length].every(
+    Boolean
   );
   return (
     <Grid item container xs={12} sm={6}>
@@ -35,12 +41,11 @@ const OrganizationList = () => {
       <Typography>
         {isLoading && "Loading sponsor organizations ..."}
         {isError &&
-          `Something went wrong while fetching sponsor organizations <br /> ${error}`}
-        {isSuccess &&
-          organizations.length < 1 &&
+          `Something went wrong while fetching sponsor organizations <br /> ${error?.data}`}
+        {noOrganizations &&
           "There are no sponsor organizations for your application"}
       </Typography>
-      {isSuccess && organizations.length > 1 && (
+      {success && (
         <FormControl variant="outlined" fullWidth>
           <InputLabel
             htmlFor="select-application-sponsor-organization"

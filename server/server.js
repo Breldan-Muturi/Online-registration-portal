@@ -9,16 +9,16 @@ import { errorHandler } from "./middleware/errorMiddleware.js";
 import { credentials } from "./middleware/credentials.js";
 import { corsOptions } from "./config/corsOptions.js";
 import cors from "cors";
-import authRoute from "./routes/authRoute.js";
-import courseRoute from "./routes/courseRoute.js";
-import userRoute from "./routes/userRoute.js";
-import organizationRoute from "./routes/organizationRoute.js";
-import sessionRoute from "./routes/sessionRoute.js";
-import topicRoute from "./routes/topicRoute.js";
-import completionRoute from "./routes/completionRoute.js";
-import paymentRoute from "./routes/paymentRoute.js";
-import applicationRoute from "./routes/applicationRoute.js";
-import refreshRoute from "./routes/refresh.js";
+import auth from "./routes/auth.js";
+import course from "./routes/course.js";
+import user from "./routes/user.js";
+import organization from "./routes/organization.js";
+import session from "./routes/session.js";
+import topic from "./routes/topic.js";
+import completion from "./routes/completion.js";
+import payment from "./routes/payment.js";
+import application from "./routes/applications.js";
+import refresh from "./routes/refresh.js";
 import { verifyJWT } from "./middleware/verifyJWT.js";
 
 const app = express();
@@ -42,17 +42,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 //routes
-app.use("/api/auth", authRoute);
-app.use("/api/courses", courseRoute);
-app.use("/api/sessions", sessionRoute);
-app.use("/api/refresh", refreshRoute);
+app.use("/api/auth", auth);
+app.use("/api/courses", course);
+app.use("/api/sessions", session);
+app.use("/api/refresh", refresh);
 app.use(verifyJWT);
-app.use("/api/users", userRoute);
-app.use("/api/organizations", organizationRoute);
-app.use("/api/topics", topicRoute);
-app.use("/api/completions", completionRoute);
-app.use("/api/payments", paymentRoute);
-app.use("/api/applications", applicationRoute);
+app.use("/api/users", user);
+app.use("/api/organizations", organization);
+app.use("/api/topics", topic);
+app.use("/api/completions", completion);
+app.use("/api/payments", payment);
+app.use("/api/applications", application);
 
 app.use(errorHandler);
 

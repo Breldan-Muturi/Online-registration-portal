@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { RequireAuth, PersistentLogin } from "../containers";
+import { RequireAuth, PersistentLogin, Prefetch } from "../containers";
 import { Layout } from "../Layout";
 import {
   Applications,
@@ -19,23 +19,30 @@ const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<DashboardPage />} />
         <Route element={<PersistentLogin />}>
-          {/* Public Routes */}
-          {/* Protected Routes */}
-          <Route element={<RequireAuth />}>
-            <Route path="custom-application" element={<CustomApplication />} />
-            <Route path="applications" element={<Applications />} />
-            <Route path="payments" element={<Payments />} />
-            <Route path="organizations" element={<Organizations />} />
-            <Route path="new-organization" element={<OrganizationSettings />} />
-            <Route path="completed-courses" element={<CompletedCourses />} />
-            <Route path="my-profile" element={<MyProfile />} />
-            <Route path="course">
-              <Route index element={<CourseSettings />} />
-              <Route path=":courseId">
-                <Route index element={<SingleCourse />} />
-                {/* <Route path="summary" element={<SingleCourse />} />
+          <Route element={<Prefetch />}>
+            <Route index element={<DashboardPage />} />
+            {/* Public Routes */}
+            {/* Protected Routes */}
+            <Route element={<RequireAuth />}>
+              <Route
+                path="custom-application"
+                element={<CustomApplication />}
+              />
+              <Route path="applications" element={<Applications />} />
+              <Route path="payments" element={<Payments />} />
+              <Route path="organizations" element={<Organizations />} />
+              <Route
+                path="new-organization"
+                element={<OrganizationSettings />}
+              />
+              <Route path="completed-courses" element={<CompletedCourses />} />
+              <Route path="my-profile" element={<MyProfile />} />
+              <Route path="course">
+                <Route index element={<CourseSettings />} />
+                <Route path=":courseId">
+                  <Route index element={<SingleCourse />} />
+                  {/* <Route path="summary" element={<SingleCourse />} />
             <Route path="settings" element={<SingleCourse />} />
             <Route path="topics" element={<SingleCourse />} />
             <Route path="sessions">
@@ -43,6 +50,7 @@ const App = () => {
               <Route path=":sessionId" element={<SingleCourse />} />
             </Route>
             <Route path="applications" element={<SingleCourse />} /> */}
+                </Route>
               </Route>
             </Route>
           </Route>

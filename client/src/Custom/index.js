@@ -8,3 +8,5 @@ export { default as CourseToolbar } from "./CourseToolbar";
 export { default as TopicSubheader } from "./TopicSubheader";
 export { default as CenterList } from "./CenterList";
 export { default as FooterBar } from "./FooterBar";
+export { default as MainTableCell } from "./MainTableCell";
+export { default as InnerTableCell } from "./InnerTableCell";
