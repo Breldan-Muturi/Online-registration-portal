@@ -2,10 +2,10 @@ import asyncHandler from "express-async-handler";
 import Payment from "../../models/payment.js";
 
 export const createPayment = asyncHandler(async (req, res) => {
-  const { payee, amount, code, method, status, applicationId, attachments } =
+  const { payee, amount, code, method, applicationId, attachments } =
     await req.body;
 
-  if (!payee || !amount || !code || !method || !status || !applicationId) {
+  if (!payee || !amount || !code || !method || !applicationId) {
     res.status(400);
     throw new Error("Please add all required fields");
   }
@@ -15,7 +15,6 @@ export const createPayment = asyncHandler(async (req, res) => {
     amount,
     code,
     method,
-    status,
     applicationId,
     attachments,
   });

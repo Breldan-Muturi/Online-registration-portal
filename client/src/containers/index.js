@@ -7,3 +7,4 @@ export { default as SessionList } from "./SessionList/SessionList";
 export { default as SessionModal } from "./SessionModal/SessionModal";
 export { default as TopicList } from "./TopicList/TopicList";
 export { default as TopicModal } from "./TopicModal/TopicModal";
+export { default as PaymentForm } from "./PaymentForm/PaymentForm";

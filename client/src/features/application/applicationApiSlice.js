@@ -44,7 +44,9 @@ export const applicationApiSlice = apiSlice.injectEndpoints({
         method: "PATCH",
         body: application,
       }),
-      invalidatesTags: [{ type: "Application", id: "LIST" }],
+      invalidatesTags: (result, error, arg) => [
+        { type: "Application", id: arg.id },
+      ],
     }),
   }),
 });

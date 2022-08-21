@@ -131,6 +131,7 @@ const UserList = () => {
                 <MenuItem key={mappedUser._id} value={mappedUser._id}>
                   <ListItemAvatar>
                     <CustomAvatar
+                      sizes="small"
                       className={classes.circle}
                       alt={`${mappedUser.firstName} ${mappedUser.lastName}'s avatar`}
                       src={mappedUser.avatar}

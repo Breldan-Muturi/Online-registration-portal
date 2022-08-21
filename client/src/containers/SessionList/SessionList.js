@@ -4,7 +4,7 @@ import { CircularProgress, Typography, Grid, Box } from "@mui/material";
 import { SessionItem } from "../../components";
 import { SessionModal } from "..";
 import useStyles from "./styles";
-import Pagination from "@mui/lab/Pagination";
+import Pagination from "@mui/material/Pagination";
 import { useParams } from "react-router-dom";
 import {
   useGetSessionsQuery,

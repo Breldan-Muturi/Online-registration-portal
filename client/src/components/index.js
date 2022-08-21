@@ -16,3 +16,5 @@ export { default as SelectedTopics } from "./TopicDnD/SelectedTopics";
 export { default as ApplicationRow } from "./ApplicationRow/ApplicationRow";
 export { default as ApplicationCollapse } from "./ApplicationCollapse/ApplicationCollapse";
 export { default as ApplicationApprove } from "./ApplicationApprove/ApplicationApprove";
+export { default as AttachmentList } from "./AttachmentList/AttachmentList";
+export { default as PaymentsList } from "./PaymentsList/PaymentsList";

@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { CircularProgress, Typography, Grid, Box } from "@mui/material";
 import { CourseItem } from "../../components";
 import useStyles from "./styles";
-import Pagination from "@mui/lab/Pagination";
+import Pagination from "@mui/material/Pagination";
 import {
   useGetCoursesQuery,
   selectCourseIds,

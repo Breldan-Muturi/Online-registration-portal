@@ -19,8 +19,8 @@ const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route element={<PersistentLogin />}>
-          <Route element={<Prefetch />}>
+        <Route element={<Prefetch />}>
+          <Route element={<PersistentLogin />}>
             <Route index element={<DashboardPage />} />
             {/* Public Routes */}
             {/* Protected Routes */}
@@ -43,13 +43,13 @@ const App = () => {
                 <Route path=":courseId">
                   <Route index element={<SingleCourse />} />
                   {/* <Route path="summary" element={<SingleCourse />} />
-            <Route path="settings" element={<SingleCourse />} />
-            <Route path="topics" element={<SingleCourse />} />
-            <Route path="sessions">
-              <Route index element={<SingleCourse />} />
-              <Route path=":sessionId" element={<SingleCourse />} />
-            </Route>
-            <Route path="applications" element={<SingleCourse />} /> */}
+                    <Route path="settings" element={<SingleCourse />} />
+                    <Route path="topics" element={<SingleCourse />} />
+                    <Route path="sessions">
+                      <Route index element={<SingleCourse />} />
+                      <Route path=":sessionId" element={<SingleCourse />} />
+                    </Route>
+                    <Route path="applications" element={<SingleCourse />} /> */}
                 </Route>
               </Route>
             </Route>

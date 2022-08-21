@@ -17,7 +17,7 @@ import {
 } from "../../features/topic/topicApiSlice";
 import TopicModal from "../TopicModal/TopicModal";
 import useStyles from "./styles";
-import { TopicSubheader, CenterList } from "../../Custom";
+import { Subheader, CenterList } from "../../Custom";
 
 const TopicList = ({ courseId }) => {
   const classes = useStyles();
@@ -48,9 +48,9 @@ const TopicList = ({ courseId }) => {
                 spacing={3}
                 aria-labelledby={`${course.title} Course Topics`}
                 subheader={
-                  <TopicSubheader component="h3" id="topics-list-subheader">
+                  <Subheader component="h3" id="topics-list-subheader">
                     {`Topics covered under ${course.title}`}
-                  </TopicSubheader>
+                  </Subheader>
                 }
               >
                 {topics

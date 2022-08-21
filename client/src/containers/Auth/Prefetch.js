@@ -12,7 +12,6 @@ import { selectCurrentToken } from "../../features/auth/authSlice";
 const Prefetch = () => {
   const token = useSelector(selectCurrentToken);
   useEffect(() => {
-    console.log("subscribing");
     const courses = store.dispatch(
       courseApiSlice.endpoints.getCourses.initiate()
     );
@@ -28,14 +27,15 @@ const Prefetch = () => {
       store.dispatch(applicationApiSlice.endpoints.getApplications.initiate());
 
     return () => {
-      console.log("unsubscribing");
       courses.unsubscribe();
       sessions.unsubscribe();
-      topics.unsubscribe();
-      users.unsubscribe();
-      applications.unsubscribe();
+      if (token) {
+        topics.unsubscribe();
+        users.unsubscribe();
+        applications.unsubscribe();
+      }
     };
-  }, [token]);
+  }, []);
 
   return <Outlet />;
 };

@@ -31,33 +31,21 @@ const Applications = () => {
     isSuccess: isApplicationsSuccess,
     isError: isApplicationsError,
     error: errorApplications,
-  } = useGetApplicationsQuery(undefined, {
-    pollingInterval: 15000,
-    refetchOnFocus: true,
-    refetchOnMountOrArgChange: true,
-  });
+  } = useGetApplicationsQuery();
 
   const {
     isLoading: isUsersLoading,
     isSuccess: isUsersSuccess,
     isError: isUsersError,
     error: errorUsers,
-  } = useGetUsersQuery(undefined, {
-    pollingInterval: 15000,
-    refetchOnFocus: true,
-    refetchOnMountOrArgChange: true,
-  });
+  } = useGetUsersQuery();
 
   const {
     isLoading: isCoursesLoading,
     isSuccess: isCoursesSuccess,
     isError: isCoursesError,
     error: errorCourses,
-  } = useGetCoursesQuery(undefined, {
-    pollingInterval: 15000,
-    refetchOnFocus: true,
-    refetchOnMountOrArgChange: true,
-  });
+  } = useGetCoursesQuery();
 
   const success = [
     isApplicationsSuccess,
@@ -150,7 +138,10 @@ const Applications = () => {
           <TablePagination
             style={{
               borderTop: "solid 1px rgb(224, 224, 224)",
+              minHeight: dense && "30px",
             }}
+            showFirstButton
+            showLastButton
             rowsPerPageOptions={[5, 10, 20]}
             component="div"
             count={ids.length}

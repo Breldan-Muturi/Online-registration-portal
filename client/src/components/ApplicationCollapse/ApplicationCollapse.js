@@ -5,6 +5,8 @@ import Typography from "@mui/material/Typography";
 import ApplicationApprove from "../ApplicationApprove/ApplicationApprove";
 import { useSelector } from "react-redux";
 import { selectApplicationsById } from "../../features/application/applicationApiSlice";
+import { PaymentsList } from "..";
+import { PaymentForm } from "../../containers";
 
 const ApplicationCollapse = ({ applicationId }) => {
   const { selected, dense } = useSelector((state) => state.applicationTable);
@@ -23,10 +25,9 @@ const ApplicationCollapse = ({ applicationId }) => {
           </Stack>
         )}
         {application.status === "Approved" && (
-          <Stack direction="row" spacing={3} alignItems="center">
-            <Typography color="primary" variant={dense ? "body2" : "body1"}>
-              Submit a payment for this application.
-            </Typography>
+          <Stack direction="row" spacing={1} p={2} alignItems="flex-start">
+            <PaymentForm applicationId={applicationId} />
+            <PaymentsList applicationId={applicationId} />
           </Stack>
         )}
       </Box>

@@ -20,7 +20,7 @@ import {
   selectAllOrganizations,
   useGetOrganizationsQuery,
 } from "../../features/organization/organizationApiSlice";
-import { CenterList, CustomAvatar, TopicSubheader } from "../../Custom";
+import { CenterList, CustomAvatar, Subheader } from "../../Custom";
 
 const Organizations = () => {
   const classes = useStyles();
@@ -37,9 +37,9 @@ const Organizations = () => {
             spacing={3}
             aria-labelledby="My organizations"
             subheader={
-              <TopicSubheader component="h3" id="my-organizations">
+              <Subheader component="h3" id="my-organizations">
                 My Organizations
-              </TopicSubheader>
+              </Subheader>
             }
           >
             {organizations
