@@ -16,6 +16,7 @@ import {
   removePaymentAttachment,
   addPaymentAttachment,
 } from "../../features/payment/paymentFormSlice";
+import FileBase from "react-file-base64";
 
 const AttachmentList = () => {
   const dispatch = useDispatch();

@@ -18,13 +18,17 @@ const SessionItem = ({ session }) => {
   const course = useSelector((state) =>
     selectCourseById(state, session.courseId)
   );
-  Number.prototype.format = function () {
-    return this.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-  };
+
   const options = { year: "numeric", month: "short", day: "numeric" };
   const startDate = new Date(session.startDate).toDateString("en-us", options);
   const endDate = new Date(session.endDate).toDateString("en-us", options);
   const title = `${startDate} to ${endDate}`;
+  const onPremisesFee = session.onPremisesFee
+    .toString()
+    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+  const onlineFee = session.onlineFee
+    .toString()
+    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 
   return (
     <Card className={classes.card}>
@@ -35,7 +39,7 @@ const SessionItem = ({ session }) => {
           {course?.title}
         </Typography>
         <Typography>
-          On Premises Fee: <b>Ksh {session.onPremisesFee.format()}</b>
+          On Premises Fee: <b>Ksh {onPremisesFee}</b>
         </Typography>
         <Typography>
           Session venue: <b>{session.venue}</b>
@@ -48,7 +52,7 @@ const SessionItem = ({ session }) => {
           </b>
         </Typography>
         <Typography>
-          Online Fee: <b>Ksh {session.onlineFee.format()}</b>
+          Online Fee: <b>Ksh {onlineFee}</b>
         </Typography>
         <Typography>
           Online Slots:{" "}

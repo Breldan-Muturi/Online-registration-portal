@@ -37,6 +37,7 @@ app.use(cors(corsOptions));
 
 //built-in middleware to handle urlencoded form data
 app.use(express.urlencoded({ extended: false }));
+app.use("/uploads", express.static("uploads"));
 
 //middleware for cookies
 app.use(cookieParser());
@@ -45,14 +46,14 @@ app.use(cookieParser());
 app.use("/api/auth", auth);
 app.use("/api/courses", course);
 app.use("/api/sessions", session);
-app.use("/api/refresh", refresh);
-app.use(verifyJWT);
 app.use("/api/users", user);
 app.use("/api/organizations", organization);
 app.use("/api/topics", topic);
 app.use("/api/completions", completion);
 app.use("/api/payments", payment);
 app.use("/api/applications", application);
+app.use("/api/refresh", refresh);
+app.use(verifyJWT);
 
 app.use(errorHandler);
 

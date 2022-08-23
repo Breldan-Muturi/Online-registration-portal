@@ -1,34 +1,40 @@
 import mongoose from "mongoose";
 
-const completionSchema = mongoose.Schema({
+const completionSchema = mongoose.Schema(
+  {
     date: {
-        type: Date,
-        required: [true, 'Please add a date'],
+      type: Date,
+      required: [true, "Please add a date"],
     },
     courseId: {
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: 'Course',
-        required: [true, 'Please add a parent course'],
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "Course",
+      required: [true, "Please add a parent course"],
     },
     participant: {
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: 'User',
-        required: [true, 'Please add a participant'],
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "User",
+      required: [true, "Please add a participant"],
     },
     createdBy: {
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: 'User',
-        required: [true, 'Please add a creator'],
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "User",
+      required: [true, "Please add a creator"],
     },
     status: {
-        type: String,
-        required: [true, 'Please add a creator'],
-        default: 'Pending',
+      type: String,
+      required: [true, "Please add a creator"],
+      default: "Pending",
     },
-    evidence: {
-        type: [String],
-        required: [true, 'Please add a creator'],
-    }
-}, {timestamps: true})
+    evidence: [
+      {
+        path: String,
+        name: String,
+        size: String,
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
-export default mongoose.model('Completion', completionSchema);
+export default mongoose.model("Completion", completionSchema);

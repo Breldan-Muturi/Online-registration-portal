@@ -30,7 +30,13 @@ const paymentSchema = mongoose.Schema(
     },
     approvedBy: String,
     approvalMessage: String,
-    attachments: { type: [String] },
+    attachments: [
+      {
+        path: String,
+        name: String,
+        size: String,
+      },
+    ],
     receiptNo: String,
     receiptDate: Date,
   },

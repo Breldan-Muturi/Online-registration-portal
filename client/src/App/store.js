@@ -9,6 +9,7 @@ import sessionReducer from "../features/session/sessionSlice";
 import topicReducer from "../features/topic/topicSlice";
 import applicationTableReducer from "../features/application/applicationTableSlice";
 import paymentFormReducer from "../features/payment/paymentFormSlice";
+import paymentListReducer from "../features/payment/paymentListSlice";
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
     customApplication: customApplicationReducer,
     applicationTable: applicationTableReducer,
     paymentForm: paymentFormReducer,
+    paymentList: paymentListReducer,
     side: sideReducer,
     session: sessionReducer,
     organization: organizationReducer,

@@ -2,7 +2,6 @@ import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 import { apiSlice } from "../api/apiSlice";
 
 const topicsAdapter = createEntityAdapter({
-  selectId: (topic) => topic._id,
   sortComparer: (a, b) => a.createdAt.localeCompare(b.createdAt),
 });
 
@@ -12,7 +11,16 @@ export const topicApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getTopics: builder.query({
       query: () => "/api/topics",
-      transformResponse: (res) => topicsAdapter.setAll(initialState, res),
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
+      transformResponse: (responseData) => {
+        const loadedTopics = responseData.map((mappedTopic) => {
+          mappedTopic.id = mappedTopic._id;
+          return mappedTopic;
+        });
+        return topicsAdapter.setAll(initialState, loadedTopics);
+      },
       providesTags: (result, error, arg) => {
         if (result?.ids) {
           return [
@@ -20,6 +28,28 @@ export const topicApiSlice = apiSlice.injectEndpoints({
             ...result.ids.map((id) => ({ type: "Topic", id })),
           ];
         } else return [{ type: "Topic", id: "LIST" }];
+      },
+    }),
+
+    getTopicsByCourseId: builder.query({
+      query: (courseId) => `/api/topics/course/${courseId}`,
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
+      transformResponse: (responseData) => {
+        const loadedTopicsByCourseId = responseData.map((mappedTopic) => {
+          mappedTopic.id = mappedTopic._id;
+          return mappedTopic;
+        });
+        return topicsAdapter.setAll(initialState, loadedTopicsByCourseId);
+      },
+      providesTags: (result, error, arg) => {
+        if (result?.ids) {
+          return [
+            { type: "Topic", id: "PARTIAL-LIST" },
+            ...result.ids.map((id) => ({ type: "Topic", id })),
+          ];
+        } else return [{ type: "Topic", id: "PARTIAL-LIST" }];
       },
     }),
 
@@ -50,6 +80,7 @@ export const topicApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetTopicsQuery,
+  useGetTopicsByCourseIdQuery,
   useListTopicsQuery,
   useCreateTopicMutation,
   useDeleteTopicMutation,

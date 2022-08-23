@@ -10,10 +10,8 @@ export const updateCourse = asyncHandler(async (req, res) => {
 
   const updatedCourse = await Course.findByIdAndUpdate(
     req.params.id,
-    req.body,
-    {
-      new: true,
-    }
+    { ...req.body, courseImage: req.file.path },
+    { new: true }
   );
   res.status(200).json(updatedCourse);
 });

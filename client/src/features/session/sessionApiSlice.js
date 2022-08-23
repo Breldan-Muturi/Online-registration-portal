@@ -2,7 +2,6 @@ import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 import { apiSlice } from "../api/apiSlice";
 
 const sessionsAdapter = createEntityAdapter({
-  selectId: (session) => session._id,
   sortComparer: (a, b) => b.startDate.localeCompare(a.startDate),
 });
 
@@ -12,8 +11,15 @@ export const sessionApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getSessions: builder.query({
       query: () => "/api/sessions",
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
       transformResponse: (responseData) => {
-        return sessionsAdapter.setAll(initialState, responseData);
+        const loadedSessions = responseData.map((mappedSession) => {
+          mappedSession.id = mappedSession._id;
+          return mappedSession;
+        });
+        return sessionsAdapter.setAll(initialState, loadedSessions);
       },
       providesTags: (result, error, arg) => {
         if (result?.ids) {
@@ -22,6 +28,28 @@ export const sessionApiSlice = apiSlice.injectEndpoints({
             ...result.ids.map((id) => ({ type: "Session", id })),
           ];
         } else return [{ type: "Session", id: "LIST" }];
+      },
+    }),
+
+    getSessionsByCourseId: builder.query({
+      query: (courseId) => `/api/sessions/course/${courseId}`,
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
+      transformResponse: (responseData) => {
+        const loadedSessionsByCourseId = responseData.map((mappedSession) => {
+          mappedSession.id = mappedSession._id;
+          return mappedSession;
+        });
+        return sessionsAdapter.setAll(initialState, loadedSessionsByCourseId);
+      },
+      providesTags: (result, error, arg) => {
+        if (result?.ids) {
+          return [
+            { type: "Session", id: "PARTIAL-LIST" },
+            ...result.ids.map((id) => ({ type: "Session", id })),
+          ];
+        } else return [{ type: "Session", id: "PARTIAL-LIST" }];
       },
     }),
 
@@ -62,6 +90,7 @@ export const sessionApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetSessionsQuery,
+  useGetSessionsByCourseIdQuery,
   useCreateSessionMutation,
   useUpdateSessionMutation,
   useDeleteSessionMutation,
