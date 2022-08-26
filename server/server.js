@@ -35,9 +35,9 @@ app.use(credentials);
 //Cross Origin Resource Sharing
 app.use(cors(corsOptions));
 
-//built-in middleware to handle urlencoded form data
-app.use(express.urlencoded({ extended: false }));
 app.use("/uploads", express.static("uploads"));
+//built-in middleware to handle urlencoded form data
+app.use(express.urlencoded({ extended: true }));
 
 //middleware for cookies
 app.use(cookieParser());

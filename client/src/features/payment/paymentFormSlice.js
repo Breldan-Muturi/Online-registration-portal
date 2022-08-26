@@ -20,28 +20,11 @@ export const paymentFormSlice = createSlice({
     setPaymentCode: (state, action) => {
       state.paymentCode = action.payload;
     },
-    addPaymentAttachment: (state, action) => {
-      state.paymentAttachments = state.paymentAttachments.concat(
-        action.payload
-      );
-    },
-    removePaymentAttachment: (state, action) => {
-      const { url } = action.payload;
-      state.paymentAttachments = state.paymentAttachments.filter(
-        (filteredAttachment) => filteredAttachment.url !== url
-      );
-    },
     reset: () => initialState,
   },
 });
 
-export const {
-  setPaymentMethod,
-  setPaymentAmount,
-  setPaymentCode,
-  addPaymentAttachment,
-  removePaymentAttachment,
-  reset,
-} = paymentFormSlice.actions;
+export const { setPaymentMethod, setPaymentAmount, setPaymentCode, reset } =
+  paymentFormSlice.actions;
 
 export default paymentFormSlice.reducer;

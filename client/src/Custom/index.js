@@ -11,3 +11,4 @@ export { default as FooterBar } from "./FooterBar";
 export { default as MainTableCell } from "./MainTableCell";
 export { default as InnerTableCell } from "./InnerTableCell";
 export { default as UploadPreview } from "./UploadPreview";
+export { default as ExpandIconCustom } from "./ExpandIconCustom";

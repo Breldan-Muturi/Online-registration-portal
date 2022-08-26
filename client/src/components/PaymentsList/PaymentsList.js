@@ -8,11 +8,10 @@ import Divider from "@mui/material/Divider";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
-import IconButton from "@mui/material/IconButton";
+import ExpandMoreOutlined from "@mui/icons-material/ExpandMoreOutlined";
 import Tooltip from "@mui/material/Tooltip";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LaunchIcon from "@mui/icons-material/Launch";
-import Subheader from "../../Custom/Subheader";
 import { useGetPaymentsByApplicationQuery } from "../../features/payment/paymentApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -21,14 +20,17 @@ import {
   expandPayment,
 } from "../../features/payment/paymentListSlice";
 import { Typography } from "@mui/material";
+import { ExpandIconCustom } from "../../Custom";
+import { SubmittedAttachments } from "..";
 
 const PaymentsList = ({ applicationId }) => {
   const dispatch = useDispatch();
   const { dense } = useSelector((state) => state.applicationTable);
   const { data: payments, isSuccess } =
     useGetPaymentsByApplicationQuery(applicationId);
-  const { selectedApplication, selectedPayments, expandedPayment } =
-    useSelector((state) => state.paymentList);
+  const { selectedPayments, expandedPayment } = useSelector(
+    (state) => state.paymentList
+  );
   let content;
 
   if (isSuccess && payments.length) {
@@ -47,7 +49,7 @@ const PaymentsList = ({ applicationId }) => {
               }}
             >
               <Button
-                disabled={selectedPayments.length}
+                disabled={selectedPayments.length > 0}
                 color="inherit"
                 size="small"
               >
@@ -83,7 +85,44 @@ const PaymentsList = ({ applicationId }) => {
           } payment of Ksh ${amount}`;
           return (
             <React.Fragment key={mappedPayment._id}>
-              <ListItem>
+              <ListItem
+                secondaryAction={
+                  mappedPayment.attachments.length > 0 && (
+                    <Tooltip
+                      arrow
+                      title={
+                        expandedPayment === mappedPayment._id
+                          ? "Collapse Attachments"
+                          : "Expand to inspect attachments"
+                      }
+                    >
+                      <ExpandIconCustom
+                        edge="end"
+                        color="primary"
+                        size={dense ? "small" : "medium"}
+                        expanded={expandedPayment === mappedPayment._id}
+                        aria-expanded={expandedPayment === mappedPayment._id}
+                        aria-label={
+                          expandedPayment === mappedPayment._id
+                            ? "Hide application attachments"
+                            : "View application attachments"
+                        }
+                        onClick={() =>
+                          dispatch(
+                            expandPayment(
+                              expandedPayment === mappedPayment._id
+                                ? ""
+                                : mappedPayment._id
+                            )
+                          )
+                        }
+                      >
+                        <ExpandMoreOutlined />
+                      </ExpandIconCustom>
+                    </Tooltip>
+                  )
+                }
+              >
                 <ListItemIcon
                   onClick={() => {
                     dispatch(togglePayment(mappedPayment._id));
@@ -100,16 +139,38 @@ const PaymentsList = ({ applicationId }) => {
                   />
                 </ListItemIcon>
                 <ListItemText
+                  disableTypography
                   primary={`Ksh ${amount} - ${mappedPayment.method}`}
-                  secondary={mappedPayment.status}
-                  secondaryTypographyProps={{
-                    color:
-                      (mappedPayment.status === "Approved" && "primary") ||
-                      (mappedPayment.status === "Rejected" && "error"),
-                  }}
+                  secondary={
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      mr={2}
+                    >
+                      <Typography
+                        variant="body2"
+                        color={
+                          (mappedPayment.status === "Rejected" && "error") ||
+                          (mappedPayment.status === "Approved" && "primary")
+                        }
+                      >
+                        {mappedPayment.status}
+                      </Typography>
+                      {mappedPayment.attachments.length > 0 && (
+                        <Typography variant="body2">{`${
+                          mappedPayment.attachments.length
+                        } Attachment${
+                          mappedPayment.attachments.length > 1 && "s"
+                        }`}</Typography>
+                      )}
+                    </Stack>
+                  }
                 />
               </ListItem>
-              <Divider component="li" />
+              <SubmittedAttachments payment={mappedPayment} />
+              {expandedPayment !== mappedPayment._id && (
+                <Divider component="li" />
+              )}
             </React.Fragment>
           );
         })}

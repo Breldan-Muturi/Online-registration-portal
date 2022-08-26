@@ -1,19 +1,9 @@
-import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import Pagination from "@mui/material/Pagination";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
-import UploadFileIcon from "@mui/icons-material/UploadFile";
-import DeleteIcon from "@mui/icons-material/Delete";
-import LaunchIcon from "@mui/icons-material/Launch";
 import { paymentMethods } from "../../helpers";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -25,38 +15,39 @@ import {
 import { useCreatePaymentMutation } from "../../features/payment/paymentApiSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 import { AttachmentList } from "../../components";
+import { useState } from "react";
 
 const PaymentForm = ({ applicationId }) => {
   const dispatch = useDispatch();
   const user = useSelector(selectCurrentUser);
   const dense = useSelector((state) => state.applicationTable.dense);
-  const { paymentMethod, paymentCode, paymentAmount, paymentAttachments } =
-    useSelector((state) => state.paymentForm);
-
+  const { paymentMethod, paymentCode, paymentAmount } = useSelector(
+    (state) => state.paymentForm
+  );
+  const [attachments, setAttachments] = useState([]);
   const [createPayment, { isSuccess }] = useCreatePaymentMutation();
-  const handlePaymentSubmit = async () => {
-    await createPayment({
-      payee: user.id,
-      amount: paymentAmount,
-      code: paymentCode,
-      method: paymentMethod,
-      applicationId,
-      attachments: paymentAttachments,
-    });
-  };
 
-  useEffect(() => {
-    if (isSuccess) {
-      dispatch(reset());
+  const handlePaymentSubmit = async (e) => {
+    e.preventDefault();
+    let payment = new FormData();
+    payment.append("payee", user.id);
+    payment.append("amount", paymentAmount);
+    payment.append("code", paymentCode);
+    payment.append("method", paymentMethod);
+    payment.append("applicationId", applicationId);
+    payment.append("attachments", attachments);
+    await createPayment(payment);
+    {
+      isSuccess && dispatch(reset());
     }
-  }, [isSuccess, dispatch]);
+  };
 
   return (
     <Box
       sx={{
         backgroundColor: "#fff",
         borderRadius: "4px",
-        minWidth: "500px",
+        minWidth: "400px",
       }}
       onSubmit={handlePaymentSubmit}
       component="form"
@@ -108,7 +99,10 @@ const PaymentForm = ({ applicationId }) => {
           helperText="The transaction code for this payment."
           onChange={(e) => dispatch(setPaymentCode(e.target.value))}
         />
-        <AttachmentList />
+        <AttachmentList
+          attachments={attachments}
+          setAttachments={setAttachments}
+        />
         <Button type="submit" variant="contained" color="primary" fullWidth>
           Submit Payment Information
         </Button>

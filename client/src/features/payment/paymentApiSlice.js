@@ -34,12 +34,18 @@ export const paymentsApiSlice = apiSlice.injectEndpoints({
     }),
     getPaymentsByApplication: builder.query({
       query: (applicationId) => `/api/payments/application/${applicationId}`,
+      validateStatus: (response, result) => {
+        return response.status === 200 && !result.isError;
+      },
     }),
     createPayment: builder.mutation({
       query: (payment) => ({
         url: "/api/payments/",
         method: "POST",
         body: payment,
+        headers: {
+          "Content-Type": "multipart/form-data;",
+        },
       }),
       invalidatesTags: [{ type: "Payment", id: "LIST" }],
     }),

@@ -10,47 +10,33 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import LaunchIcon from "@mui/icons-material/Launch";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import Button from "@mui/material/Button";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { UploadPreview } from "../../Custom";
-import {
-  removePaymentAttachment,
-  addPaymentAttachment,
-} from "../../features/payment/paymentFormSlice";
-import FileBase from "react-file-base64";
 
-const AttachmentList = () => {
-  const dispatch = useDispatch();
+const AttachmentList = ({ attachments, setAttachments }) => {
+  const files = Array.from(attachments);
   const { dense } = useSelector((state) => state.applicationTable);
-  const { paymentAttachments } = useSelector((state) => state.paymentForm);
   const [paymentPage, setPaymentPage] = useState(1);
 
-  const handleImageUpload = (e) => {
-    [...e.target.files].forEach((file) => {
-      const object = {
-        name: file.name,
-        size: file.size,
-      };
-      dispatch(
-        addPaymentAttachment({
-          data: JSON.stringify(object),
-          url: URL.createObjectURL(file),
-        })
-      );
-      setPaymentPage(paymentAttachments.length / 3);
-    });
+  const handleImageUpload = async (e) => {
+    await setAttachments(e.target.files);
+    setPaymentPage(files.length / 3);
   };
 
   let content;
 
-  if (paymentAttachments.length > 0) {
+  if (files.length) {
     content = (
       <>
         <List dense={dense}>
-          {paymentAttachments
+          {files
             .slice((paymentPage - 1) * 3, (paymentPage - 1) * 3 + 3)
             .map((mappedAttachment, index) => {
-              const { data, url } = mappedAttachment;
-              const file = JSON.parse(data);
+              const file = {
+                name: mappedAttachment.name,
+                size: mappedAttachment.size,
+              };
+              const url = URL.createObjectURL(mappedAttachment);
               return (
                 <React.Fragment key={index}>
                   <ListItem
@@ -58,6 +44,9 @@ const AttachmentList = () => {
                       <>
                         <Tooltip arrow title="Inspect Attachment">
                           <IconButton
+                            component="a"
+                            href={url}
+                            target="_blank"
                             edge="end"
                             color="primary"
                             aria-labelledby="inspect-attachment"
@@ -71,10 +60,12 @@ const AttachmentList = () => {
                             color="error"
                             aria-labelledby="delete-attachment"
                             onClick={() => {
-                              dispatch(
-                                removePaymentAttachment(mappedAttachment)
+                              setAttachments(
+                                files.filter(
+                                  (file) => file !== mappedAttachment
+                                )
                               );
-                              setPaymentPage(paymentAttachments.length / 3);
+                              setPaymentPage(files.length / 3);
                             }}
                           >
                             <DeleteIcon />
@@ -107,7 +98,7 @@ const AttachmentList = () => {
             })}
         </List>
         <Pagination
-          count={Math.ceil(paymentAttachments.length / 3)}
+          count={Math.ceil(files.length / 3)}
           onChange={(_, value) => setPaymentPage(value)}
         />
       </>

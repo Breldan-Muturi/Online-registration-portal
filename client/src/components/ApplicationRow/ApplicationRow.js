@@ -1,25 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import clsx from "clsx";
 import { selectApplicationsById } from "../../features/application/applicationApiSlice";
 import { selectCourseById } from "../../features/course/courseApiSlice";
 import { applicationColumns } from "../../helpers";
 import { selectUserById } from "../../features/user/usersApiSlice";
 import { CustomAvatar } from "../../Custom";
 import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
-import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import ExpandMoreOutlined from "@mui/icons-material/ExpandMoreOutlined";
-import useStyles from "./styles";
 import ApplicationCollapse from "../ApplicationCollapse/ApplicationCollapse";
-import { MainTableCell, InnerTableCell } from "../../Custom";
+import { MainTableCell, InnerTableCell, ExpandIconCustom } from "../../Custom";
 import { setSelected } from "../../features/application/applicationTableSlice";
 
 const ApplicationRow = ({ applicationId }) => {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const { dense, selected } = useSelector((state) => state.applicationTable);
   const application = useSelector((state) =>
@@ -47,7 +42,7 @@ const ApplicationRow = ({ applicationId }) => {
                     : "Expand row to inspect"
                 }
               >
-                <IconButton
+                <ExpandIconCustom
                   color="primary"
                   aria-label={
                     selected === applicationId
@@ -55,9 +50,7 @@ const ApplicationRow = ({ applicationId }) => {
                       : "expand row to inspect"
                   }
                   size={dense ? "small" : "medium"}
-                  className={clsx(classes.expand, {
-                    [classes.expandOpen]: selected === applicationId,
-                  })}
+                  expanded={selected === applicationId}
                   aria-expanded={selected === applicationId}
                   onClick={() =>
                     dispatch(
@@ -68,7 +61,7 @@ const ApplicationRow = ({ applicationId }) => {
                   }
                 >
                   <ExpandMoreOutlined />
-                </IconButton>
+                </ExpandIconCustom>
               </Tooltip>
             );
           }

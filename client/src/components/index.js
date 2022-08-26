@@ -17,4 +17,5 @@ export { default as ApplicationRow } from "./ApplicationRow/ApplicationRow";
 export { default as ApplicationCollapse } from "./ApplicationCollapse/ApplicationCollapse";
 export { default as ApplicationApprove } from "./ApplicationApprove/ApplicationApprove";
 export { default as AttachmentList } from "./AttachmentList/AttachmentList";
+export { default as SubmittedAttachments } from "./SubmittedAttachments/SubmittedAttachments";
 export { default as PaymentsList } from "./PaymentsList/PaymentsList";

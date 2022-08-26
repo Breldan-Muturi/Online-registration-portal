@@ -49,6 +49,9 @@ export const courseApiSlice = apiSlice.injectEndpoints({
         url: `/api/courses/${course._id}`,
         method: "PATCH",
         body: course,
+        headers: {
+          "Content-Type": "multipart/form-data;",
+        },
       }),
       invalidatesTags: (result, error, arg) => [{ type: "Course", id: arg.id }],
     }),

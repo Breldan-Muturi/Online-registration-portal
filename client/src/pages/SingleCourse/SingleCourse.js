@@ -11,6 +11,7 @@ import {
 import CourseSettings from "../CourseSettings/CourseSettings";
 import { useStyles } from "./styles";
 import { CourseToolbar, StyledTab } from "../../Custom/index";
+import { Applications } from "../";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -102,7 +103,7 @@ const SingleCourse = () => {
             <SessionList />
           </TabPanel>
           <TabPanel className={classes.panel} value={value} index={4}>
-            <Typography>Applications coming soon</Typography>
+            <Applications />
           </TabPanel>
         </>
       )}

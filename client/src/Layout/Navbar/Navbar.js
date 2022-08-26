@@ -30,8 +30,10 @@ const Navbar = () => {
             <Tabs value={false} className={classes.tabs}>
               {navItems.map((item) => (
                 <StyledTab
+                  component="a"
                   key={item.label}
-                  to={item.path}
+                  href={item.path}
+                  target="_blank"
                   label={item.label}
                   classes={{ root: classes.tab }}
                   className={classes.tab}

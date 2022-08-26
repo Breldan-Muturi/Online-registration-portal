@@ -52,6 +52,7 @@ const Applications = () => {
     isUsersSuccess,
     isCoursesSuccess,
   ].every(Boolean);
+
   const loading = isApplicationsLoading || isUsersLoading || isCoursesLoading;
   const error = isApplicationsError || isUsersError || isCoursesError;
 

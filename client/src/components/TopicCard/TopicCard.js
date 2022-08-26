@@ -6,7 +6,6 @@ import {
   CardContent,
   CardHeader,
   Collapse,
-  IconButton,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -16,7 +15,6 @@ import {
   HighlightOffOutlined,
 } from "@mui/icons-material";
 import useStyles from "./styles";
-import clsx from "clsx";
 import { Draggable } from "react-beautiful-dnd";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -24,6 +22,7 @@ import {
   removeSelectedTopicId,
 } from "../../features/application/customApplicationSlice";
 import { selectCourseById } from "../../features/course/courseApiSlice";
+import { ExpandIconCustom } from "../../Custom";
 
 const TopicCard = ({ index, topic }) => {
   const classes = useStyles();
@@ -64,17 +63,15 @@ const TopicCard = ({ index, topic }) => {
                   expanded ? "Collapse topic details" : "Show topic details"
                 }
               >
-                <IconButton
+                <ExpandIconCustom
                   color="primary"
-                  className={clsx(classes.expand, {
-                    [classes.expandOpen]: expanded,
-                  })}
+                  expanded={expanded}
                   onClick={handleExpandClick}
                   aria-expanded={expanded}
                   aria-label="view-topic-details"
                 >
                   <ExpandMoreOutlined />
-                </IconButton>
+                </ExpandIconCustom>
               </Tooltip>
             }
           />
