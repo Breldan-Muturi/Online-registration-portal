@@ -54,30 +54,20 @@ const CourseSettings = ({ course }) => {
     size: course?.courseImage.size,
   });
 
-  const canSave =
-    [title, code, description].every(Boolean) && (!isLoading || !isUpdating);
+  const canSave = [title, code, description, !loading].every(Boolean);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const courseData = new FormData();
-    {
-      course?.title !== title && courseData.append("title", title);
-    }
-    {
-      course?.code !== code && courseData.append("code", code);
-    }
-    {
-      course?.description !== description &&
-        courseData.append("description", description);
-    }
-    {
-      course?.prerequisites !== prerequisites &&
-        courseData.append("prerequisites", prerequisites);
-    }
-    {
-      course?.courseImage !== courseImage.file &&
-        courseData.append("courseImage", courseImage.file);
-    }
+    course?.title !== title && courseData.append("title", title);
+    course?.code !== code && courseData.append("code", code);
+    course?.description !== description &&
+      courseData.append("description", description);
+    course?.prerequisites !== prerequisites &&
+      courseData.append("prerequisites", prerequisites);
+    course?.courseImage !== courseImage.file &&
+      courseData.append("courseImage", courseImage.file);
+
     if (canSave) {
       try {
         course
@@ -87,8 +77,9 @@ const CourseSettings = ({ course }) => {
         console.error("Failed to submit the post", err);
       }
     }
-    {
-      success && setTitle("");
+
+    if (success) {
+      setTitle("");
       setCode("");
       setDescription("");
       setPrerequisites([]);
@@ -183,15 +174,16 @@ const CourseSettings = ({ course }) => {
         {hasError && (
           <Grid container xs={12} alignItems="center">
             <Typography color="error">
-              {isError && `Something went wrong: ${error}`}
-              {isFailedUpdate && `Something went wrong: ${updateError}`}
+              {`Something went wrong: ${
+                (isError && error) || (isFailedUpdate && updateError)
+              }`}
             </Typography>
           </Grid>
         )}
         <Grid xs={12} display="flex" justifyContent="center">
           <LoadingButton
             startIcon={course ? <PublishIcon /> : <UpdateIcon />}
-            loading={isLoading || isUpdating}
+            loading={loading}
             loadingPosition="start"
             disabled={!canSave}
             type="submit"
