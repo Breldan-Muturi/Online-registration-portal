@@ -45,13 +45,10 @@ export const courseApiSlice = apiSlice.injectEndpoints({
     }),
 
     updateCourse: builder.mutation({
-      query: (course) => ({
-        url: `/api/courses/${course._id}`,
+      query: ({ courseData, courseId }) => ({
+        url: `/api/courses/${courseId}`,
         method: "PATCH",
-        body: course,
-        headers: {
-          "Content-Type": "multipart/form-data;",
-        },
+        body: courseData,
       }),
       invalidatesTags: (result, error, arg) => [{ type: "Course", id: arg.id }],
     }),

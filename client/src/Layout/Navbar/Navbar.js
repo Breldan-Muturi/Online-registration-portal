@@ -2,7 +2,7 @@ import React from "react";
 import { Tabs, Toolbar, Typography, AppBar } from "@mui/material";
 import Logo from "../../assets/kippra+thinking+policy+together+white+bg.png";
 import { Link } from "react-router-dom";
-import { AuthModal } from "../../containers";
+import { AuthModal } from "../../modals";
 import { StyledTab, NavIcon } from "../../Custom";
 import { useStyles } from "./styles";
 import MenuIcon from "@mui/icons-material/Menu";

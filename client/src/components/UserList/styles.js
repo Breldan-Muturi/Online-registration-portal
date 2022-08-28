@@ -1,7 +1,7 @@
 import { makeStyles } from "@mui/styles";
 import { green, red } from "@mui/material/colors";
 
-const useStyles = makeStyles((theme) => ({
+export default makeStyles((theme) => ({
   userList: {
     maxWidth: "48%",
   },
@@ -62,26 +62,3 @@ const useStyles = makeStyles((theme) => ({
     "&:disabled": { color: theme.palette.primary.main },
   },
 }));
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 8 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-  getContentAnchorEl: null,
-  anchorOrigin: {
-    vertical: "bottom",
-    horizontal: "center",
-  },
-  transformOrigin: {
-    vertical: "top",
-    horizontal: "center",
-  },
-  variant: "menu",
-};
-
-export { useStyles, MenuProps };

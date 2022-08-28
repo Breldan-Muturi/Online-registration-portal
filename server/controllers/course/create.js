@@ -9,12 +9,18 @@ export const createCourse = asyncHandler(async (req, res) => {
     throw new Error("Please add all required fields");
   }
 
+  const courseImage = req.file && {
+    path: `http://localhost:8000${req.file.path}`,
+    name: req.file.filename,
+    size: `${(req.file.size / 1000).toFixed(2).toString()} KBs`,
+  };
+
   const course = await Course.create({
     title,
     code,
     description,
     prerequisites,
-    courseImage: req.file.path,
+    courseImage,
   });
 
   res.status(200).json(course);

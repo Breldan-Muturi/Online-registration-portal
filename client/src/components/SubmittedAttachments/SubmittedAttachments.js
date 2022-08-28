@@ -28,7 +28,6 @@ const SubmittedAttachments = ({ payment }) => {
             const name = attachment.name;
             const size = attachment.size;
             const url = attachment.path;
-            console.log(url);
             return (
               <React.Fragment key={index}>
                 <ListItem

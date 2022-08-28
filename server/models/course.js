@@ -20,7 +20,11 @@ const courseSchema = mongoose.Schema(
         ref: "Course",
       },
     ],
-    courseImage: String,
+    courseImage: {
+      path: String,
+      name: String,
+      size: String,
+    },
   },
   { timestamps: true }
 );

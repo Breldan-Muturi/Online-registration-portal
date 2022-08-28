@@ -7,13 +7,12 @@ export const updateUser = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("User not found");
   }
-  console.log(req.file);
 
   const updatedUser = await User.findByIdAndUpdate(
     req.params.id,
     {
       ...req.body,
-      avatar: req.file.path,
+      avatar: req.file && `http://localhost:8000${req.file.path}`,
     },
     {
       new: true,

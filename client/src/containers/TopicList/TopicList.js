@@ -15,7 +15,7 @@ import {
   useGetTopicsQuery,
   selectTopicsByCourse,
 } from "../../features/topic/topicApiSlice";
-import TopicModal from "../TopicModal/TopicModal";
+import { TopicModal } from "../../modals";
 import useStyles from "./styles";
 import { Subheader, CenterList } from "../../Custom";
 

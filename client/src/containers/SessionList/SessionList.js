@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { CircularProgress, Typography, Grid, Box } from "@mui/material";
 import { SessionItem } from "../../components";
-import { SessionModal } from "..";
+import { SessionModal } from "../../modals";
 import useStyles from "./styles";
 import Pagination from "@mui/material/Pagination";
 import { useParams } from "react-router-dom";

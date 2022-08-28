@@ -19,3 +19,7 @@ export { default as ApplicationApprove } from "./ApplicationApprove/ApplicationA
 export { default as AttachmentList } from "./AttachmentList/AttachmentList";
 export { default as SubmittedAttachments } from "./SubmittedAttachments/SubmittedAttachments";
 export { default as PaymentsList } from "./PaymentsList/PaymentsList";
+export { default as Prerequisites } from "./Prerequisites/Prerequisites";
+export { default as CourseImage } from "./CourseImage/CourseImage";
+export { default as DeleteCourse } from "./DeleteCourse/DeleteCourse";
+export { default as SelectedCompletions } from "./SelectedCompletions/SelectedCompletions";

@@ -12,7 +12,10 @@ import ExpandMoreOutlined from "@mui/icons-material/ExpandMoreOutlined";
 import Tooltip from "@mui/material/Tooltip";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LaunchIcon from "@mui/icons-material/Launch";
-import { useGetPaymentsByApplicationQuery } from "../../features/payment/paymentApiSlice";
+import {
+  selectApplicationPayments,
+  useGetPaymentsByApplicationQuery,
+} from "../../features/payment/paymentApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectApplication,
@@ -26,14 +29,15 @@ import { SubmittedAttachments } from "..";
 const PaymentsList = ({ applicationId }) => {
   const dispatch = useDispatch();
   const { dense } = useSelector((state) => state.applicationTable);
-  const { data: payments, isSuccess } =
-    useGetPaymentsByApplicationQuery(applicationId);
+  const payments = useSelector((state) =>
+    selectApplicationPayments(state, applicationId)
+  );
   const { selectedPayments, expandedPayment } = useSelector(
     (state) => state.paymentList
   );
   let content;
 
-  if (isSuccess && payments.length) {
+  if (payments.length) {
     content = (
       <List
         dense={dense}

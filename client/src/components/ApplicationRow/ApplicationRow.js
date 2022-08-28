@@ -82,7 +82,7 @@ const ApplicationRow = ({ applicationId }) => {
           }
 
           if (mappedColumn.id === "courseId") {
-            value = `${course.title}`;
+            value = course ? course.title : "Custom Application";
           }
 
           if (

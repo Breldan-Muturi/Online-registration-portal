@@ -23,6 +23,7 @@ import {
 import { MainTableCell } from "../Custom";
 import { useGetUsersQuery } from "../features/user/usersApiSlice";
 import { useGetCoursesQuery } from "../features/course/courseApiSlice";
+import { useGetPaymentsQuery } from "../features/payment/paymentApiSlice";
 
 const Applications = () => {
   const {
@@ -47,14 +48,27 @@ const Applications = () => {
     error: errorCourses,
   } = useGetCoursesQuery();
 
+  const {
+    isLoading: isPaymentsLoading,
+    isSuccess: isPaymentsSuccess,
+    isError: isPaymentsError,
+    error: errorPayments,
+  } = useGetPaymentsQuery();
+
   const success = [
     isApplicationsSuccess,
+    isPaymentsSuccess,
     isUsersSuccess,
     isCoursesSuccess,
   ].every(Boolean);
 
-  const loading = isApplicationsLoading || isUsersLoading || isCoursesLoading;
-  const error = isApplicationsError || isUsersError || isCoursesError;
+  const loading =
+    isApplicationsLoading ||
+    isUsersLoading ||
+    isCoursesLoading ||
+    isPaymentsLoading;
+  const error =
+    isApplicationsError || isUsersError || isCoursesError || isPaymentsError;
 
   const dispatch = useDispatch();
   const { dense, page, rowsPerPage } = useSelector(
@@ -76,6 +90,7 @@ const Applications = () => {
     content = (
       <Typography color="error">{`Something went wrong loading applications ${
         errorApplications?.data?.message ||
+        errorPayments?.data?.message ||
         errorUsers?.data?.message ||
         errorCourses?.data?.message
       }`}</Typography>

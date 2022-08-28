@@ -1,21 +1,19 @@
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CircularProgress,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
-import { CheckCircle, HighlightOffOutlined } from "@mui/icons-material";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CircularProgress from "@mui/material/CircularProgress";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import CheckCircle from "@mui/icons-material/CheckCircle";
+import HighlightOffOutlined from "@mui/icons-material/HighlightOffOutlined";
 import React from "react";
 import { useSelector } from "react-redux";
 import {
   useGetUsersQuery,
   selectAllUsers,
 } from "../../features/user/usersApiSlice";
-import { useStyles } from "./styles";
+import useStyles from "./styles";
 import { CustomAvatar } from "../../Custom";
 
 const SelectedUsers = () => {

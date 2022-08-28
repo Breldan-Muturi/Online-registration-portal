@@ -12,7 +12,7 @@ export const createPayment = asyncHandler(async (req, res) => {
 
   if (req.files) {
     let path = "";
-    req.files.array.forEach(function (files, index, arr) {
+    req.files.forEach(function (files, index, arr) {
       path = path + files.path + ",";
     });
     path = path.substring(0, path.lastIndexOf(","));
@@ -35,3 +35,17 @@ export const createPayment = asyncHandler(async (req, res) => {
 
   res.status(200).json(payment);
 });
+
+// export const createPayment = (req, res) => {
+//   let form = new formidable.IncomingForm();
+//   form.parse(req, (err, fields, files) => {
+//     if (err) {
+//       return res.status(400).json({ error: "Files could not upload" });
+//     }
+//     console.table({ err, fields, files });
+//     const { payee, amount, code, method, applicationId } = fields;
+//     const { attachments } = files;
+
+//     let payment = new Payment({ payee, amount, code, method, applicationId });
+//   });
+// };

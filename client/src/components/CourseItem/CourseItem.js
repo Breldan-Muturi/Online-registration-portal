@@ -26,7 +26,7 @@ const CourseItem = ({ courseId, user }) => {
       <Card className={classes.card} onClick={onClick}>
         <CardMedia
           className={classes.cover}
-          image={course.courseImage}
+          image={course.courseImage.path}
           title={course.title}
           classes={{
             img: classes.img,

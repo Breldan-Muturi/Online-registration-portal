@@ -8,6 +8,8 @@ import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCurrentToken } from "../../features/auth/authSlice";
+import { paymentsApiSlice } from "../../features/payment/paymentApiSlice";
+import { completedCoursesApiSlice } from "../../features/completedCourse/completedCoursesApiSlice";
 
 const Prefetch = () => {
   const token = useSelector(selectCurrentToken);
@@ -25,6 +27,14 @@ const Prefetch = () => {
     const applications =
       token &&
       store.dispatch(applicationApiSlice.endpoints.getApplications.initiate());
+    const payments =
+      token &&
+      store.dispatch(paymentsApiSlice.endpoints.getPayments.initiate());
+    const completedCourses =
+      token &&
+      store.dispatch(
+        completedCoursesApiSlice.endpoints.getCompletedCourses.initiate()
+      );
 
     return () => {
       courses.unsubscribe();
@@ -33,6 +43,8 @@ const Prefetch = () => {
         topics.unsubscribe();
         users.unsubscribe();
         applications.unsubscribe();
+        payments.unsubscribe();
+        completedCourses.unsubscribe();
       }
     };
   }, []);

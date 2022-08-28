@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Avatar,
   Checkbox,
   Chip,
   CircularProgress,
@@ -23,7 +22,8 @@ import {
   selectAllUsers,
   useGetUsersQuery,
 } from "../../features/user/usersApiSlice";
-import { useStyles, MenuProps } from "./styles";
+import { MenuProps } from "../../helpers";
+import useStyles from "./styles";
 import { CustomAvatar } from "../../Custom";
 
 const UserList = () => {

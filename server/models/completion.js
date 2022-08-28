@@ -23,7 +23,6 @@ const completionSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      required: [true, "Please add a creator"],
       default: "Pending",
     },
     evidence: [

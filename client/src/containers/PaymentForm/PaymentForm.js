@@ -15,7 +15,7 @@ import {
 import { useCreatePaymentMutation } from "../../features/payment/paymentApiSlice";
 import { selectCurrentUser } from "../../features/auth/authSlice";
 import { AttachmentList } from "../../components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const PaymentForm = ({ applicationId }) => {
   const dispatch = useDispatch();
@@ -35,12 +35,18 @@ const PaymentForm = ({ applicationId }) => {
     payment.append("code", paymentCode);
     payment.append("method", paymentMethod);
     payment.append("applicationId", applicationId);
-    payment.append("attachments", attachments);
+    Object.keys(attachments).forEach((key) => {
+      payment.append("attachments", attachments.item(key));
+    });
     await createPayment(payment);
-    {
-      isSuccess && dispatch(reset());
-    }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(reset());
+      setAttachments([]);
+    }
+  }, [isSuccess, dispatch]);
 
   return (
     <Box
