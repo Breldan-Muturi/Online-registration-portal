@@ -1,11 +1,13 @@
 import React from "react";
-import {
-  Grid,
-  Button,
-  TextField,
-  Typography,
-  CircularProgress,
-} from "@mui/material";
+import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
+import useStyles from "./styles";
+import FileBase from "react-file-base64";
+import { useCreateOrganizationMutation } from "../../Features/api/organizationApiSlice";
+import { selectCurrentUser } from "../../Features/global/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setName,
@@ -15,11 +17,7 @@ import {
   setCounty,
   setOrganizationLogo,
   reset,
-} from "../../features/organization/organizationSlice";
-import useStyles from "./styles";
-import FileBase from "react-file-base64";
-import { useCreateOrganizationMutation } from "../../features/organization/organizationApiSlice";
-import { selectCurrentUser } from "../../features/auth/authSlice";
+} from "../../Features/forms/organizationSlice";
 
 const OrganizationSettings = () => {
   const classes = useStyles();

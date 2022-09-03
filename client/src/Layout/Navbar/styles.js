@@ -1,6 +1,6 @@
 import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles((theme) => ({
+export default makeStyles((theme) => ({
   app: {
     background: "#fff",
     zIndex: theme.zIndex.drawer + 1,
@@ -28,5 +28,3 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-
-export { useStyles };

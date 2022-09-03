@@ -1,5 +1,5 @@
 import { makeStyles } from "@mui/styles";
-import bgImage from "../../assets/KIPPRA+portal+hero.jpeg";
+import bgImage from "../../Assets/KIPPRA+portal+hero.jpeg";
 
 export default makeStyles((theme) => ({
   header: {

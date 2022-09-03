@@ -1,9 +1,9 @@
 import express from "express";
-import { createOrganization } from "../controllers/organization/create.js";
-import { deleteOrganization } from "../controllers/organization/delete.js";
-import { getOrganizations } from "../controllers/organization/getAll.js";
-import { getOrganizationById } from "../controllers/organization/getById.js";
-import { updateOrganization } from "../controllers/organization/update.js";
+import { createOrganization } from "../controllers/create/organization.js";
+import { deleteOrganization } from "../controllers/delete/organization.js";
+import { getOrganizations } from "../controllers/getAll/organization.js";
+import { getOrganizationById } from "../controllers/getById/organization.js";
+import { updateOrganization } from "../controllers/update/organization.js";
 
 const router = express.Router();
 

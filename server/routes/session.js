@@ -1,10 +1,10 @@
 import express from "express";
-import { createSession } from "../controllers/session/create.js";
-import { deleteSession } from "../controllers/session/delete.js";
-import { getSessions } from "../controllers/session/getAll.js";
-import { getSessionById } from "../controllers/session/getById.js";
-import { updateSession } from "../controllers/session/update.js";
-import { getSessionByCourseId } from "../controllers/session/getByCourseId.js";
+import { createSession } from "../controllers/create/session.js";
+import { deleteSession } from "../controllers/delete/session.js";
+import { getSessions } from "../controllers/getAll/session.js";
+import { getSessionById } from "../controllers/getById/session.js";
+import { updateSession } from "../controllers/update/session.js";
+import { getSessionByCourseId } from "../controllers/getByCourseId/session.js";
 
 const router = express.Router();
 

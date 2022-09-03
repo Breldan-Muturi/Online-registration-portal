@@ -1,7 +1,7 @@
 import { makeStyles } from "@mui/styles";
-import bgImage from "../../assets/KIPPRAheader.jpeg";
+import bgImage from "../../Assets/KIPPRAheader.jpeg";
 
-const useStyles = makeStyles((theme) => ({
+export default makeStyles((theme) => ({
   section: {
     display: "flex",
     flexDirection: "column",
@@ -37,5 +37,3 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
 }));
-
-export { useStyles };

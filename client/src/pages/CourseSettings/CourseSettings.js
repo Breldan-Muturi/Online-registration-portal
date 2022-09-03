@@ -2,21 +2,27 @@ import Grid from "@mui/material/Unstable_Grid2";
 import Button from "@mui/material/Button";
 import LoadingButton from "@mui/lab/LoadingButton";
 import TextField from "@mui/material/TextField";
+import React, { useState } from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import BackspaceIcon from "@mui/icons-material/Backspace";
 import PublishIcon from "@mui/icons-material/Publish";
 import UpdateIcon from "@mui/icons-material/Update";
-import React, { useState } from "react";
+import Prerequisites from "../../Components/Dropdowns/Prerequisites/Prerequisites";
+import CourseImage from "../../Components/Cards/CourseImage/CourseImage";
+import DeleteCourse from "../../Components/Dialogs/DeleteCourse";
+import useStyles from "./styles";
+import { useNavigate, useParams } from "react-router-dom";
 import {
+  selectCourseById,
   useCreateCourseMutation,
   useUpdateCourseMutation,
-} from "../../features/course/courseApiSlice";
-import { useNavigate } from "react-router-dom";
-import { useStyles } from "./styles";
-import { Prerequisites, CourseImage, DeleteCourse } from "../../components";
+} from "../../Features/api/courseApiSlice";
+import { useSelector } from "react-redux";
 
-const CourseSettings = ({ course }) => {
+const CourseSettings = () => {
+  const { courseId } = useParams();
+  const course = useSelector((state) => selectCourseById(state, courseId));
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -49,7 +55,9 @@ const CourseSettings = ({ course }) => {
   );
   const [courseImage, setCourseImage] = useState({
     file: course?.courseImage,
-    path: course?.courseImage.path,
+    path:
+      course?.courseImage.path &&
+      `http://localhost:8000/${course.courseImage.path}`,
     name: course?.courseImage.name,
     size: course?.courseImage.size,
   });
@@ -95,7 +103,9 @@ const CourseSettings = ({ course }) => {
     setPrerequisites(course ? course.prerequisites : []);
     setCourseImage({
       file: course?.courseImage,
-      path: course?.courseImage.path,
+      path:
+        course?.courseImage.path &&
+        `http://localhost:8000/${course.courseImage.path}`,
       name: course?.courseImage.name,
       size: course?.courseImage.size,
     });

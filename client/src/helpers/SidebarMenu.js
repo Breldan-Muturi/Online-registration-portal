@@ -1,14 +1,12 @@
-import {
-  Dashboard,
-  Description,
-  Business,
-  CreateNewFolder,
-  Payment,
-  AccountBoxSharp,
-  VerifiedUserSharp,
-  FileCopy,
-  PostAdd,
-} from "@mui/icons-material";
+import Dashboard from "@mui/icons-material/Dashboard";
+import Description from "@mui/icons-material/Description";
+import Business from "@mui/icons-material/Business";
+import CreateNewFolder from "@mui/icons-material/CreateNewFolder";
+import Payment from "@mui/icons-material/Payment";
+import AccountBoxSharp from "@mui/icons-material/AccountBoxSharp";
+import VerifiedUserSharp from "@mui/icons-material/VerifiedUserSharp";
+import FileCopy from "@mui/icons-material/FileCopy";
+import PostAdd from "@mui/icons-material/PostAdd";
 
 const menuItems = [
   {

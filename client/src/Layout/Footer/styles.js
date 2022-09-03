@@ -1,7 +1,7 @@
 import { makeStyles } from "@mui/styles";
 import { grey } from "@mui/material/colors";
 
-const useStyles = makeStyles((theme) => ({
+export default makeStyles((theme) => ({
   footer: {
     position: "fixed",
     left: 0,
@@ -15,5 +15,3 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: grey.A700,
   },
 }));
-
-export { useStyles };

@@ -1,9 +1,13 @@
 import React from "react";
+import Box from "@mui/material/Box";
+import ThemeProvider from "@mui/styles/ThemeProvider";
+import Toolbar from "@mui/material/Toolbar";
 import { Outlet } from "react-router-dom";
-import { Box, ThemeProvider, Toolbar } from "@mui/material";
-import { Footer, Navbar, Sidebar } from "..";
+import Footer from "../Footer/Footer";
+import Navbar from "../Navbar/Navbar";
+import Sidebar from "../Sidebar/Sidebar";
 import { theme } from "../../App/theme";
-import { useStyles } from "./styles";
+import useStyles from "./styles";
 
 const Layout = () => {
   const classes = useStyles();

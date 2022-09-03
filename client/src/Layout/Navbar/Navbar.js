@@ -1,12 +1,16 @@
 import React from "react";
-import { Tabs, Toolbar, Typography, AppBar } from "@mui/material";
-import Logo from "../../assets/kippra+thinking+policy+together+white+bg.png";
-import { Link } from "react-router-dom";
-import { AuthModal } from "../../modals";
-import { StyledTab, NavIcon } from "../../Custom";
-import { useStyles } from "./styles";
+import Tabs from "@mui/material/Tabs";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import AppBar from "@mui/material/AppBar";
+import navItems from "../../Helpers/HeaderNav";
 import MenuIcon from "@mui/icons-material/Menu";
-import { navItems } from "../../helpers";
+import Logo from "../../Assets/kippra+thinking+policy+together+white+bg.png";
+import AuthModal from "../../Modals/Auth/AuthModal";
+import StyledTab from "../../Custom/StyledTab";
+import NavIcon from "../../Custom/NavIcon";
+import useStyles from "./styles";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const classes = useStyles();

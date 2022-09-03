@@ -1,11 +1,11 @@
 import express from "express";
 import { storage } from "../middleware/fileUpload/payment.js";
-import { createPayment } from "../controllers/payment/create.js";
-import { deletePayment } from "../controllers/payment/delete.js";
-import { getPayments } from "../controllers/payment/getAll.js";
-import { getPaymentByApplicationId } from "../controllers/payment/getByApplicationId.js";
-import { getPaymentById } from "../controllers/payment/getById.js";
-import { updatePayment } from "../controllers/payment/update.js";
+import { createPayment } from "../controllers/create/payment.js";
+import { deletePayment } from "../controllers/delete/payment.js";
+import { getPayments } from "../controllers/getAll/payment.js";
+import { getPaymentByApplicationId } from "../controllers/getByApplicationId/payment.js";
+import { getPaymentById } from "../controllers/getById/payment.js";
+import { updatePayment } from "../controllers/update/payment.js";
 
 const router = express.Router();
 

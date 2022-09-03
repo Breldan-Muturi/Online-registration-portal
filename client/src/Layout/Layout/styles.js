@@ -1,7 +1,7 @@
 import { makeStyles } from "@mui/styles";
 import { grey } from "@mui/material/colors";
 
-const useStyles = makeStyles((theme) => ({
+export default makeStyles((theme) => ({
   root: {
     display: "flex",
     backgroundColor: grey[50],
@@ -22,5 +22,3 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: "40px",
   },
 }));
-
-export { useStyles };

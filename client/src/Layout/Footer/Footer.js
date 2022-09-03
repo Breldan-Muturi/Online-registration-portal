@@ -1,7 +1,8 @@
-import { Grid, Toolbar, Typography } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 import React from "react";
-import { useStyles } from "./styles";
-import { FooterBar } from "../../Custom";
+import useStyles from "./styles";
+import FooterBar from "../../Custom/FooterBar";
 
 const Footer = () => {
   const classes = useStyles();

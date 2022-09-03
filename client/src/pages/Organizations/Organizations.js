@@ -1,131 +1,83 @@
 import React, { useState } from "react";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
 import Pagination from "@mui/lab/Pagination";
-import useStyles from "./styles";
-import { useSelector } from "react-redux";
-import {
-  Box,
-  Grid,
-  ListItem,
-  ListItemText,
-  Typography,
-  Divider,
-  ListItemAvatar,
-  ListItemSecondaryAction,
-  IconButton,
-  Tooltip,
-  CircularProgress,
-} from "@mui/material";
-import { Assignment, Delete } from "@mui/icons-material";
-import {
-  selectAllOrganizations,
-  useGetOrganizationsQuery,
-} from "../../features/organization/organizationApiSlice";
-import { CenterList, CustomAvatar, Subheader } from "../../Custom";
+import CenterList from "../../Custom/CenterList";
+import Subheader from "../../Custom/Subheader";
+import { useGetOrganizationsQuery } from "../../Features/api/organizationApiSlice";
+import Organization from "../../Components/ListItem/Organization";
 
 const Organizations = () => {
-  const classes = useStyles();
-  const { isLoading, isSuccess, isError, error } = useGetOrganizationsQuery();
-  const organizations = useSelector(selectAllOrganizations);
-  const { user } = useSelector((state) => state.auth);
+  const {
+    data: organizations,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetOrganizationsQuery();
   const [organizationPage, setOrganizationPage] = useState(1);
+  let content;
+  if (isSuccess) {
+    const { ids: organizationIds } = organizations;
+    content = (
+      <Grid container>
+        <CenterList
+          spacing={3}
+          aria-labelledby="My organizations"
+          subheader={
+            <Subheader component="h3" id="my-organizations">
+              My Organizations
+            </Subheader>
+          }
+        >
+          {organizationIds
+            .slice((organizationPage - 1) * 6, (organizationPage - 1) * 6 + 6)
+            .map((mappedOrganizationId, index) => (
+              <Organization
+                key={index}
+                organizationId={mappedOrganizationId}
+                index={index}
+                organizationsCount={organizationIds.length}
+              />
+            ))}
+          {Math.ceil(organizationIds.length / 6) > 1 && (
+            <Pagination
+              count={Math.ceil(organizations.length / 6)}
+              onChange={(_, value) => setOrganizationPage(value)}
+            />
+          )}
+        </CenterList>
+      </Grid>
+    );
+  } else if (isSuccess && organizations.length === 0) {
+    content = (
+      <Grid container direction="row">
+        <Typography color="error">
+          You are not currently listed on any registered organizations.
+        </Typography>
+      </Grid>
+    );
+  } else if (isLoading) {
+    content = (
+      <Stack direction="row" gap={2} alignItems="center">
+        <CircularProgress />
+        <Typography>Loading your organizations</Typography>
+      </Stack>
+    );
+  } else if (isError) {
+    content = (
+      <Typography>
+        {`Something went wrong while fetching your organizations: ${error}`}
+      </Typography>
+    );
+  }
 
   return (
-    <Box p={3} className={classes.box}>
-      {organizations?.length > 0 && isSuccess && (
-        <Grid container>
-          <CenterList
-            spacing={3}
-            aria-labelledby="My organizations"
-            subheader={
-              <Subheader component="h3" id="my-organizations">
-                My Organizations
-              </Subheader>
-            }
-          >
-            {organizations
-              .slice((organizationPage - 1) * 6, (organizationPage - 1) * 6 + 6)
-              .map((mappedOrganization) => (
-                <React.Fragment key={mappedOrganization._id}>
-                  <ListItem key={mappedOrganization._id}>
-                    <ListItemAvatar className={classes.avatar}>
-                      <CustomAvatar
-                        className={classes.circle}
-                        alt={mappedOrganization.name}
-                        src={mappedOrganization.organizationLogo}
-                      >
-                        {mappedOrganization?.name.substring(0, 2).toUpperCase()}
-                      </CustomAvatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={
-                        <Typography>
-                          {organizations.indexOf(mappedOrganization) + 1}.{" "}
-                          {mappedOrganization.name}
-                        </Typography>
-                      }
-                      secondary={
-                        <>
-                          Role:
-                          {mappedOrganization.admins.indexOf(user.id) > -1 ? (
-                            <>
-                              <b> Admin</b>
-                              <br />
-                              <span color="primary" component="Link">
-                                Go to Administration Page
-                              </span>
-                            </>
-                          ) : (
-                            <b> Member</b>
-                          )}
-                        </>
-                      }
-                    />
-                    <ListItemSecondaryAction>
-                      <Tooltip title="Manage Organization" arrow>
-                        <IconButton edge="end" aria-label="manage-company">
-                          <Assignment color="primary" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Delete Organization" arrow>
-                        <IconButton edge="end" aria-label="remove-company">
-                          <Delete className={classes.iconred} />
-                        </IconButton>
-                      </Tooltip>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                  {organizations.indexOf(mappedOrganization) + 1 !==
-                    organizations.length && (
-                    <Divider variant="middle" component="li" />
-                  )}
-                </React.Fragment>
-              ))}
-            {Math.ceil(organizations?.length / 6) > 1 && (
-              <Pagination
-                count={Math.ceil(organizations?.length / 6)}
-                onChange={(_, value) => setOrganizationPage(value)}
-              />
-            )}
-          </CenterList>
-        </Grid>
-      )}
-      <Grid container direction="column">
-        {organizations?.length === 0 && isSuccess && (
-          <Typography color="error">
-            You are not currently listed on any registered organizations.
-          </Typography>
-        )}
-        {isLoading && (
-          <>
-            <CircularProgress />
-            <Typography>Loading your organizations</Typography>
-          </>
-        )}
-        {isError && (
-          <Typography>
-            {`Something went wrong while fetching your organizations: ${error}`}
-          </Typography>
-        )}
-      </Grid>
+    <Box p={3} m={4} gap={4}>
+      {content}
     </Box>
   );
 };

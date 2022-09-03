@@ -1,9 +1,9 @@
 import express from "express";
-import { createApplication } from "../controllers/application/create.js";
-import { deleteApplication } from "../controllers/application/delete.js";
-import { getApplications } from "../controllers/application/getAll.js";
-import { getApplicationById } from "../controllers/application/getById.js";
-import { updateApplication } from "../controllers/application/update.js";
+import { createApplication } from "../controllers/create/application.js";
+import { deleteApplication } from "../controllers/delete/application.js";
+import { getApplications } from "../controllers/getAll/application.js";
+import { getApplicationById } from "../controllers/getById/application.js";
+import { updateApplication } from "../controllers/update/application.js";
 
 const router = express.Router();
 

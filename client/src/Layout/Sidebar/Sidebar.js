@@ -1,25 +1,23 @@
-import {
-  Toolbar,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Tooltip,
-  Fade,
-  ListItemButton,
-} from "@mui/material";
 import React from "react";
-import { useStyles } from "./styles";
-import { menuItems } from "../../helpers";
-import { ExitToApp, KeyboardArrowLeftSharp } from "@mui/icons-material";
-import { logOut, selectCurrentUser } from "../../features/auth/authSlice";
-import { toggleSidebar } from "../../features/sidebar/sideSlice";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Tooltip from "@mui/material/Tooltip";
+import Fade from "@mui/material/Fade";
+import ListItemButton from "@mui/material/ListItemButton";
+import menuItems from "../../Helpers/SidebarMenu";
+import ExitToApp from "@mui/icons-material/ExitToApp";
+import grey from "@mui/material/colors/grey";
+import SidebarDrawer from "../../Custom/SidebarDrawer";
+import SidebarIcon from "../../Custom/SidebarIcon";
+import useStyles from "./styles";
+import { selectCurrentUser } from "../../Features/global/authSlice";
+import { toggleSidebar } from "../../Features/global/sideSlice";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { toggleModal } from "../../features/auth/authSlice";
-import { useLogoutMutation } from "../../features/auth/authApiSlice";
-import { grey } from "@mui/material/colors";
-import { SidebarDrawer } from "../../Custom";
+import { toggleModal } from "../../Features/global/authSlice";
+import { useLogoutMutation } from "../../Features/api/authApiSlice";
 
 const Sidebar = () => {
   const [logout] = useLogoutMutation();
@@ -30,14 +28,12 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const onLogout = async () => {
-    navigate("/");
-    dispatch(logOut());
     await logout();
+    navigate("/");
   };
 
   return (
     <SidebarDrawer open={isOpen}>
-      {/* <Toolbar className={classes.toolBar} /> */}
       <List>
         {menuItems.map((item) => (
           <ListItem disablePadding key={item.text}>
@@ -109,7 +105,7 @@ const Sidebar = () => {
               TransitionProps={{ timeout: 600 }}
             >
               <ListItemIcon sx={{ color: grey[50] }}>
-                <KeyboardArrowLeftSharp />
+                <SidebarIcon open={isOpen} />
               </ListItemIcon>
             </Tooltip>
             <ListItemText

@@ -1,16 +1,14 @@
-import {
-  Grid,
-  Button,
-  TextField,
-  Typography,
-  CircularProgress,
-  Box,
-} from "@mui/material";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 import useStyles from "./styles";
 import FileBase from "react-file-base64";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const MyProfile = () => {
   const classes = useStyles();

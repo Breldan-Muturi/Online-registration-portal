@@ -1,20 +1,23 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
-import { apiSlice } from "../features/api/apiSlice";
-import authReducer from "../features/auth/authSlice";
-import customApplicationReducer from "../features/application/customApplicationSlice";
-import sideReducer from "../features/sidebar/sideSlice";
-import organizationReducer from "../features/organization/organizationSlice";
-import sessionReducer from "../features/session/sessionSlice";
-import topicReducer from "../features/topic/topicSlice";
-import applicationTableReducer from "../features/application/applicationTableSlice";
-import paymentFormReducer from "../features/payment/paymentFormSlice";
-import paymentListReducer from "../features/payment/paymentListSlice";
+import { apiSlice } from "../Features/api/apiSlice";
+import authReducer from "../Features/global/authSlice";
+import authFormReducer from "../Features/forms/authFormSlice";
+import customApplicationReducer from "../Features/forms/customApplicationSlice";
+import sideReducer from "../Features/global/sideSlice";
+import organizationReducer from "../Features/forms/organizationSlice";
+import sessionReducer from "../Features/forms/sessionSlice";
+import topicReducer from "../Features/forms/topicSlice";
+import applicationTableReducer from "../Features/lists/applicationTableSlice";
+import paymentFormReducer from "../Features/forms/paymentFormSlice";
+import paymentListReducer from "../Features/lists/paymentListSlice";
+import completedCourseListReducer from "../Features/lists/completedCourseListSlice";
 
 export const store = configureStore({
   reducer: {
     [apiSlice.reducerPath]: apiSlice.reducer,
     auth: authReducer,
+    authForm: authFormReducer,
     customApplication: customApplicationReducer,
     applicationTable: applicationTableReducer,
     paymentForm: paymentFormReducer,
@@ -23,6 +26,7 @@ export const store = configureStore({
     session: sessionReducer,
     organization: organizationReducer,
     topic: topicReducer,
+    completedCourseList: completedCourseListReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),

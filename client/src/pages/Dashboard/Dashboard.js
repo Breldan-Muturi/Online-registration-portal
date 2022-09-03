@@ -1,10 +1,11 @@
 import React from "react";
 import useStyles from "./styles";
-import { CourseList, SessionList } from "../../containers";
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import CourseList from "../../CardList/Courses/CourseList";
+import SessionList from "../../CardList/Sessions/SessionList";
 import { useSelector } from "react-redux";
-import { selectAllSessions } from "../../features/session/sessionApiSlice";
-import { selectCurrentUser } from "../../features/auth/authSlice";
+import { selectAllSessions } from "../../Features/api/sessionApiSlice";
+import { selectCurrentUser } from "../../Features/global/authSlice";
 
 const DashboardPage = () => {
   const classes = useStyles();

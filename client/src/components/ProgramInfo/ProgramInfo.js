@@ -7,20 +7,20 @@ import {
   Checkbox,
   Typography,
 } from "@mui/material";
-import { ProgramDates, TopicCardList } from "../index";
+import { ProgramDates, TopicCardList } from "../../Components/index";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setCourseId,
   setDeliveryType,
   setVenue,
   toggleIsTopics,
-} from "../../features/application/customApplicationSlice";
+} from "../../Features/forms/customApplicationSlice";
 import {
   selectAllCourses,
   useGetCoursesQuery,
-} from "../../features/course/courseApiSlice";
+} from "../../Features/api/courseApiSlice";
 import { useStyles } from "./styles";
-import { deliveryTypes, venues } from "../../helpers";
+import { deliveryTypes, venues } from "../../Helpers";
 
 const ProgramInfo = () => {
   const dispatch = useDispatch();

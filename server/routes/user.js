@@ -1,8 +1,8 @@
 import express from "express";
 import { storage } from "../middleware/fileUpload/avatar.js";
-import { getUsers } from "../controllers/user/getAll.js";
-import { getUserById } from "../controllers/user/getById.js";
-import { updateUser } from "../controllers/user/update.js";
+import { getUsers } from "../controllers/getAll/user.js";
+import { getUserById } from "../controllers/getById/user.js";
+import { updateUser } from "../controllers/update/user.js";
 
 const router = express.Router();
 

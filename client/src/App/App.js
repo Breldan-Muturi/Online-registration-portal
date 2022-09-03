@@ -1,19 +1,23 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { RequireAuth, PersistentLogin, Prefetch } from "../containers";
-import { Layout } from "../Layout";
-import {
-  Applications,
-  CompletedCourses,
-  CourseSettings,
-  CustomApplication,
-  DashboardPage,
-  MyProfile,
-  OrganizationSettings,
-  Organizations,
-  Payments,
-  SingleCourse,
-} from "../pages";
+import RequireAuth from "../Auth/RequireAuth";
+import PersistentLogin from "../Auth/PersistentLogin";
+import Prefetch from "../Auth/Prefetch";
+import Layout from "../Layout/Layout/Layout";
+import Applications from "../Pages/Applications";
+import CompletedCourses from "../Pages/CompletedCourses";
+import CourseSettings from "../Pages/CourseSettings/CourseSettings";
+import CustomApplication from "../Pages/CustomApplication/CustomApplication";
+import DashboardPage from "../Pages/Dashboard/Dashboard";
+import MyProfile from "../Pages/MyProfile/MyProfile";
+import OrganizationSettings from "../Pages/OrganizationSettings/OrganizationSettings";
+import Organizations from "../Pages/Organizations/Organizations";
+import Payments from "../Pages/Payments";
+import SingleCourse from "../Pages/SingleCourse/SingleCourse";
+import CourseSummary from "../Components/Summary/CourseSummary";
+import SessionList from "../CardList/Sessions/SessionList";
+import TopicList from "../Lists/Topics/TopicList";
+import { ROLES } from "../Config/roles";
 
 const App = () => {
   return (
@@ -22,35 +26,23 @@ const App = () => {
         <Route element={<Prefetch />}>
           <Route element={<PersistentLogin />}>
             <Route index element={<DashboardPage />} />
-            {/* Public Routes */}
-            {/* Protected Routes */}
-            <Route element={<RequireAuth />}>
-              <Route
-                path="custom-application"
-                element={<CustomApplication />}
-              />
-              <Route path="applications" element={<Applications />} />
-              <Route path="payments" element={<Payments />} />
-              <Route path="organizations" element={<Organizations />} />
-              <Route
-                path="new-organization"
-                element={<OrganizationSettings />}
-              />
-              <Route path="completed-courses" element={<CompletedCourses />} />
-              <Route path="my-profile" element={<MyProfile />} />
-              <Route path="course">
-                <Route index element={<CourseSettings />} />
-                <Route path=":courseId">
-                  <Route index element={<SingleCourse />} />
-                  {/* <Route path="summary" element={<SingleCourse />} />
-                    <Route path="settings" element={<SingleCourse />} />
-                    <Route path="topics" element={<SingleCourse />} />
-                    <Route path="sessions">
-                      <Route index element={<SingleCourse />} />
-                      <Route path=":sessionId" element={<SingleCourse />} />
-                    </Route>
-                    <Route path="applications" element={<SingleCourse />} /> */}
+            <Route path="custom-application" element={<CustomApplication />} />
+            <Route path="applications" element={<Applications />} />
+            <Route path="payments" element={<Payments />} />
+            <Route path="organizations" element={<Organizations />} />
+            <Route path="new-organization" element={<OrganizationSettings />} />
+            <Route path="completed-courses" element={<CompletedCourses />} />
+            <Route path="my-profile" element={<MyProfile />} />
+            <Route path="course">
+              <Route index element={<CourseSettings />} />
+              <Route path=":courseId" element={<SingleCourse />}>
+                <Route index element={<CourseSummary />} />
+                <Route element={<RequireAuth allowedRoles={[ROLES.Admin]} />}>
+                  <Route path="settings" element={<CourseSettings />} />
                 </Route>
+                <Route path="topics" element={<TopicList />} />
+                <Route path="sessions" element={<SessionList />} />
+                <Route path="applications" element={<Applications />} />
               </Route>
             </Route>
           </Route>

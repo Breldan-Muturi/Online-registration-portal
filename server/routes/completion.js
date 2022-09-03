@@ -1,10 +1,11 @@
 import express from "express";
 import { storage } from "../middleware/fileUpload/completion.js";
-import { createCompletion } from "../controllers/completion/create.js";
-import { deleteCompletion } from "../controllers/completion/delete.js";
-import { getCompletions } from "../controllers/completion/getAll.js";
-import { getCompletionById } from "../controllers/completion/getById.js";
-import { updateCompletion } from "../controllers/completion/update.js";
+import { createCompletion } from "../controllers/create/completion.js";
+import { deleteCompletion } from "../controllers/delete/completion.js";
+import { getCompletions } from "../controllers/getAll/completion.js";
+import { getCompletionById } from "../controllers/getById/completion.js";
+import { updateCompletion } from "../controllers/update/completion.js";
+import { deleteSelectedCompletions } from "../controllers/deleteMany/completion.js";
 
 const router = express.Router();
 
@@ -12,6 +13,9 @@ router
   .route("/")
   .get(getCompletions)
   .post(storage.array("evidence"), createCompletion);
+
+router.route("/selected").delete(deleteSelectedCompletions);
+
 router
   .route("/:id")
   .get(getCompletionById)
