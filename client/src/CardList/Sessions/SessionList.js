@@ -13,11 +13,13 @@ import {
   useGetSessionsQuery,
   selectAllSessions,
 } from "../../Features/api/sessionApiSlice";
+import useIsAdmin from "../../Hooks/useIsAdmin";
 
 const SessionList = () => {
   const { isLoading, isSuccess, isError, error } = useGetSessionsQuery();
   const { courseId } = useParams();
   const sessions = useSelector(selectAllSessions);
+  const { isAdmin } = useIsAdmin();
   const listSessions = courseId
     ? sessions.filter((session) => session.courseId === courseId)
     : sessions;
@@ -68,7 +70,7 @@ const SessionList = () => {
             <br /> {error}
           </Typography>
         )}
-        {courseId && <SessionModal courseId={courseId} />}
+        {courseId && isAdmin && <SessionModal courseId={courseId} />}
       </Grid>
     </Box>
   );

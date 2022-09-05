@@ -12,6 +12,7 @@ import applicationTableReducer from "../Features/lists/applicationTableSlice";
 import paymentFormReducer from "../Features/forms/paymentFormSlice";
 import paymentListReducer from "../Features/lists/paymentListSlice";
 import completedCourseListReducer from "../Features/lists/completedCourseListSlice";
+import participantListReducer from "../Features/lists/participantListSlice";
 
 export const store = configureStore({
   reducer: {
@@ -27,6 +28,7 @@ export const store = configureStore({
     organization: organizationReducer,
     topic: topicReducer,
     completedCourseList: completedCourseListReducer,
+    participantList: participantListReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),

@@ -37,7 +37,10 @@ import {
 import { useGetPaymentsQuery } from "../Features/api/paymentApiSlice";
 import { useParams } from "react-router-dom";
 import { selectCurrentUser } from "../Features/global/authSlice";
-import { selectOrganizationById } from "../Features/api/organizationApiSlice";
+import {
+  selectOrganizationById,
+  useGetOrganizationsQuery,
+} from "../Features/api/organizationApiSlice";
 import { ROLES } from "../Config/roles";
 
 const Applications = () => {
@@ -70,11 +73,19 @@ const Applications = () => {
     error: errorPayments,
   } = useGetPaymentsQuery();
 
+  const {
+    isLoading: isOrganizationsLoading,
+    isSuccess: isOrganizationsSuccess,
+    isError: isOrganizationsError,
+    error: errorOrganizations,
+  } = useGetOrganizationsQuery();
+
   const success = [
     isApplicationsSuccess,
     isPaymentsSuccess,
     isUsersSuccess,
     isCoursesSuccess,
+    isOrganizationsSuccess,
   ].every(Boolean);
 
   const loading = [
@@ -82,6 +93,7 @@ const Applications = () => {
     isUsersLoading,
     isCoursesLoading,
     isPaymentsLoading,
+    isOrganizationsLoading,
   ].some(Boolean);
 
   const hasError = [
@@ -89,13 +101,15 @@ const Applications = () => {
     isUsersError,
     isCoursesError,
     isPaymentsError,
+    isOrganizationsError,
   ].some(Boolean);
 
   const error =
     errorApplications?.data?.message ||
     errorPayments?.data?.message ||
     errorUsers?.data?.message ||
-    errorCourses?.data?.message;
+    errorCourses?.data?.message ||
+    errorOrganizations?.data?.message;
 
   const dispatch = useDispatch();
   const { dense, page, rowsPerPage } = useSelector(
@@ -131,34 +145,8 @@ const Applications = () => {
     })
   );
 
-  const ids = Object.values(user?.roles).includes(ROLES.Admin)
-    ? (courseId && courseApplications) ||
-      (organizationId && organizationApplications) ||
-      (!courseId && !organizationId && portalApplications)
-    : courseId
-    ? participantCourseApplications
-    : participantApplications;
-
-  const title = ids.length
-    ? Object.values(user?.roles).includes(ROLES.Admin)
-      ? (courseId && `Applications submitted for ${course.title}`) ||
-        (organizationId && `Applications Submitted by ${organization.name}`) ||
-        (!courseId && !organizationId && `Submitted Applications`)
-      : courseId
-      ? `Your applications for ${course.title}`
-      : `My Applications`
-    : Object.values(user?.roles).includes(ROLES.Admin)
-    ? (courseId &&
-        `There are no applications for ${course.title} at this time`) ||
-      (organizationId &&
-        `There are no applications by ${organization.name} at this time`) ||
-      (!courseId &&
-        !organizationId &&
-        `There are no applications submitted to the portal at this time`)
-    : courseId
-    ? `You have not submitted an application for ${course.title}`
-    : "You have not submitted any applications";
-
+  let ids;
+  let title;
   let content;
 
   if (loading) {
@@ -176,7 +164,38 @@ const Applications = () => {
     );
   }
 
-  if (success & !ids.length) {
+  if (success) {
+    ids = Object.values(user?.roles).includes(ROLES.Admin)
+      ? (courseId && courseApplications) ||
+        (organizationId && organizationApplications) ||
+        portalApplications
+      : (courseId && participantCourseApplications) ||
+        (organizationId && organizationApplications) ||
+        participantApplications;
+
+    title = ids.length
+      ? Object.values(user?.roles).includes(ROLES.Admin)
+        ? (courseId && `Applications submitted for ${course.title}`) ||
+          (organizationId &&
+            `Applications Submitted by ${organization.name}`) ||
+          `Submitted Applications`
+        : (courseId && `Your applications for ${course.title}`) ||
+          (organizationId && `${organization.name} Applications`) ||
+          "My Applications"
+      : Object.values(user?.roles).includes(ROLES.Admin)
+      ? (courseId &&
+          `There are no applications for ${course.title} at this time`) ||
+        (organizationId &&
+          `There are no applications by ${organization.name} at this time`) ||
+        "There are no applications submitted to the portal at this time"
+      : (courseId &&
+          `You have not submitted an application for ${course.title}`) ||
+        (organizationId &&
+          `${organization.name} has not submitted any application`) ||
+        "You have not submitted any applications";
+  }
+
+  if (success & !ids?.length) {
     content = (
       <Typography color="error" variant="h2">
         {title}
@@ -184,7 +203,7 @@ const Applications = () => {
     );
   }
 
-  if (success && ids.length) {
+  if (success && ids?.length) {
     const applicationContent = ids
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
       .map((applicationId) => (

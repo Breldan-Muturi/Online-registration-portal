@@ -6,7 +6,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Tooltip from "@mui/material/Tooltip";
 import Fade from "@mui/material/Fade";
 import ListItemButton from "@mui/material/ListItemButton";
-import menuItems from "../../Helpers/SidebarMenu";
+// import menuItems from "../../Helpers/SidebarMenu";
 import ExitToApp from "@mui/icons-material/ExitToApp";
 import grey from "@mui/material/colors/grey";
 import SidebarDrawer from "../../Custom/SidebarDrawer";
@@ -18,11 +18,15 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleModal } from "../../Features/global/authSlice";
 import { useLogoutMutation } from "../../Features/api/authApiSlice";
+import useSidebarNav from "../../Hooks/useSidebarNav";
+import { ROLES } from "../../Config/roles";
+import useIsAdmin from "../../Hooks/useIsAdmin";
 
 const Sidebar = () => {
   const [logout] = useLogoutMutation();
   const { isOpen } = useSelector((state) => state.side);
-  const user = useSelector(selectCurrentUser);
+  const { user, isAdmin } = useIsAdmin();
+  const menuItems = useSidebarNav(isAdmin);
   const classes = useStyles({ isOpen });
   const dispatch = useDispatch();
   const navigate = useNavigate();

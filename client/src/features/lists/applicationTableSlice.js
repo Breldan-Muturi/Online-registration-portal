@@ -5,6 +5,7 @@ const initialState = {
   dense: false,
   page: 0,
   rowsPerPage: 5,
+  activeTab: 0,
 };
 
 export const applicationTableSlice = createSlice({
@@ -13,6 +14,7 @@ export const applicationTableSlice = createSlice({
   reducers: {
     setSelected: (state, action) => {
       state.selected = action.payload;
+      state.activeTab = action.payload !== "" && 0;
     },
     toggleDense: (state) => {
       state.dense = !state.dense;
@@ -23,10 +25,18 @@ export const applicationTableSlice = createSlice({
     setRowsPerPage: (state, action) => {
       state.rowsPerPage = action.payload;
     },
+    setActiveTab: (state, action) => {
+      state.activeTab = action.payload;
+    },
   },
 });
 
-export const { setSelected, toggleDense, setPage, setRowsPerPage } =
-  applicationTableSlice.actions;
+export const {
+  setSelected,
+  toggleDense,
+  setPage,
+  setRowsPerPage,
+  setActiveTab,
+} = applicationTableSlice.actions;
 
 export default applicationTableSlice.reducer;

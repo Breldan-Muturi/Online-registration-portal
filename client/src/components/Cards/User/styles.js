@@ -1,16 +1,6 @@
 import { makeStyles } from "@mui/styles";
-import { green, red } from "@mui/material/colors";
 
 export default makeStyles((theme) => ({
-  selected: {
-    borderRadius: "4px",
-  },
-  selectedUsers: {
-    backgroundColor: green[50],
-  },
-  noSelectedUsers: {
-    backgroundColor: red[50],
-  },
   selectedCard: {
     margin: theme.spacing(2),
   },
@@ -22,9 +12,9 @@ export default makeStyles((theme) => ({
   },
   cardContent: {
     alignItems: "center",
-  },
-  cardContentBottom: {
-    paddingBottom: theme.spacing(1),
+    "&:last-child": {
+      paddingBottom: theme.spacing(1),
+    },
   },
   actions: {
     justifyContent: "space-between",

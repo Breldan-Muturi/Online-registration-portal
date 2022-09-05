@@ -3,7 +3,7 @@ import Checkbox from "@mui/material/Checkbox";
 import Chip from "@mui/material/Chip";
 import CircularProgress from "@mui/material/CircularProgress";
 import FormControl from "@mui/material/FormControl";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Unstable_Grid2";
 import InputLabel from "@mui/material/InputLabel";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
@@ -49,10 +49,9 @@ const UserList = () => {
     dispatch(removeParticipants(mappedParticipant));
   };
   return (
-    <Grid container className={classes.userList}>
+    <Grid xs={6} p={2}>
       {isLoading && (
         <Grid
-          item
           className={classes.notify}
           alignItems="center"
           justifyContent="flex-start"

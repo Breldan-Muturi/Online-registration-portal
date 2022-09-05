@@ -1,6 +1,6 @@
 import React from "react";
 import CircularProgress from "@mui/material/CircularProgress";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 import AvailableTopics from "../../Components/Droppables/AvailableTopics";
 import SelectedTopics from "../../Components/Droppables/SelectedTopics";
@@ -63,11 +63,12 @@ const TopicCardList = () => {
 
   return (
     <Grid
-      item
       container
-      direction="row"
-      alignItems="stretch"
+      xs={12}
+      display="flex"
+      flexDirection="row"
       justifyContent="space-between"
+      m={3}
     >
       {isError && (
         <Typography color="error" className={classes.message}>
@@ -75,14 +76,7 @@ const TopicCardList = () => {
         </Typography>
       )}
       {isLoading && (
-        <Grid
-          item
-          container
-          direction="row"
-          justifyContent="flex-start"
-          alignItems="center"
-          spacing={3}
-        >
+        <Grid xs={12} display="flex" flexDirection="row" flexBasis={2}>
           <CircularProgress />
           <Typography className={classes.message}>
             Loading Portal Topics

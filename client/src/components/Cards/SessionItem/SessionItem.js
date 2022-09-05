@@ -9,7 +9,10 @@ import Typography from "@mui/material/Typography";
 import ApplyButton from "../../../Custom/ApplyButton";
 import useStyles from "./styles";
 import { toggleModal } from "../../../Features/global/authSlice";
-import { selectCourseById } from "../../../Features/api/courseApiSlice";
+import {
+  selectCourseById,
+  selectCourseIds,
+} from "../../../Features/api/courseApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectCurrentToken } from "../../../Features/global/authSlice";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +24,9 @@ const SessionItem = ({ session }) => {
   const token = useSelector(selectCurrentToken);
   const course = useSelector((state) =>
     selectCourseById(state, session.courseId)
+  );
+  const isAvailableCourse = useSelector(selectCourseIds).includes(
+    session.courseId
   );
   const options = { year: "numeric", month: "short", day: "numeric" };
   const startDate = new Date(session.startDate).toDateString("en-us", options);
@@ -38,6 +44,8 @@ const SessionItem = ({ session }) => {
       dispatch(toggleModal());
     } else if (session && !token) {
       navigate("/");
+    } else if (session && token && isAvailableCourse) {
+      navigate(`/course/${session.courseId}/sessions/${session.id}`);
     }
   };
 

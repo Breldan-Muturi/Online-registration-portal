@@ -22,12 +22,14 @@ const ApplicationRow = ({ applicationId }) => {
   const application = useSelector((state) =>
     selectApplicationsById(state, applicationId)
   );
-  const applicant = useSelector((state) =>
+  const { firstName, lastName, avatar } = useSelector((state) =>
     selectUserById(state, application.createdBy)
   );
   const course = useSelector((state) =>
     selectCourseById(state, application.courseId)
   );
+  const title = course ? course.title : "Custom Application";
+
   return (
     <>
       <TableRow>
@@ -73,18 +75,18 @@ const ApplicationRow = ({ applicationId }) => {
               <Stack direction="row" spacing={1} alignItems="center">
                 <CustomAvatar
                   size={dense ? "small" : null}
-                  alt={`${applicant.firstName} ${applicant.lastName}'s avatar`}
-                  src={applicant.avatar}
+                  alt={`${firstName} ${lastName}'s avatar`}
+                  src={avatar}
                 >
-                  {applicant.firstName.substring(0, 2).toUpperCase()}
+                  {firstName.substring(0, 2).toUpperCase()}
                 </CustomAvatar>
-                <Typography variant="body2">{`${applicant.firstName} ${applicant.lastName}`}</Typography>
+                <Typography variant="body2">{`${firstName} ${lastName}`}</Typography>
               </Stack>
             );
           }
 
           if (mappedColumn.id === "courseId") {
-            value = course ? course.title : "Custom Application";
+            value = title;
           }
 
           if (

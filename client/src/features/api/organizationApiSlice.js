@@ -2,7 +2,6 @@ import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 import { apiSlice } from "../api/apiSlice";
 
 const organizationsAdapter = createEntityAdapter({
-  selectId: (organization) => organization._id,
   sortComparer: (a, b) => b.createdAt.localeCompare(a.createdAt),
 });
 
@@ -16,7 +15,11 @@ export const organizationApiSlice = apiSlice.injectEndpoints({
         return response.status === 200 && !result.isError;
       },
       transformResponse: (responseData) => {
-        return organizationsAdapter.setAll(initialState, responseData);
+        const loadedOrganizations = responseData.map((mappedOrganization) => {
+          mappedOrganization.id = mappedOrganization._id;
+          return mappedOrganization;
+        });
+        return organizationsAdapter.setAll(initialState, loadedOrganizations);
       },
       providesTags: (result, error, arg) => {
         if (result?.ids) {
@@ -26,6 +29,16 @@ export const organizationApiSlice = apiSlice.injectEndpoints({
           ];
         } else return [{ type: "Organization", id: "LIST" }];
       },
+    }),
+
+    getOrganizationById: builder.query({
+      query: (organizationId) => ({
+        url: `/api/organizations/${organizationId}`,
+        method: "GET",
+      }),
+      providesTags: (result, error, arg) => [
+        { type: "Organization", id: arg.id },
+      ],
     }),
 
     createOrganization: builder.mutation({
@@ -39,7 +52,7 @@ export const organizationApiSlice = apiSlice.injectEndpoints({
 
     updateOrganization: builder.mutation({
       query: (organization) => ({
-        url: `/api/organizations/${organization._id}`,
+        url: `/api/organizations/${organization.id}`,
         method: "PATCH",
         body: organization,
       }),
@@ -59,6 +72,7 @@ export const organizationApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetOrganizationsQuery,
+  useGetOrganizationByIdQuery,
   useCreateOrganizationMutation,
   useUpdateOrganizationMutation,
   useDeleteOrganizationMutation,
@@ -78,4 +92,57 @@ export const {
   selectIds: selectOrganizationIds,
 } = organizationsAdapter.getSelectors(
   (state) => selectOrganizationsData(state) ?? initialState
+);
+
+export const selectJoinRequestOrganizations = createSelector(
+  [selectAllOrganizations, (state, participantId) => participantId],
+  (organizations, participantId) =>
+    organizations
+      .filter((filteredOrganization) =>
+        filteredOrganization.joinRequests.includes(participantId)
+      )
+      .map((mappedOrganization) => mappedOrganization.id)
+);
+
+export const selectInvitingOrganizations = createSelector(
+  [selectAllOrganizations, (state, participantId) => participantId],
+  (organizations, participantId) =>
+    organizations
+      .filter((filteredOrganization) =>
+        filteredOrganization.invites.includes(participantId)
+      )
+      .map((mappedOrganization) => mappedOrganization.id)
+);
+
+export const selectAdminOrganizationIds = createSelector(
+  [selectAllOrganizations, (state, adminId) => adminId],
+  (organizations, adminId) =>
+    organizations
+      .filter((filteredOrganization) =>
+        filteredOrganization.admins.includes(adminId)
+      )
+      .map((mappedOrganization) => mappedOrganization.id)
+);
+
+export const selectParticipantOrganizationIds = createSelector(
+  [selectAllOrganizations, (state, participantId) => participantId],
+  (organizations, participantId) =>
+    organizations
+      .filter((filteredOrganization) =>
+        filteredOrganization.members.includes(participantId)
+      )
+      .map((mappedOrganization) => mappedOrganization.id)
+);
+
+export const selectMyOrganizationIds = createSelector(
+  [selectAllOrganizations, (state, participantId) => participantId],
+  (organizations, participantId) =>
+    organizations
+      .filter(
+        (filteredOrganization) =>
+          filteredOrganization.createdBy === participantId ||
+          filteredOrganization.admins.includes(participantId) ||
+          filteredOrganization.members.includes(participantId)
+      )
+      .map((mappedOrganization) => mappedOrganization.id)
 );

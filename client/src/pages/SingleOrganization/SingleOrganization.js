@@ -7,12 +7,10 @@ import CircularProgress from "@mui/material/CircularProgress";
 import useStyles from "./styles";
 import CustomToolbar from "../../Custom/CustomToolbar";
 import StyledTab from "../../Custom/StyledTab";
-import useCourseNav from "../../Hooks/useCourseNav";
-import { useSelector } from "react-redux";
+import useOrganizationNav from "../../Hooks/useOrganizationNav";
 import { Outlet } from "react-router-dom";
-import { useGetCourseByIdQuery } from "../../Features/api/courseApiSlice";
-import { selectCurrentUser } from "../../Features/global/authSlice";
-import { ROLES } from "../../Config/roles";
+import { useGetOrganizationByIdQuery } from "../../Features/api/organizationApiSlice";
+import CustomAvatar from "../../Custom/CustomAvatar";
 
 function a11yProps(index) {
   return {
@@ -22,21 +20,20 @@ function a11yProps(index) {
   };
 }
 
-const SingleCourse = () => {
+const SingleOrganization = () => {
   const classes = useStyles();
-  const { roles } = useSelector(selectCurrentUser);
-  const { routes, courseId, pathname } = useCourseNav();
+  const { routes, organizationId, pathname } = useOrganizationNav();
   const {
-    data: course,
+    data: organization,
     isSuccess,
     isError,
     error,
-  } = useGetCourseByIdQuery(courseId);
+  } = useGetOrganizationByIdQuery(organizationId);
 
   let content = (
     <Stack spacing={3} direction="row">
       <CircularProgress />
-      <Typography>Loading course content</Typography>
+      <Typography>Loading organization content</Typography>
     </Stack>
   );
 
@@ -55,9 +52,18 @@ const SingleCourse = () => {
     <Box component="section" className={classes.section}>
       <div className={classes.header}>
         {isSuccess && (
-          <Typography variant="h4" component="h2" className={classes.title}>
-            {course.title}
-          </Typography>
+          <Stack p={3} gap={3} direction="row" alignItems="center">
+            <CustomAvatar
+              size="large"
+              alt={`${organization.name} organization logo`}
+              src={organization.organizationLogo}
+            >
+              {organization.name.substring(0, 2).toUpperCase()}
+            </CustomAvatar>
+            <Typography variant="h4" component="h2" className={classes.title}>
+              {organization.name}
+            </Typography>
+          </Stack>
         )}
       </div>
       <CustomToolbar variant="dense" className={classes.toolbar}>
@@ -68,39 +74,31 @@ const SingleCourse = () => {
           classes={{
             button: classes.button,
           }}
-          aria-label="Course page tabs"
+          aria-label="Organization page tabs"
         >
           <StyledTab
-            label="Summary"
+            label="Applications"
             href={routes[0]}
             value={routes[0]}
             {...a11yProps(0)}
           />
-          {Object.values(roles).includes(ROLES.Admin) && (
-            <StyledTab
-              label="Settings"
-              href={routes[1]}
-              value={routes[1]}
-              {...a11yProps(1)}
-            />
-          )}
           <StyledTab
-            label="Topics"
+            label="Members"
+            href={routes[1]}
+            value={routes[1]}
+            {...a11yProps(1)}
+          />
+          <StyledTab
+            label="Payments"
             href={routes[2]}
             value={routes[2]}
             {...a11yProps(2)}
           />
           <StyledTab
-            label="Sessions"
+            label="Organization Settings"
             href={routes[3]}
             value={routes[3]}
             {...a11yProps(3)}
-          />
-          <StyledTab
-            label="Applications"
-            href={routes[4]}
-            value={routes[4]}
-            {...a11yProps(4)}
           />
         </Tabs>
       </CustomToolbar>
@@ -111,4 +109,4 @@ const SingleCourse = () => {
   );
 };
 
-export default SingleCourse;
+export default SingleOrganization;

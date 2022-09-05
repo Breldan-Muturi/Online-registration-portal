@@ -14,9 +14,11 @@ import OrganizationSettings from "../Pages/OrganizationSettings/OrganizationSett
 import Organizations from "../Pages/Organizations/Organizations";
 import Payments from "../Pages/Payments";
 import SingleCourse from "../Pages/SingleCourse/SingleCourse";
+import SingleOrganization from "../Pages/SingleOrganization/SingleOrganization";
 import CourseSummary from "../Components/Summary/CourseSummary";
 import SessionList from "../CardList/Sessions/SessionList";
 import TopicList from "../Lists/Topics/TopicList";
+import Application from "../Forms/Application";
 import { ROLES } from "../Config/roles";
 
 const App = () => {
@@ -41,9 +43,18 @@ const App = () => {
                   <Route path="settings" element={<CourseSettings />} />
                 </Route>
                 <Route path="topics" element={<TopicList />} />
-                <Route path="sessions" element={<SessionList />} />
+                <Route path="sessions">
+                  <Route index element={<SessionList />} />
+                  <Route path=":sessionId" element={<Application />} />
+                </Route>
                 <Route path="applications" element={<Applications />} />
               </Route>
+            </Route>
+            <Route path=":organizationId" element={<SingleOrganization />}>
+              <Route path="applications" element={<Applications />} />
+              <Route path="members" element={<Payments />} />
+              <Route path="payments" element={<Payments />} />
+              <Route path="settings" element={<OrganizationSettings />} />
             </Route>
           </Route>
         </Route>

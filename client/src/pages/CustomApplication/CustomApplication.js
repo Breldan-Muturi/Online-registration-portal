@@ -1,5 +1,5 @@
 import React from "react";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Unstable_Grid2";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Stepper from "@mui/material/Stepper";
@@ -58,15 +58,8 @@ const CustomApplication = () => {
   ].every(Boolean);
 
   return (
-    <Grid
-      container
-      direction="row"
-      spacing={3}
-      className={classes.form}
-      justifyContent="space-between"
-      alignItems="flex-start"
-    >
-      <Grid item container direction="column" xs={12} alignItems="center">
+    <Grid containers p={5}>
+      <Grid xs={12} display="flex" flexDirection="column" alignItems="center">
         <Typography variant="h2">In house training application</Typography>
         <Typography variant="subtitle2">
           Complete the form below to create a custom application. After the
@@ -74,30 +67,31 @@ const CustomApplication = () => {
           receive an offer letter and proforma invoice.
         </Typography>
       </Grid>
-      <Stepper className={classes.stepper} activeStep={activeStep}>
-        <Step>
-          <StepLabel>Sponsor Information</StepLabel>
-        </Step>
-        <Step>
-          <StepLabel>Program Information</StepLabel>
-        </Step>
-        <Step>
-          <StepLabel>Participant Information</StepLabel>
-        </Step>
-      </Stepper>
+      <Grid p={3}>
+        <Stepper className={classes.stepper} activeStep={activeStep}>
+          <Step>
+            <StepLabel>Sponsor Information</StepLabel>
+          </Step>
+          <Step>
+            <StepLabel>Program Information</StepLabel>
+          </Step>
+          <Step>
+            <StepLabel>Participant Information</StepLabel>
+          </Step>
+        </Stepper>
+      </Grid>
       {activeStep === 0 && <SponsorInfo />}
       {activeStep === 1 && <ProgramInfo />}
       {activeStep === 2 && <ParticipantsInfo />}
       <Grid
-        item
-        container
+        display="flex"
+        flexDirection="row"
+        p={4}
         justifyContent={
           (activeStep === 0 && "flex-end") ||
           (activeStep === 1 && "space-between") ||
           (activeStep === 2 && "flex-start")
         }
-        className={classes.stepperGrid}
-        spacing={2}
         xs={12}
       >
         {activeStep === 1 && (

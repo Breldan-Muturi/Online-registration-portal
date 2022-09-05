@@ -109,14 +109,15 @@ export const selectParticipantApplicationIds = createSelector(
 
 export const selectParticipantCourseApplicationIds = createSelector(
   [selectAllApplications, (state, participantCourse) => participantCourse],
-  (applications, participantCourse) =>
-    applications
+  (applications, participantCourse) => {
+    const { participantId, courseId } = participantCourse;
+    return applications
       .filter(
         (filteredApplication) =>
-          filteredApplication.participants.includes(
-            participantCourse.participantId ||
-              filteredApplication.createdBy === participantCourse.participantId
-          ) && filteredApplication.courseId === participantCourse.courseId
+          (filteredApplication.participants.includes(participantId) ||
+            filteredApplication.createdBy === participantId) &&
+          filteredApplication.courseId === courseId
       )
-      .map((mappedApplication) => mappedApplication.id)
+      .map((mappedApplication) => mappedApplication.id);
+  }
 );

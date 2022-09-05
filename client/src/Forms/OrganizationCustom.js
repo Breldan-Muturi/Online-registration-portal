@@ -1,5 +1,5 @@
 import React from "react";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Unstable_Grid2";
 import TextField from "@mui/material/TextField";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -24,15 +24,8 @@ const OrganizationCustom = () => {
     sponsorContactEmail,
   } = useSelector((state) => state.customApplication);
   return (
-    <Grid
-      item
-      container
-      xs={12}
-      direction="row"
-      spacing={3}
-      justifyContent="space-between"
-    >
-      <Grid item xs={4}>
+    <Grid container spacing={2} p={1}>
+      <Grid xs={4}>
         <TextField
           name="sponsorName"
           value={sponsorName}
@@ -43,7 +36,7 @@ const OrganizationCustom = () => {
           onChange={(e) => dispatch(setSponsorName(e.target.value))}
         />
       </Grid>
-      <Grid item xs={4}>
+      <Grid xs={4}>
         <TextField
           name="sponsorEmail"
           value={sponsorEmail}
@@ -55,7 +48,7 @@ const OrganizationCustom = () => {
           onChange={(e) => dispatch(setSponsorEmail(e.target.value))}
         />
       </Grid>
-      <Grid item xs={4}>
+      <Grid xs={4}>
         <TextField
           name="sponsorPhoneNumber"
           value={sponsorPhoneNumber}
@@ -66,7 +59,7 @@ const OrganizationCustom = () => {
           onChange={(e) => dispatch(setSponsorPhoneNumber(e.target.value))}
         />
       </Grid>
-      <Grid item xs={8}>
+      <Grid xs={8}>
         <TextField
           name="sponsorAddress"
           value={sponsorAddress}
@@ -77,7 +70,7 @@ const OrganizationCustom = () => {
           onChange={(e) => dispatch(setSponsorAddress(e.target.value))}
         />
       </Grid>
-      <Grid item xs={4}>
+      <Grid xs={4}>
         <TextField
           name="sponsorCounty"
           value={sponsorCounty}
@@ -88,7 +81,7 @@ const OrganizationCustom = () => {
           onChange={(e) => dispatch(setSponsorCounty(e.target.value))}
         />
       </Grid>
-      <Grid item xs={6}>
+      <Grid xs={6}>
         <TextField
           name="sponsorContactPerson"
           value={sponsorContactPerson}
@@ -99,7 +92,7 @@ const OrganizationCustom = () => {
           onChange={(e) => dispatch(setSponsorContactPerson(e.target.value))}
         />
       </Grid>
-      <Grid item xs={6}>
+      <Grid xs={6}>
         <TextField
           name="sponsorContactEmail"
           value={sponsorContactEmail}

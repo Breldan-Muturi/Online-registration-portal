@@ -18,11 +18,14 @@ import {
   selectTopicsByCourse,
 } from "../../Features/api/topicApiSlice";
 import { useParams } from "react-router-dom";
+import { selectCurrentUser } from "../../Features/global/authSlice";
+import { ROLES } from "../../Config/roles";
 
 const TopicList = () => {
   const { courseId } = useParams();
   const classes = useStyles();
-  const course = useSelector((state) => selectCourseById(state, courseId));
+  const { roles } = useSelector(selectCurrentUser);
+  const { title } = useSelector((state) => selectCourseById(state, courseId));
   const topics = useSelector((state) => selectTopicsByCourse(state, courseId));
   const { isLoading, isSuccess, isError, error } = useGetTopicsQuery();
   const [topicPage, setTopicPage] = useState(1);
@@ -47,10 +50,10 @@ const TopicList = () => {
               <CenterList
                 component="article"
                 spacing={3}
-                aria-labelledby={`${course.title} Course Topics`}
+                aria-labelledby={`${title} Course Topics`}
                 subheader={
                   <Subheader component="h3" id="topics-list-subheader">
-                    {`Topics covered under ${course.title}`}
+                    {`Topics covered under ${title}`}
                   </Subheader>
                 }
               >
@@ -86,7 +89,9 @@ const TopicList = () => {
                 There are no published topics for this course
               </Typography>
             )}
-            <TopicModal courseId={courseId} />
+            {Object.values(roles).includes(ROLES.Admin) && (
+              <TopicModal courseId={courseId} />
+            )}
           </>
         )}
       </Grid>

@@ -1,10 +1,6 @@
 import { makeStyles } from "@mui/styles";
-import { green, red } from "@mui/material/colors";
 
 export default makeStyles((theme) => ({
-  userList: {
-    maxWidth: "48%",
-  },
   chips: {
     display: "flex",
     flexWrap: "wrap",

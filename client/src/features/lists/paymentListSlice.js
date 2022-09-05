@@ -4,6 +4,8 @@ const initialState = {
   selectedApplication: "",
   selectedPayments: [],
   expandedPayment: "",
+  modalPayment: "",
+  modalSelectedPayments: false,
 };
 
 export const paymentListSlice = createSlice({
@@ -12,6 +14,9 @@ export const paymentListSlice = createSlice({
   reducers: {
     selectApplication: (state, action) => {
       state.selectedApplication = action.payload;
+    },
+    selectEveryPayment: (state, action) => {
+      state.selectedPayments = action.payload;
     },
     togglePayment: (state, action) => {
       state.selectedPayments = state.selectedPayments.includes(action.payload)
@@ -23,10 +28,22 @@ export const paymentListSlice = createSlice({
     expandPayment: (state, action) => {
       state.expandedPayment = action.payload;
     },
+    toggleModalPayment: (state, action) => {
+      state.modalPayment = action.payload;
+    },
+    toggleModalSelectedPayments: (state) => {
+      state.modalSelectedPayments = !state.modalSelectedPayments;
+    },
   },
 });
 
-export const { selectApplication, togglePayment, expandPayment } =
-  paymentListSlice.actions;
+export const {
+  selectApplication,
+  selectEveryPayment,
+  togglePayment,
+  expandPayment,
+  toggleModalPayment,
+  toggleModalSelectedPayments,
+} = paymentListSlice.actions;
 
 export default paymentListSlice.reducer;

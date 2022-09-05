@@ -1,5 +1,5 @@
 import React from "react";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Unstable_Grid2";
 import TextField from "@mui/material/TextField";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -18,29 +18,30 @@ const ProgramDates = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Grid
-        item
-        container
-        sx={{ width: "50%", marginTop: "16px", gap: "64px" }}
-      >
-        <DatePicker
-          id="startDate"
-          label="Program Start Date"
-          value={startDate}
-          onChange={(newValue) => {
-            dispatch(setStartDate(newValue.toISOString()));
-          }}
-          renderInput={(params) => <TextField {...params} />}
-        />
-        <DatePicker
-          id="endDate"
-          label="Program End Date"
-          value={endDate}
-          onChange={(newValue) => {
-            dispatch(setEndDate(newValue.toISOString()));
-          }}
-          renderInput={(params) => <TextField {...params} />}
-        />
+      <Grid container xs={6} spacing={2} p={1}>
+        <Grid xs={6}>
+          <DatePicker
+            fullWidth
+            id="startDate"
+            label="Program Start Date"
+            value={startDate}
+            onChange={(newValue) => {
+              dispatch(setStartDate(newValue.toISOString()));
+            }}
+            renderInput={(params) => <TextField fullWidth {...params} />}
+          />
+        </Grid>
+        <Grid xs={6}>
+          <DatePicker
+            id="endDate"
+            label="Program End Date"
+            value={endDate}
+            onChange={(newValue) => {
+              dispatch(setEndDate(newValue.toISOString()));
+            }}
+            renderInput={(params) => <TextField fullWidth {...params} />}
+          />
+        </Grid>
       </Grid>
     </LocalizationProvider>
   );

@@ -8,7 +8,6 @@ export default makeStyles((theme) => ({
   stepper: {
     backgroundColor: "transparent",
     width: "100%",
-    padding: theme.spacing(4),
   },
   stepperGrid: {
     margin: theme.spacing(2),

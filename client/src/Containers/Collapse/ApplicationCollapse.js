@@ -7,8 +7,11 @@ import PaymentForm from "../../Forms/PaymentForm";
 import PaymentsList from "../../Lists/Payments/PaymentsList";
 import { useSelector } from "react-redux";
 import { selectApplicationsById } from "../../Features/api/applicationApiSlice";
+import useIsAdmin from "../../Hooks/useIsAdmin";
+import Participants from "../../Lists/Participants";
 
 const ApplicationCollapse = ({ applicationId }) => {
+  const { isAdmin } = useIsAdmin();
   const { selected, dense } = useSelector((state) => state.applicationTable);
   const application = useSelector((state) =>
     selectApplicationsById(state, applicationId)
@@ -26,7 +29,8 @@ const ApplicationCollapse = ({ applicationId }) => {
         )}
         {application.status === "Approved" && (
           <Stack direction="row" spacing={1} p={2} alignItems="flex-start">
-            <PaymentForm applicationId={applicationId} />
+            <Participants applicationId={applicationId} />
+            {!isAdmin && <PaymentForm applicationId={applicationId} />}
             <PaymentsList applicationId={applicationId} />
           </Stack>
         )}

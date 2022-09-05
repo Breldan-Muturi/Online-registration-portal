@@ -1,5 +1,5 @@
 import React from "react";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Unstable_Grid2";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -35,8 +35,8 @@ const ProgramInfo = () => {
   } = useSelector((state) => state.customApplication);
   const handleTopicsCourse = () => {};
   return (
-    <>
-      <Grid item xs={12}>
+    <Grid container spacing={2}>
+      <Grid xs={12}>
         <Typography variant="h3">Program Information</Typography>
         <Typography>
           Choose one of the courses listed below or pick specific topics to be
@@ -44,7 +44,7 @@ const ProgramInfo = () => {
         </Typography>
       </Grid>
       {!isTopics && (
-        <Grid item xs={12} sm={6}>
+        <Grid xs={12} sm={6}>
           <TextField
             select
             fullWidth
@@ -66,7 +66,7 @@ const ProgramInfo = () => {
           </TextField>
         </Grid>
       )}
-      <Grid item xs={6}>
+      <Grid xs={6}>
         <FormControlLabel
           name="isTopics"
           value={isTopics}
@@ -87,14 +87,14 @@ const ProgramInfo = () => {
       </Grid>
       {isTopics && isSuccess && (
         <>
-          <Grid item container direction="column" xs={12}>
+          <Grid xs={12}>
             <Typography variant="subtitle2" color="primary">
               Filter topics with the search inputs provided. Add and remove
               topics with the "Add Topic" and "Remove Topic" buttons or by
               dragging and dropping over the drop areas provided.
             </Typography>
           </Grid>
-          <Grid item xs={6}>
+          <Grid xs={6}>
             <TextField
               name="searchTopicsByCourse"
               value={searchTopicsByCourse}
@@ -105,7 +105,7 @@ const ProgramInfo = () => {
               onChange={handleTopicsCourse}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid xs={6}>
             <TextField
               name="searchTopicsByTitle"
               value={searchTopicsByTitle}
@@ -120,48 +120,41 @@ const ProgramInfo = () => {
         </>
       )}
       <ProgramDates />
-      <Grid
-        container
-        direction="row"
-        spacing={3}
-        sx={{ width: "50%", marginTop: "16px" }}
-      >
-        <Grid item xs={6}>
-          <TextField
-            select
-            fullWidth
-            id="select-delievery-type"
-            label="Select Delivery Mode"
-            value={deliveryType}
-            onChange={(e) => dispatch(setDeliveryType(e.target.value))}
-            variant="outlined"
-          >
-            {deliveryTypes.map((mappedDelivery) => (
-              <MenuItem key={mappedDelivery.value} value={mappedDelivery.value}>
-                {mappedDelivery.label}
-              </MenuItem>
-            ))}
-          </TextField>
-        </Grid>
-        <Grid item xs={6}>
-          <TextField
-            select
-            fullWidth
-            id="select-venue"
-            label="Select Program Venue"
-            value={venue}
-            onChange={(e) => dispatch(setVenue(e.target.value))}
-            variant="outlined"
-          >
-            {venues.map((mappedVenue) => (
-              <MenuItem key={mappedVenue.value} value={mappedVenue.value}>
-                {mappedVenue.label}
-              </MenuItem>
-            ))}
-          </TextField>
-        </Grid>
+      <Grid xs={3}>
+        <TextField
+          select
+          fullWidth
+          id="select-delievery-type"
+          label="Select Delivery Mode"
+          value={deliveryType}
+          onChange={(e) => dispatch(setDeliveryType(e.target.value))}
+          variant="outlined"
+        >
+          {deliveryTypes.map((mappedDelivery) => (
+            <MenuItem key={mappedDelivery.value} value={mappedDelivery.value}>
+              {mappedDelivery.label}
+            </MenuItem>
+          ))}
+        </TextField>
       </Grid>
-    </>
+      <Grid item xs={3}>
+        <TextField
+          select
+          fullWidth
+          id="select-venue"
+          label="Select Program Venue"
+          value={venue}
+          onChange={(e) => dispatch(setVenue(e.target.value))}
+          variant="outlined"
+        >
+          {venues.map((mappedVenue) => (
+            <MenuItem key={mappedVenue.value} value={mappedVenue.value}>
+              {mappedVenue.label}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Grid>
+    </Grid>
   );
 };
 

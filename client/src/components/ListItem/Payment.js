@@ -1,7 +1,6 @@
 import React from "react";
 import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
-import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
 import Stack from "@mui/material/Stack";
@@ -17,6 +16,8 @@ import {
   togglePayment,
   expandPayment,
 } from "../../Features/lists/paymentListSlice";
+import DeletePayment from "../Dialogs/DeletePayment";
+import CustomListIcon from "../../Custom/CustomListIcon";
 
 const Payment = ({ paymentId }) => {
   const dispatch = useDispatch();
@@ -35,47 +36,51 @@ const Payment = ({ paymentId }) => {
     <>
       <ListItem
         secondaryAction={
-          payment.attachments.length > 0 && (
-            <Tooltip
-              arrow
-              title={
-                expandedPayment === paymentId
-                  ? "Collapse Attachments"
-                  : "Expand to inspect attachments"
-              }
-            >
-              <ExpandIconCustom
-                edge="end"
-                color="primary"
-                size={dense ? "small" : "medium"}
-                expanded={expandedPayment === paymentId}
-                aria-expanded={expandedPayment === paymentId}
-                aria-label={
+          <>
+            <DeletePayment paymentId={paymentId} />
+            {payment.attachments.length > 0 && (
+              <Tooltip
+                arrow
+                title={
                   expandedPayment === paymentId
-                    ? "Hide application attachments"
-                    : "View application attachments"
-                }
-                onClick={() =>
-                  dispatch(
-                    expandPayment(
-                      expandedPayment === paymentId ? "" : paymentId
-                    )
-                  )
+                    ? "Collapse Attachments"
+                    : "Expand to inspect attachments"
                 }
               >
-                <ExpandMoreOutlined />
-              </ExpandIconCustom>
-            </Tooltip>
-          )
+                <ExpandIconCustom
+                  edge="end"
+                  color="primary"
+                  size={dense ? "small" : "medium"}
+                  expanded={expandedPayment === paymentId}
+                  aria-expanded={expandedPayment === paymentId}
+                  aria-label={
+                    expandedPayment === paymentId
+                      ? "Hide application attachments"
+                      : "View application attachments"
+                  }
+                  onClick={() =>
+                    dispatch(
+                      expandPayment(
+                        expandedPayment === paymentId ? "" : paymentId
+                      )
+                    )
+                  }
+                >
+                  <ExpandMoreOutlined />
+                </ExpandIconCustom>
+              </Tooltip>
+            )}
+          </>
         }
       >
-        <ListItemIcon
+        <CustomListIcon
           onClick={() => {
             dispatch(togglePayment(paymentId));
             dispatch(selectApplication(payment.applicationId));
           }}
         >
           <Checkbox
+            size="small"
             edge="start"
             color="primary"
             checked={selectedPayments.includes(paymentId)}
@@ -83,12 +88,12 @@ const Payment = ({ paymentId }) => {
             disableRipple
             inputProps={{ "aria-labelledby": labelId }}
           />
-        </ListItemIcon>
+        </CustomListIcon>
         <ListItemText
           disableTypography
           primary={`Ksh ${amount} - ${payment.method}`}
           secondary={
-            <Stack direction="row" justifyContent="space-between" mr={2}>
+            <Stack direction="row" gap={3}>
               <Typography
                 variant="body2"
                 color={

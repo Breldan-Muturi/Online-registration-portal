@@ -7,21 +7,30 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Pagination from "@mui/lab/Pagination";
 import CenterList from "../../Custom/CenterList";
 import Subheader from "../../Custom/Subheader";
-import { useGetOrganizationsQuery } from "../../Features/api/organizationApiSlice";
+import {
+  selectMyOrganizationIds,
+  selectOrganizationIds,
+  useGetOrganizationsQuery,
+} from "../../Features/api/organizationApiSlice";
 import Organization from "../../Components/ListItem/Organization";
+import { useSelector } from "react-redux";
+import useIsAdmin from "../../Hooks/useIsAdmin";
 
 const Organizations = () => {
-  const {
-    data: organizations,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
-  } = useGetOrganizationsQuery();
+  const { isLoading, isSuccess, isError, error } = useGetOrganizationsQuery();
+  const { user, isAdmin } = useIsAdmin();
+  const portalOrganizationIds = useSelector(selectOrganizationIds);
+  const participantOrganizationIds = useSelector((state) =>
+    selectMyOrganizationIds(state, user.id)
+  );
+  console.log(participantOrganizationIds);
+  const organizationIds = isAdmin
+    ? portalOrganizationIds
+    : participantOrganizationIds;
   const [organizationPage, setOrganizationPage] = useState(1);
+
   let content;
   if (isSuccess) {
-    const { ids: organizationIds } = organizations;
     content = (
       <Grid container>
         <CenterList
@@ -45,14 +54,14 @@ const Organizations = () => {
             ))}
           {Math.ceil(organizationIds.length / 6) > 1 && (
             <Pagination
-              count={Math.ceil(organizations.length / 6)}
+              count={Math.ceil(organizationIds.length / 6)}
               onChange={(_, value) => setOrganizationPage(value)}
             />
           )}
         </CenterList>
       </Grid>
     );
-  } else if (isSuccess && organizations.length === 0) {
+  } else if (isSuccess && organizationIds.length === 0) {
     content = (
       <Grid container direction="row">
         <Typography color="error">

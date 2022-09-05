@@ -9,8 +9,6 @@ import CenterList from "../Custom/CenterList";
 import CompletedCourseModal from "../Modals/CompletedCourse/CompletedCourseModal";
 import CompletedCourse from "../Components/ListItem/CompletedCourse";
 import { useGetCompletedCoursesQuery } from "../Features/api/completedCoursesApiSlice";
-import { useGetCoursesQuery } from "../Features/api/courseApiSlice";
-import { useGetUsersQuery } from "../Features/api/usersApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllCompletions } from "../Features/lists/completedCourseListSlice";
 import DeleteSelectedCompletions from "../Components/Dialogs/DeleteSelectedCompletions";

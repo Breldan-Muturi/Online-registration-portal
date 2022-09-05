@@ -3,7 +3,7 @@ import Checkbox from "@mui/material/Checkbox";
 import CircularProgress from "@mui/material/CircularProgress";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Unstable_Grid2";
 import InputLabel from "@mui/material/InputLabel";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
@@ -35,7 +35,7 @@ const OrganizationList = () => {
     Boolean
   );
   return (
-    <Grid item container xs={12} sm={6}>
+    <Grid xs={12} sm={6}>
       {isLoading && <CircularProgress />}
       <Typography>
         {isLoading && "Loading sponsor organizations ..."}

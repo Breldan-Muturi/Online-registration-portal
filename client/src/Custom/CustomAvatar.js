@@ -15,6 +15,11 @@ const CustomAvatar = styled(Avatar, {
     height: theme.spacing(4),
     borderWidth: "1px",
   }),
+  ...(size === "large" && {
+    width: theme.spacing(10),
+    height: theme.spacing(10),
+    borderWidth: "2px",
+  }),
 }));
 
 export default CustomAvatar;
