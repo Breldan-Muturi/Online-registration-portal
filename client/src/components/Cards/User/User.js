@@ -7,15 +7,18 @@ import Typography from "@mui/material/Typography";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import HighlightOffOutlined from "@mui/icons-material/HighlightOffOutlined";
 import CustomAvatar from "../../../Custom/CustomAvatar";
-import { selectUserById } from "../../../Features/api/usersApiSlice";
-import { useSelector } from "react-redux";
+import { useGetUsersQuery } from "../../../Features/api/usersApiSlice";
 import useStyles from "./styles";
 
 const User = ({ participantId }) => {
   const classes = useStyles();
-  const { firstName, lastName, avatar, email } = useSelector((state) =>
-    selectUserById(state, participantId)
-  );
+  const {
+    user: { firstName, lastName, avatar, email },
+  } = useGetUsersQuery("users", {
+    selectFromResult: ({ data }) => ({
+      user: data?.entities[participantId],
+    }),
+  });
   return (
     <Card className={classes.selectedCard} variant="outlined">
       <div className={classes.info}>

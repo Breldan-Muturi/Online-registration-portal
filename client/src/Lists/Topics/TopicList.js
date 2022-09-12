@@ -3,99 +3,141 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import Grid from "@mui/material/Grid";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import Divider from "@mui/material/Divider";
+import Stack from "@mui/material/Stack";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
 import Pagination from "@mui/lab/Pagination";
-import Subheader from "../../Custom/Subheader";
 import CenterList from "../../Custom/CenterList";
+import Topic from "../../Components/ListItem/Topic";
 import TopicModal from "../../Modals/Topic/TopicModal";
 import useStyles from "./styles";
-import { useSelector } from "react-redux";
-import { selectCourseById } from "../../Features/api/courseApiSlice";
-import {
-  useGetTopicsQuery,
-  selectTopicsByCourse,
-} from "../../Features/api/topicApiSlice";
+import { useGetTopicsQuery } from "../../Features/api/topicApiSlice";
 import { useParams } from "react-router-dom";
-import { selectCurrentUser } from "../../Features/global/authSlice";
-import { ROLES } from "../../Config/roles";
+import useIsAdmin from "../../Hooks/useIsAdmin";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleListSelected } from "../../Features/lists/topicListSlice";
+import DeleteSelectedTopics from "../../Components/Dialogs/DeleteSelectedTopics";
 
 const TopicList = () => {
-  const { courseId } = useParams();
   const classes = useStyles();
-  const { roles } = useSelector(selectCurrentUser);
-  const { title } = useSelector((state) => selectCourseById(state, courseId));
-  const topics = useSelector((state) => selectTopicsByCourse(state, courseId));
-  const { isLoading, isSuccess, isError, error } = useGetTopicsQuery();
+  const dispatch = useDispatch();
+  const { courseId } = useParams();
+  const { isAdmin } = useIsAdmin();
+  const { selected } = useSelector((state) => state.topicList);
+  const {
+    data: topics,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetTopicsQuery("topics", {
+    pollingInterval: 60000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
+  });
   const [topicPage, setTopicPage] = useState(1);
+
+  let content;
+
+  if (isLoading) {
+    content = (
+      <Stack direction="row" gap={2} alignItems="center">
+        <CircularProgress size={20} />
+        <Typography variant="body1">Loading course topics</Typography>
+      </Stack>
+    );
+  }
+
+  if (isError) {
+    content = (
+      <Typography
+        color="error"
+        variant="body1"
+      >{`Something went wrong loading course topics: ${error?.data?.message}`}</Typography>
+    );
+  }
+
+  if (isSuccess) {
+    const { ids, entities } = topics;
+    const topicIds = ids.filter(
+      (topicId) => entities[topicId].courseId === courseId
+    );
+    if (!topicIds.length) {
+      content = (
+        <Typography color="error" variant="body1">
+          There are no available topics for this course
+        </Typography>
+      );
+    }
+    if (topicIds.length) {
+      content = (
+        <CenterList
+          component="article"
+          spacing={3}
+          aria-labelledby={`${topicIds.length} Course Topics`}
+          subheader={
+            <Stack
+              direction="column"
+              p={2}
+              spacing={3}
+              justifyContent="space-between"
+            >
+              <Typography color="primary" variant="h3">
+                {`${topicIds.length} Available Topics`}
+              </Typography>
+              {isAdmin && (
+                <Box
+                  display="flex"
+                  alignContent="center"
+                  justifyContent="space-between"
+                >
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        label={`${selected.length ? "Des" : "S"}elect All`}
+                        indeterminate={
+                          selected.length > 0 &&
+                          selected.length < topicIds.length
+                        }
+                        checked={selected.length === topicIds.length}
+                        onChange={() => dispatch(toggleListSelected(topicIds))}
+                      />
+                    }
+                    label={`${selected.length ? "Des" : "S"}elect All`}
+                    componentsProps={{ typography: { variant: "button" } }}
+                  />
+                  <Box display="flex" gap={2}>
+                    <DeleteSelectedTopics />
+                    <TopicModal courseId={courseId} />
+                  </Box>
+                </Box>
+              )}
+            </Stack>
+          }
+        >
+          {topicIds
+            .slice((topicPage - 1) * 6, (topicPage - 1) * 6 + 6)
+            .map((topicId, index) => (
+              <Topic key={index} courseId={courseId} topicId={topicId} />
+            ))}
+          {Math.ceil(topicIds.length / 6) > 1 && (
+            <Pagination
+              count={Math.ceil(topicIds.length / 6)}
+              onChange={(_, value) => setTopicPage(value)}
+            />
+          )}
+        </CenterList>
+      );
+    }
+  }
 
   return (
     <Box p={3} className={classes.box}>
       <Grid container direction="column">
-        {!isSuccess && (
-          <>
-            {isLoading && <CircularProgress />}
-            <Typography>
-              {isLoading && "Loading Course Topics"}{" "}
-              {isError &&
-                `Something went wrong while getting topics:
-            <br /> ${error}`}
-            </Typography>
-          </>
-        )}
-        {isSuccess && (
-          <>
-            {topics.length >= 1 ? (
-              <CenterList
-                component="article"
-                spacing={3}
-                aria-labelledby={`${title} Course Topics`}
-                subheader={
-                  <Subheader component="h3" id="topics-list-subheader">
-                    {`Topics covered under ${title}`}
-                  </Subheader>
-                }
-              >
-                {topics
-                  .slice((topicPage - 1) * 6, (topicPage - 1) * 6 + 6)
-                  .map((mappedTopic) => (
-                    <React.Fragment key={mappedTopic._id}>
-                      <ListItem key={mappedTopic._id}>
-                        <ListItemText
-                          primary={
-                            <Typography>
-                              {topics.indexOf(mappedTopic) + 1}.{" "}
-                              {mappedTopic.title}
-                            </Typography>
-                          }
-                          secondary={mappedTopic.description}
-                        />
-                      </ListItem>
-                      {topics.indexOf(mappedTopic) + 1 !== topics.length && (
-                        <Divider variant="middle" component="li" />
-                      )}
-                    </React.Fragment>
-                  ))}
-                {Math.ceil(topics.length / 6) > 1 && (
-                  <Pagination
-                    count={Math.ceil(topics.length / 6)}
-                    onChange={(_, value) => setTopicPage(value)}
-                  />
-                )}
-              </CenterList>
-            ) : (
-              <Typography color="error">
-                There are no published topics for this course
-              </Typography>
-            )}
-            {Object.values(roles).includes(ROLES.Admin) && (
-              <TopicModal courseId={courseId} />
-            )}
-          </>
-        )}
+        {content}
       </Grid>
-      <Grid container direction="column"></Grid>
     </Box>
   );
 };

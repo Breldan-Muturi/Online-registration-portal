@@ -9,9 +9,9 @@ import CardActions from "@mui/material/CardActions";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const CourseImage = ({ courseImage, setCourseImage }) => {
+const CourseImage = ({ image, setImage }) => {
   const handleChange = (e) => {
-    setCourseImage({
+    setImage({
       file: e.target.files[0],
       path: URL.createObjectURL(e.target.files[0]),
       name: e.target.files[0].name,
@@ -21,18 +21,18 @@ const CourseImage = ({ courseImage, setCourseImage }) => {
   return (
     <Grid xs={12} sm={6}>
       <Card variant="outlined">
-        {courseImage.file && (
+        {image.file && (
           <>
             <CardMedia
               component="img"
-              alt={courseImage.name}
+              alt={image.name}
               height="140"
-              image={courseImage.path}
+              image={image.path}
             />
             <CardContent>
               <Typography>
                 <>
-                  {courseImage.name} <br /> {courseImage.size}
+                  {image.name} <br /> {image.size}
                 </>
               </Typography>
             </CardContent>
@@ -42,10 +42,10 @@ const CourseImage = ({ courseImage, setCourseImage }) => {
           <Button
             component="label"
             size="small"
-            color={courseImage.file ? "error" : "primary"}
-            startIcon={courseImage.file ? <DeleteIcon /> : <UploadFileIcon />}
+            color={image.file ? "error" : "primary"}
+            startIcon={image.file ? <DeleteIcon /> : <UploadFileIcon />}
           >
-            {courseImage.file ? "Replace Course Image" : "Add Course Image"}
+            {image.file ? "Replace Course Image" : "Add Course Image"}
             <input
               type="file"
               accept="image/*"

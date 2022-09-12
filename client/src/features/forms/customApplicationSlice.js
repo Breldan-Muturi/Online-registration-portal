@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   sponsorType: "",
-  sponsorOrganization: null,
+  sponsorOrganization: "",
   sponsorName: "",
   sponsorEmail: "",
   sponsorPhoneNumber: "",
@@ -16,6 +16,9 @@ const initialState = {
   searchTopicsByCourse: [],
   searchTopicsByTitle: "",
   selectedTopicIds: [],
+  expandedTopics: [],
+  selectedTopicsPage: 1,
+  availableTopicsPage: 1,
   startDate: new Date().toISOString(),
   endDate: new Date().toISOString(),
   deliveryType: "",
@@ -84,8 +87,20 @@ export const customApplicationSlice = createSlice({
     setSelectedTopicIds: (state, action) => {
       state.selectedTopicIds = action.payload;
     },
+    toggleExpandedTopic: (state, action) => {
+      state.expandedTopics = state.expandedTopics.includes(action.payload)
+        ? state.expandedTopics.filter(
+            (expandedTopic) => expandedTopic !== action.payload
+          )
+        : state.expandedTopics.concat(action.payload);
+    },
+    setSelectedTopicsPage: (state, action) => {
+      state.selectedTopicsPage = action.payload;
+    },
+    setAvailableTopicsPage: (state, action) => {
+      state.availableTopicsPage = action.payload;
+    },
     setStartDate: (state, action) => {
-      console.log(action.payload);
       state.startDate = action.payload;
     },
     setEndDate: (state, action) => {
@@ -99,16 +114,15 @@ export const customApplicationSlice = createSlice({
       state.venue = action.payload;
     },
     setParticipants: (state, action) => {
-      state.participants = action.payload;
+      state.participants = state.participants.length ? [] : action.payload;
     },
-    addSingleParticipant: (state, action) => {
-      const participants = [];
-      state.participants = participants.concat(action.payload);
-    },
-    removeParticipants: (state, action) => {
-      state.participants = state.participants.filter(
-        (filteredParticipant) => filteredParticipant !== action.payload
-      );
+    toggleParticipant: (state, action) => {
+      const participants = state.participants || [];
+      state.participants = participants.includes(action.payload)
+        ? participants.filter(
+            (filteredParticipant) => filteredParticipant !== action.payload
+          )
+        : participants.concat(action.payload);
     },
     toggleIsOnlyParticipant: (state) => {
       state.isOnlyParticipant = !state.isOnlyParticipant;
@@ -146,13 +160,15 @@ export const {
   addSelectedTopicId,
   removeSelectedTopicId,
   setSelectedTopicIds,
+  toggleExpandedTopic,
+  setSelectedTopicsPage,
+  setAvailableTopicsPage,
   setStartDate,
   setEndDate,
   setDeliveryType,
   setVenue,
   setParticipants,
-  addSingleParticipant,
-  removeParticipants,
+  toggleParticipant,
   toggleIsOnlyParticipant,
   toggleIsNewOrganization,
   toggleIsOpenReview,

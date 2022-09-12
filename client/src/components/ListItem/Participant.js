@@ -8,7 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import LaunchIcon from "@mui/icons-material/Launch";
 import Tooltip from "@mui/material/Tooltip";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUserById } from "../../Features/api/usersApiSlice";
+import { useGetUsersQuery } from "../../Features/api/usersApiSlice";
 import {
   expandParticipant,
   toggleParticipant,
@@ -18,13 +18,17 @@ import CustomListIcon from "../../Custom/CustomListIcon";
 
 const Participant = ({ participantId }) => {
   const dispatch = useDispatch();
-  const { firstName, lastName, email, avatar } = useSelector((state) =>
-    selectUserById(state, participantId)
-  );
   const { selectedParticipants, expandedParticipant } = useSelector(
     (state) => state.participantList
   );
   const { dense } = useSelector((state) => state.applicationTable);
+  const {
+    user: { firstName, lastName, email, avatar },
+  } = useGetUsersQuery("users", {
+    selectFromResult: ({ data }) => ({
+      user: data?.entities[participantId],
+    }),
+  });
   const labelId = `${
     selectedParticipants.includes(participantId) ? "Des" : "S"
   }elect ${firstName} ${lastName}`;

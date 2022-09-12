@@ -13,6 +13,12 @@ import paymentFormReducer from "../Features/forms/paymentFormSlice";
 import paymentListReducer from "../Features/lists/paymentListSlice";
 import completedCourseListReducer from "../Features/lists/completedCourseListSlice";
 import participantListReducer from "../Features/lists/participantListSlice";
+import paymentTableReducer from "../Features/lists/paymentTableSlice";
+import courseSettingsReducer from "../Features/forms/courseSettingsSlice";
+import navReducer from "../Features/global/navSlice";
+import topicListReducer from "../Features/lists/topicListSlice";
+import sessionListReducer from "../Features/lists/sessionListSlice";
+import completedCourseReducer from "../Features/forms/completedCourseSlice";
 
 export const store = configureStore({
   reducer: {
@@ -29,6 +35,12 @@ export const store = configureStore({
     topic: topicReducer,
     completedCourseList: completedCourseListReducer,
     participantList: participantListReducer,
+    paymentTable: paymentTableReducer,
+    courseSettings: courseSettingsReducer,
+    nav: navReducer,
+    topicList: topicListReducer,
+    sessionList: sessionListReducer,
+    completedCourse: completedCourseListReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),

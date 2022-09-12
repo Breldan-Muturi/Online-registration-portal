@@ -6,6 +6,7 @@ import AppBar from "@mui/material/AppBar";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
+import UploadFileOutlined from "@mui/icons-material/UploadFileOutlined";
 import useStyles from "./styles";
 import { useDispatch, useSelector } from "react-redux";
 import { useCreateSessionMutation } from "../../Features/api/sessionApiSlice";
@@ -54,7 +55,8 @@ const SessionModal = ({ courseId }) => {
   return (
     <div>
       <Button
-        variant="contained"
+        size="small"
+        startIcon={<UploadFileOutlined />}
         onClick={() => dispatch(toggleModal())}
         className={classes.submit}
       >

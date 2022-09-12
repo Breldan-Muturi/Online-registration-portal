@@ -11,7 +11,10 @@ import {
   selectApplication,
   selectEveryPayment,
 } from "../../Features/lists/paymentListSlice";
-import { selectApplicationPaymentIds } from "../../Features/api/paymentApiSlice";
+import {
+  selectApplicationPaymentIds,
+  useGetPaymentsQuery,
+} from "../../Features/api/paymentApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Payment from "../../Components/ListItem/Payment";
 import useIsAdmin from "../../Hooks/useIsAdmin";
@@ -20,10 +23,14 @@ const PaymentsList = ({ applicationId }) => {
   const dispatch = useDispatch();
   const { isAdmin } = useIsAdmin();
   const { dense } = useSelector((state) => state.applicationTable);
-  const paymentIds = useSelector((state) =>
-    selectApplicationPaymentIds(state, applicationId)
-  );
   const { selectedPayments } = useSelector((state) => state.paymentList);
+  const { paymentIds } = useGetPaymentsQuery("payments", {
+    selectFromResult: ({ data }) => ({
+      paymentIds: data?.ids.filter(
+        (paymentId) => data?.entities[paymentId].applicationId === applicationId
+      ),
+    }),
+  });
   let content;
 
   if (paymentIds.length) {
@@ -99,6 +106,16 @@ const PaymentsList = ({ applicationId }) => {
       </List>
     );
   }
+
+  if (!paymentIds.length) {
+    content = (
+      <Typography>
+        This application's payments were approved. However, payment information
+        is not available
+      </Typography>
+    );
+  }
+
   return content;
 };
 

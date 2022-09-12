@@ -1,40 +1,49 @@
 import React from "react";
-import CustomAvatar from "../../Custom/CustomAvatar";
 import MainTableCell from "../../Custom/MainTableCell";
 import InnerTableCell from "../../Custom/InnerTableCell";
 import ExpandIconCustom from "../../Custom/ExpandIconCustom";
 import TableRow from "@mui/material/TableRow";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
+import Chip from "@mui/material/Chip";
 import Tooltip from "@mui/material/Tooltip";
 import ExpandMoreOutlined from "@mui/icons-material/ExpandMoreOutlined";
 import ApplicationCollapse from "../../Containers/Collapse/ApplicationCollapse";
 import applicationColumns from "../../Helpers/ApplicationColumns";
 import { setSelected } from "../../Features/lists/applicationTableSlice";
-import { selectApplicationsById } from "../../Features/api/applicationApiSlice";
-import { selectCourseById } from "../../Features/api/courseApiSlice";
-import { selectUserById } from "../../Features/api/usersApiSlice";
+import { useGetApplicationsQuery } from "../../Features/api/applicationApiSlice";
+import { useGetCoursesQuery } from "../../Features/api/courseApiSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Creator from "../Cells/Creator";
+import options from "../../Helpers/DateOptions";
 
 const ApplicationRow = ({ applicationId }) => {
   const dispatch = useDispatch();
   const { dense, selected } = useSelector((state) => state.applicationTable);
-  const application = useSelector((state) =>
-    selectApplicationsById(state, applicationId)
-  );
-  const { firstName, lastName, avatar } = useSelector((state) =>
-    selectUserById(state, application.createdBy)
-  );
-  const course = useSelector((state) =>
-    selectCourseById(state, application.courseId)
-  );
-  const title = course ? course.title : "Custom Application";
+  const {
+    application: {
+      createdBy,
+      courseId,
+      startDate,
+      endDate,
+      status,
+      sponsorType,
+      delivery,
+    },
+  } = useGetApplicationsQuery("applications", {
+    selectFromResult: ({ data }) => ({
+      application: data?.entities[applicationId],
+    }),
+  });
+  const { title } = useGetCoursesQuery("courses", {
+    selectFromResult: ({ data }) => ({
+      title: data?.entities[courseId]?.title ?? "Custom Application",
+    }),
+  });
 
   return (
     <>
       <TableRow>
         {applicationColumns.map((mappedColumn) => {
-          let value = application[mappedColumn.id];
+          let value;
 
           if (mappedColumn.id === "inspect") {
             value = (
@@ -71,17 +80,20 @@ const ApplicationRow = ({ applicationId }) => {
           }
 
           if (mappedColumn.id === "createdBy") {
+            value = <Creator dense={dense} userId={createdBy} />;
+          }
+
+          if (mappedColumn.id === "status") {
             value = (
-              <Stack direction="row" spacing={1} alignItems="center">
-                <CustomAvatar
-                  size={dense ? "small" : null}
-                  alt={`${firstName} ${lastName}'s avatar`}
-                  src={avatar}
-                >
-                  {firstName.substring(0, 2).toUpperCase()}
-                </CustomAvatar>
-                <Typography variant="body2">{`${firstName} ${lastName}`}</Typography>
-              </Stack>
+              <Chip
+                size={dense ? "small" : "medium"}
+                color={
+                  (status === "Approved" && "primary") ||
+                  (status === "Rejected" && "error") ||
+                  "default"
+                }
+                label={status}
+              />
             );
           }
 
@@ -89,14 +101,20 @@ const ApplicationRow = ({ applicationId }) => {
             value = title;
           }
 
-          if (
-            mappedColumn.id === "startDate" ||
-            mappedColumn.id === "endDate"
-          ) {
-            value = new Date(application[mappedColumn.id]).toLocaleString(
-              "en-US",
-              { day: "numeric", month: "long", year: "numeric" }
-            );
+          if (mappedColumn.id === "startDate") {
+            value = new Date(startDate).toDateString("en-us", options);
+          }
+
+          if (mappedColumn.id === "endDate") {
+            value = new Date(endDate).toDateString("en-us", options);
+          }
+
+          if (mappedColumn.id === "sponsorType") {
+            value = sponsorType;
+          }
+
+          if (mappedColumn.id === "delivery") {
+            value = delivery;
           }
 
           return (

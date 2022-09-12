@@ -1,10 +1,10 @@
 import { useSelector } from "react-redux";
 import { ROLES } from "../Config/roles";
 import { selectOrganizationById } from "../Features/api/organizationApiSlice";
-import { selectCurrentUser } from "../Features/global/authSlice";
 
 const useIsAdmin = (organizationId) => {
-  const user = useSelector(selectCurrentUser);
+  const { user, token } = useSelector((state) => state.auth);
+  const userId = user?.id;
   const roles = user?.roles;
   const isAdmin = user && Object.values(roles).includes(ROLES.Admin);
   const organization = useSelector((state) =>
@@ -12,7 +12,7 @@ const useIsAdmin = (organizationId) => {
   );
   const isOrgAdmin =
     organization && Object.values(organization?.admins).includes(user.id);
-  return { user, roles, isAdmin, isOrgAdmin };
+  return { user, token, userId, roles, isAdmin, isOrgAdmin };
 };
 
 export default useIsAdmin;

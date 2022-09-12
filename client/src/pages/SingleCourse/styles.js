@@ -4,6 +4,7 @@ import bgImage from "../../Assets/KIPPRAheader.jpeg";
 export default makeStyles((theme) => ({
   section: {
     display: "flex",
+    justifyContent: "start",
     flexDirection: "column",
     flexGrow: 1,
     marginBottom: theme.spacing(4),

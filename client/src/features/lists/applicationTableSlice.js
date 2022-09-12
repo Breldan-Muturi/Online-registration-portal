@@ -5,7 +5,7 @@ const initialState = {
   dense: false,
   page: 0,
   rowsPerPage: 5,
-  activeTab: 0,
+  activeTab: "Approvals",
 };
 
 export const applicationTableSlice = createSlice({
@@ -14,7 +14,7 @@ export const applicationTableSlice = createSlice({
   reducers: {
     setSelected: (state, action) => {
       state.selected = action.payload;
-      state.activeTab = action.payload !== "" && 0;
+      state.activeTab = "Approvals";
     },
     toggleDense: (state) => {
       state.dense = !state.dense;

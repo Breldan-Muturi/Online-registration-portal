@@ -1,112 +1,81 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
-import Tabs from "@mui/material/Tabs";
 import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import CircularProgress from "@mui/material/CircularProgress";
 import useStyles from "./styles";
 import CustomToolbar from "../../Custom/CustomToolbar";
 import StyledTab from "../../Custom/StyledTab";
-import useCourseNav from "../../Hooks/useCourseNav";
-import { useSelector } from "react-redux";
-import { Outlet } from "react-router-dom";
-import { useGetCourseByIdQuery } from "../../Features/api/courseApiSlice";
-import { selectCurrentUser } from "../../Features/global/authSlice";
-import { ROLES } from "../../Config/roles";
-
-function a11yProps(index) {
-  return {
-    component: "a",
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
+import { useParams } from "react-router-dom";
+import { useGetCoursesQuery } from "../../Features/api/courseApiSlice";
+import useIsAdmin from "../../Hooks/useIsAdmin";
+import CourseSummary from "../../Components/Summary/CourseSummary";
+import EditCourse from "../CourseSettings/EditCourse";
+import TopicList from "../../Lists/Topics/TopicList";
+import SessionList from "../../CardList/Sessions/SessionList";
+import Applications from "../Applications";
+import { useDispatch, useSelector } from "react-redux";
+import { setCourseTab } from "../../Features/global/navSlice";
+import Application from "../../Forms/Application";
 
 const SingleCourse = () => {
   const classes = useStyles();
-  const { roles } = useSelector(selectCurrentUser);
-  const { routes, courseId, pathname } = useCourseNav();
-  const {
-    data: course,
-    isSuccess,
-    isError,
-    error,
-  } = useGetCourseByIdQuery(courseId);
+  const dispatch = useDispatch();
+  const { courseId } = useParams();
+  const { courseTab, sessionId } = useSelector((state) => state.nav);
+  const { isAdmin } = useIsAdmin();
+  const { title } = useGetCoursesQuery("courses", {
+    selectFromResult: ({ data }) => ({
+      title: data?.entities[courseId].title,
+    }),
+  });
 
-  let content = (
-    <Stack spacing={3} direction="row">
-      <CircularProgress />
-      <Typography>Loading course content</Typography>
-    </Stack>
-  );
-
-  if (isSuccess) {
-    content = <Outlet />;
-  } else if (isError) {
-    content = (
-      <Typography>
-        Something went wrong: <br />
-        {error}
-      </Typography>
-    );
-  }
+  const handleChange = (event, newValue) => {
+    dispatch(setCourseTab(newValue));
+  };
 
   return (
     <Box component="section" className={classes.section}>
       <div className={classes.header}>
-        {isSuccess && (
-          <Typography variant="h4" component="h2" className={classes.title}>
-            {course.title}
-          </Typography>
-        )}
+        <Typography variant="h4" component="h2" className={classes.title}>
+          {title}
+        </Typography>
       </div>
-      <CustomToolbar variant="dense" className={classes.toolbar}>
-        <Tabs
-          value={pathname}
-          indicatorColor="primary"
-          className={classes.tabs}
-          classes={{
-            button: classes.button,
-          }}
-          aria-label="Course page tabs"
-        >
-          <StyledTab
-            label="Summary"
-            href={routes[0]}
-            value={routes[0]}
-            {...a11yProps(0)}
-          />
-          {Object.values(roles).includes(ROLES.Admin) && (
-            <StyledTab
-              label="Settings"
-              href={routes[1]}
-              value={routes[1]}
-              {...a11yProps(1)}
-            />
-          )}
-          <StyledTab
-            label="Topics"
-            href={routes[2]}
-            value={routes[2]}
-            {...a11yProps(2)}
-          />
-          <StyledTab
-            label="Sessions"
-            href={routes[3]}
-            value={routes[3]}
-            {...a11yProps(3)}
-          />
-          <StyledTab
-            label="Applications"
-            href={routes[4]}
-            value={routes[4]}
-            {...a11yProps(4)}
-          />
-        </Tabs>
-      </CustomToolbar>
-      <Box p={3} component="section">
-        {content}
-      </Box>
+      <TabContext value={courseTab}>
+        <CustomToolbar variant="dense" className={classes.toolbar}>
+          <TabList
+            indicatorColor="primary"
+            onChange={handleChange}
+            className={classes.tabs}
+            classes={{
+              button: classes.button,
+            }}
+            aria-label="Course page tabs"
+          >
+            <StyledTab label="Summary" value="Summary" />
+            {isAdmin && <StyledTab label="Settings" value="Settings" />}
+            <StyledTab label="Topics" value="Topics" />
+            <StyledTab label="Sessions" value="Sessions" />
+            <StyledTab label="Applications" value="Applications" />
+          </TabList>
+        </CustomToolbar>
+        <TabPanel value="Summary">
+          <CourseSummary />
+        </TabPanel>
+        <TabPanel value="Settings">
+          <EditCourse />
+        </TabPanel>
+        <TabPanel value="Topics">
+          <TopicList />
+        </TabPanel>
+        <TabPanel value="Sessions">
+          {sessionId ? <Application /> : <SessionList />}
+        </TabPanel>
+        <TabPanel value="Applications">
+          <Applications />
+        </TabPanel>
+      </TabContext>
     </Box>
   );
 };

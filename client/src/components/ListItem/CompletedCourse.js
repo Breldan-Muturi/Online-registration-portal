@@ -10,36 +10,36 @@ import Tooltip from "@mui/material/Tooltip";
 import ExpandMoreOutlined from "@mui/icons-material/ExpandMoreOutlined";
 import ExpandIconCustom from "../../Custom/ExpandIconCustom";
 import SubmittedEvidence from "../InnerList/SubmittedEvidence";
-import { selectCompletedCourseById } from "../../Features/api/completedCoursesApiSlice";
+import { useGetCompletedCoursesQuery } from "../../Features/api/completedCoursesApiSlice";
 import {
   expandCompletion,
   toggleCompletion,
 } from "../../Features/lists/completedCourseListSlice";
-import { useGetCourseByIdQuery } from "../../Features/api/courseApiSlice";
+import { useGetCoursesQuery } from "../../Features/api/courseApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import DeleteCompletion from "../Dialogs/DeleteCompletion";
 
 const CompletedCourse = ({ completedCourseId, index, completionCount }) => {
   const dispatch = useDispatch();
-  const completedCourse = useSelector((state) =>
-    selectCompletedCourseById(state, completedCourseId)
-  );
   const { selectedCompletions, expandedCompletion } = useSelector(
     (state) => state.completedCourseList
   );
 
   const {
-    data: foundCourse,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
-  } = useGetCourseByIdQuery(completedCourse?.courseId);
+    completedCourse: { courseId, status },
+    evidenceCount,
+  } = useGetCompletedCoursesQuery("completedCourses", {
+    selectFromResult: ({ data }) => ({
+      completedCourse: data?.entities[completedCourseId],
+      evidenceCount: data?.entities[completedCourseId].evidence.length,
+    }),
+  });
 
-  const course =
-    (isSuccess && foundCourse.title) ||
-    (isLoading && "Loading related course") ||
-    (isError && `There is no related course: ${error?.data?.message}`);
+  const { title } = useGetCoursesQuery("courses", {
+    selectFromResult: ({ data }) => ({
+      title: data?.entities[courseId].title,
+    }),
+  });
 
   const labelId = `${
     selectedCompletions.includes(completedCourseId) ? "Deselect" : "Select"
@@ -51,7 +51,7 @@ const CompletedCourse = ({ completedCourseId, index, completionCount }) => {
         secondaryAction={
           <>
             <DeleteCompletion completedCourseId={completedCourseId} />
-            {completedCourse.evidence.length > 0 && (
+            {evidenceCount > 0 && (
               <Tooltip arrow title="Expand to inspect evidence attachments">
                 <ExpandIconCustom
                   edge="end"
@@ -64,15 +64,7 @@ const CompletedCourse = ({ completedCourseId, index, completionCount }) => {
                       ? "Show completion evidence"
                       : "Hide completion evidence"
                   }
-                  onClick={() =>
-                    dispatch(
-                      expandCompletion(
-                        expandedCompletion === completedCourseId
-                          ? ""
-                          : completedCourseId
-                      )
-                    )
-                  }
+                  onClick={() => dispatch(expandCompletion(completedCourseId))}
                 >
                   <ExpandMoreOutlined />
                 </ExpandIconCustom>
@@ -94,20 +86,20 @@ const CompletedCourse = ({ completedCourseId, index, completionCount }) => {
           />
         </ListItemIcon>
         <ListItemText
-          primary={<Typography>{course}</Typography>}
+          primary={<Typography>{title}</Typography>}
           secondary={
             <Stack direction="row" gap={5}>
               <Typography
                 variant="body2"
                 color={
-                  (completedCourse.status === "Approved" && "primary") ||
-                  (completedCourse.status === "Rejected" && "error")
+                  (status === "Approved" && "primary") ||
+                  (status === "Rejected" && "error")
                 }
               >
-                {completedCourse.status}
+                {status}
               </Typography>
-              {completedCourse.evidence.length > 0 && (
-                <Typography variant="body2">{`${completedCourse.evidence.length} Documents Attached`}</Typography>
+              {evidenceCount > 0 && (
+                <Typography variant="body2">{`${evidenceCount} Documents Attached`}</Typography>
               )}
             </Stack>
           }

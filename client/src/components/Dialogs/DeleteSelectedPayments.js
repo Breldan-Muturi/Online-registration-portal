@@ -9,11 +9,11 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useDeleteSelectedPaymentsMutation } from "../../Features/api/paymentApiSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleModalSelectedPayments } from "../../Features/lists/paymentListSlice";
+import { toggleModalDeleteSelectedPayments } from "../../Features/lists/paymentListSlice";
 
 const DeleteSelectedPayments = () => {
   const dispatch = useDispatch();
-  const { selectedPayments, modalSelectedPayments } = useSelector(
+  const { selectedPayments, modalDeleteSelectedPayments } = useSelector(
     (state) => state.paymentList
   );
   const [deleteSelectedPayments, { isSuccess, isLoading, isError }] =
@@ -21,7 +21,7 @@ const DeleteSelectedPayments = () => {
   const canDelete = [!isLoading, !isError].every(Boolean);
   const handleDelete = async () => {
     await deleteSelectedPayments(selectedPayments);
-    isSuccess && dispatch(toggleModalSelectedPayments());
+    isSuccess && dispatch(toggleModalDeleteSelectedPayments());
   };
 
   return (
@@ -31,17 +31,17 @@ const DeleteSelectedPayments = () => {
         startIcon={<DeleteForeverIcon />}
         size="small"
         color="error"
-        onClick={() => dispatch(toggleModalSelectedPayments())}
+        onClick={() => dispatch(toggleModalDeleteSelectedPayments())}
       >
         Delete
       </Button>
       <Dialog
-        open={modalSelectedPayments}
-        onClose={() => dispatch(toggleModalSelectedPayments())}
+        open={modalDeleteSelectedPayments}
+        onClose={() => dispatch(toggleModalDeleteSelectedPayments())}
         aria-labelledby="payments-deletion-dialog"
         aria-describedby="delete-these-payments"
       >
-        <DialogTitle id="payments-deletion-dialog-title">
+        <DialogTitle color="error" id="payments-deletion-dialog-title">
           {"Are you sure you want to delete the selected payments completions?"}
         </DialogTitle>
         <DialogContent>
@@ -53,7 +53,7 @@ const DeleteSelectedPayments = () => {
         <DialogActions>
           <Button
             color="inherit"
-            onClick={() => dispatch(toggleModalSelectedPayments())}
+            onClick={() => dispatch(toggleModalDeleteSelectedPayments())}
           >
             Dismiss
           </Button>

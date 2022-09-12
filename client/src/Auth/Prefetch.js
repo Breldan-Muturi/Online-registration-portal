@@ -6,47 +6,44 @@ import { applicationApiSlice } from "../Features/api/applicationApiSlice";
 import { usersApiSlice } from "../Features/api/usersApiSlice";
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectCurrentToken } from "../Features/global/authSlice";
 import { paymentsApiSlice } from "../Features/api/paymentApiSlice";
 import { completedCoursesApiSlice } from "../Features/api/completedCoursesApiSlice";
+import { organizationApiSlice } from "../Features/api/organizationApiSlice";
 
 const Prefetch = () => {
-  const token = useSelector(selectCurrentToken);
   useEffect(() => {
-    const courses = store.dispatch(
-      courseApiSlice.endpoints.getCourses.initiate()
+    store.dispatch(
+      courseApiSlice.util.prefetch("getCourses", "courses", { force: true })
     );
-    const sessions = store.dispatch(
-      sessionApiSlice.endpoints.getSessions.initiate()
+    store.dispatch(
+      sessionApiSlice.util.prefetch("getSessions", "sessions", { force: true })
     );
-    const topics =
-      token && store.dispatch(topicApiSlice.endpoints.getTopics.initiate());
-    const users =
-      token && store.dispatch(usersApiSlice.endpoints.getUsers.initiate());
-    const applications =
-      token &&
-      store.dispatch(applicationApiSlice.endpoints.getApplications.initiate());
-    const payments =
-      token &&
-      store.dispatch(paymentsApiSlice.endpoints.getPayments.initiate());
-    const completedCourses =
-      token &&
-      store.dispatch(
-        completedCoursesApiSlice.endpoints.getCompletedCourses.initiate()
-      );
-
-    return () => {
-      courses.unsubscribe();
-      sessions.unsubscribe();
-      if (token) {
-        topics.unsubscribe();
-        users.unsubscribe();
-        applications.unsubscribe();
-        payments.unsubscribe();
-        completedCourses.unsubscribe();
-      }
-    };
+    store.dispatch(
+      topicApiSlice.util.prefetch("getTopics", "topics", { force: true })
+    );
+    store.dispatch(
+      usersApiSlice.util.prefetch("getUsers", "users", { force: true })
+    );
+    store.dispatch(
+      organizationApiSlice.util.prefetch("getOrganizations", "organizations", {
+        force: true,
+      })
+    );
+    store.dispatch(
+      applicationApiSlice.util.prefetch("getApplications", "applications", {
+        force: true,
+      })
+    );
+    store.dispatch(
+      paymentsApiSlice.util.prefetch("getPayments", "payments", { force: true })
+    );
+    store.dispatch(
+      completedCoursesApiSlice.util.prefetch(
+        "getCompletedCourses",
+        "completedCourses",
+        { force: true }
+      )
+    );
   }, []);
 
   return <Outlet />;

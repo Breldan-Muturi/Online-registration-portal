@@ -11,6 +11,7 @@ const initialState = {
   isOpen: false,
   sessions: [],
   status: "idle", // 'idle' | 'loading' | 'success' | 'failed'
+  courseId: null,
   message: null,
 };
 
@@ -42,6 +43,29 @@ export const sessionSlice = createSlice({
     toggleModal: (state) => {
       state.isOpen = !state.isOpen;
     },
+    setCourseId: (state, action) => {
+      state.courseId = action.payload;
+    },
+    resetUpdate: (state, action) => {
+      const {
+        endDate,
+        startDate,
+        courseId,
+        onPremisesFee,
+        onPremisesSlots,
+        venue,
+        onlineFee,
+        onlineSlots,
+      } = action.payload;
+      state.startDate = new Date(startDate).toISOString();
+      state.endDate = new Date(endDate).toISOString();
+      state.courseId = courseId;
+      state.onPremisesFee = onPremisesFee;
+      state.onPremisesSlots = onPremisesSlots;
+      state.venue = venue;
+      state.onlineFee = onlineFee;
+      state.onlineSlots = onlineSlots;
+    },
     reset: () => initialState,
   },
 });
@@ -55,6 +79,8 @@ export const {
   setOnlineFee,
   setOnlineSlots,
   toggleModal,
+  setCourseId,
+  resetUpdate,
   reset,
 } = sessionSlice.actions;
 export default sessionSlice.reducer;

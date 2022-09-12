@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Modal from "@mui/material/Modal";
@@ -8,25 +7,25 @@ import Typography from "@mui/material/Typography";
 import AppBar from "@mui/material/AppBar";
 import Grid from "@mui/material/Unstable_Grid2";
 import TextField from "@mui/material/TextField";
-import MenuItem from "@mui/material/MenuItem";
 import UploadFileOutlined from "@mui/icons-material/UploadFileOutlined";
 import SelectedCompletions from "../../Components/MultiPreview/SelectedCompletions";
 import useStyles from "./styles";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { selectCurrentUser } from "../../Features/global/authSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useCreateCompletedCourseMutation } from "../../Features/api/completedCoursesApiSlice";
-import { selectAllCourses } from "../../Features/api/courseApiSlice";
+import useIsAdmin from "../../Hooks/useIsAdmin";
+import { reset, setDate } from "../../Features/forms/completedCourseSlice";
+import { newCompletionModal } from "../../Features/lists/completedCourseListSlice";
+import CompletedCourse from "../../Components/Dropdowns/FormLabels/CompletedCourse";
 
 const CompletedCourseModal = () => {
   const classes = useStyles();
-  const user = useSelector(selectCurrentUser);
-  const courses = useSelector(selectAllCourses);
-  const [open, setOpen] = useState(false);
-  const [date, setDate] = useState(new Date().toISOString());
-  const [course, setCourse] = useState("");
+  const dispatch = useDispatch();
+  const { userId } = useIsAdmin();
+  const modalNewCompletion = useSelector((state) => state.completedCourseList);
+  const { date, courseId } = useSelector((state) => state.completedCourse);
   const [evidence, setEvidence] = useState([]);
   const [createCompletedCourse, { isSuccess, isLoading, isError, error }] =
     useCreateCompletedCourseMutation();
@@ -35,9 +34,9 @@ const CompletedCourseModal = () => {
     e.preventDefault();
     const completedCourseData = new FormData();
     completedCourseData.append("date", date);
-    completedCourseData.append("courseId", course);
-    completedCourseData.append("participant", user.id);
-    completedCourseData.append("createdBy", user.id);
+    completedCourseData.append("courseId", courseId);
+    completedCourseData.append("participant", userId);
+    completedCourseData.append("createdBy", userId);
     Object.keys(evidence).forEach((key) => {
       completedCourseData.append("evidence", evidence.item(key));
     });
@@ -46,10 +45,9 @@ const CompletedCourseModal = () => {
     } catch (err) {
       console.err(`Failed to submit the completed Course: ${err}`);
     } finally {
-      setDate(new Date().toISOString());
-      setCourse("");
+      dispatch(reset());
       setEvidence([]);
-      setOpen(!open);
+      dispatch(newCompletionModal());
     }
   };
 
@@ -58,19 +56,19 @@ const CompletedCourseModal = () => {
       <Button
         size="small"
         startIcon={<UploadFileOutlined />}
-        onClick={() => setOpen(!open)}
+        onClick={() => dispatch(newCompletionModal())}
       >
         Add completed course
       </Button>
       <Modal
         aria-labelledby="session-creation-modal"
         aria-describedby="modal-for-session-creation"
-        open={open}
+        open={modalNewCompletion}
         className={classes.modal}
-        onClose={() => setOpen(!open)}
+        onClose={() => dispatch(newCompletionModal())}
         closeAfterTransition
       >
-        <Fade in={open}>
+        <Fade in={modalNewCompletion}>
           <div className={classes.paper}>
             <AppBar position="static" className={classes.appBar}>
               <Typography variant="subtitle1">
@@ -84,27 +82,13 @@ const CompletedCourseModal = () => {
                     id="date"
                     label="Completion Date"
                     value={date}
-                    onChange={(newValue) => setDate(newValue.toISOString())}
+                    onChange={(newValue) =>
+                      dispatch(setDate(newValue.toISOString()))
+                    }
                     renderInput={(params) => <TextField {...params} />}
                   />
                 </LocalizationProvider>
-                <TextField
-                  select
-                  fullWidth
-                  id="select-application-course"
-                  label="Select Completed Course"
-                  name="courseId"
-                  value={course}
-                  onChange={(e) => setCourse(e.target.value)}
-                  helperText="Select the completed course"
-                  variant="outlined"
-                >
-                  {courses.map((mappedCourse) => (
-                    <MenuItem key={mappedCourse._id} value={mappedCourse._id}>
-                      {mappedCourse.title}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                <CompletedCourse />
                 <SelectedCompletions
                   evidence={evidence}
                   setEvidence={setEvidence}
@@ -113,6 +97,7 @@ const CompletedCourseModal = () => {
                   type="submit"
                   variant="contained"
                   startIcon={<UploadFileOutlined />}
+                  loading={isLoading}
                   fullWidth
                   size="large"
                 >

@@ -9,11 +9,11 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { useDeleteSelectedCompletionsMutation } from "../../Features/api/completedCoursesApiSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleAllCompletionsModal } from "../../Features/lists/completedCourseListSlice";
+import { toggleSelectedCompletionsModal } from "../../Features/lists/completedCourseListSlice";
 
 const DeleteSelectedCompletions = () => {
   const dispatch = useDispatch();
-  const { selectedCompletions, modalAllCompletions } = useSelector(
+  const { selectedCompletions, modalSelectedCompletions } = useSelector(
     (state) => state.completedCourseList
   );
   const [deleteSelectedCompletions, { isSuccess, isLoading, isError }] =
@@ -21,7 +21,7 @@ const DeleteSelectedCompletions = () => {
   const canDelete = [!isLoading, !isError].every(Boolean);
   const handleDelete = async () => {
     await deleteSelectedCompletions(selectedCompletions);
-    isSuccess && dispatch(toggleAllCompletionsModal());
+    isSuccess && dispatch(toggleSelectedCompletionsModal());
   };
 
   return (
@@ -31,13 +31,13 @@ const DeleteSelectedCompletions = () => {
         startIcon={<DeleteForeverIcon />}
         size="small"
         color="error"
-        onClick={() => dispatch(toggleAllCompletionsModal())}
+        onClick={() => dispatch(toggleSelectedCompletionsModal())}
       >
         Delete
       </Button>
       <Dialog
-        open={modalAllCompletions}
-        onClose={() => dispatch(toggleAllCompletionsModal())}
+        open={modalSelectedCompletions}
+        onClose={() => dispatch(toggleSelectedCompletionsModal())}
         aria-labelledby="course-deletion-dialog"
         aria-describedby="delete-this-course"
       >
@@ -54,7 +54,7 @@ const DeleteSelectedCompletions = () => {
         <DialogActions>
           <Button
             color="inherit"
-            onClick={() => dispatch(toggleAllCompletionsModal())}
+            onClick={() => dispatch(toggleSelectedCompletionsModal())}
           >
             Dismiss
           </Button>

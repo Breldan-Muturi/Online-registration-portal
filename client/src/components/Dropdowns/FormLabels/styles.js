@@ -1,10 +1,9 @@
 import { makeStyles } from "@mui/styles";
 
 export default makeStyles((theme) => ({
-  box: {
+  chips: {
     display: "flex",
-    flexDirection: "column",
-    gap: "20px",
-    padding: theme.spacing(3),
+    flexWrap: "wrap",
+    gap: theme.spacing(1),
   },
 }));

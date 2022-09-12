@@ -18,7 +18,7 @@ const Navbar = () => {
   return (
     <>
       <AppBar component="nav" position="fixed">
-        <Toolbar className={classes.app}>
+        <Toolbar variant="dense" className={classes.app}>
           <Link to="/">
             <img
               src={Logo}

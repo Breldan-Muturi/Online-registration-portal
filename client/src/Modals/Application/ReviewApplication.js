@@ -11,10 +11,11 @@ import {
   reset,
   toggleIsOpenReview,
 } from "../../Features/forms/customApplicationSlice";
-import { selectUserById } from "../../Features/api/usersApiSlice";
 import { useCreateApplicationMutation } from "../../Features/api/applicationApiSlice";
 import { useNavigate } from "react-router-dom";
-import { selectCurrentUser } from "../../Features/global/authSlice";
+import { useGetOrganizationsQuery } from "../../Features/api/organizationApiSlice";
+import useIsAdmin from "../../Hooks/useIsAdmin";
+import { useGetUsersQuery } from "../../Features/api/usersApiSlice";
 
 const ReviewApplication = () => {
   const classes = useStyles();
@@ -41,11 +42,28 @@ const ReviewApplication = () => {
     isNewOrganization,
     isOpenReview,
   } = useSelector((state) => state.customApplication);
-  const organizationContact = useSelector((state) =>
-    selectUserById(state, sponsorOrganization?.admins[0])
+
+  const { name, phoneNumber, email, adminId } = useGetOrganizationsQuery(
+    "organizations",
+    {
+      selectFromResult: ({ data }) => ({
+        name: data?.entities[sponsorOrganization]?.name,
+        phoneNumber: data?.entities[sponsorOrganization]?.phoneNumber,
+        email: data?.entities[sponsorOrganization]?.email,
+        adminId: data?.entities[sponsorOrganization]?.admins[0],
+      }),
+    }
   );
-  const user = useSelector(selectCurrentUser);
-  const createdBy = user.id;
+
+  const {
+    organizationContact: { firstName, lastName, email: contactEmail },
+  } = useGetUsersQuery("users", {
+    selectFromResult: ({ data }) => ({
+      organizationContact: data?.entities[adminId] ?? "",
+    }),
+  });
+
+  const { userId: createdBy } = useIsAdmin();
   const [createApplication, { isLoading, isSuccess, isError, error }] =
     useCreateApplicationMutation();
 
@@ -63,10 +81,8 @@ const ReviewApplication = () => {
       sponsorCounty,
       contactPerson: isNewOrganization
         ? sponsorContactPerson
-        : `${organizationContact.firstName} ${organizationContact.lastName}`,
-      contactEmail: isNewOrganization
-        ? sponsorContactEmail
-        : `${organizationContact.email}`,
+        : `${firstName} ${lastName}`,
+      contactEmail: isNewOrganization ? sponsorContactEmail : `${contactEmail}`,
       sponsorLogo,
       courseId,
       topics: selectedTopicIds,
@@ -120,38 +136,35 @@ const ReviewApplication = () => {
                 {isNewOrganization ? (
                   <strong>{sponsorName}</strong>
                 ) : (
-                  <strong>{sponsorOrganization?.name}</strong>
+                  <strong>{name}</strong>
                 )}{" "}
                 <br />
                 Organization email:{" "}
                 {isNewOrganization ? (
                   <strong>{sponsorEmail}</strong>
                 ) : (
-                  <strong>{sponsorOrganization?.email}</strong>
+                  <strong>{email}</strong>
                 )}{" "}
                 <br />
                 Organization Phone Number:{" "}
                 {isNewOrganization ? (
                   <strong>{sponsorPhoneNumber}</strong>
                 ) : (
-                  <strong>{sponsorOrganization?.phoneNumber}</strong>
+                  <strong>{phoneNumber}</strong>
                 )}{" "}
                 <br />
                 Organization Contact Person:{" "}
                 {isNewOrganization ? (
                   <strong>{sponsorContactPerson}</strong>
                 ) : (
-                  <strong>
-                    {organizationContact?.firstName}{" "}
-                    {organizationContact?.lastName}
-                  </strong>
+                  <strong>{`${firstName} ${lastName}`}</strong>
                 )}
                 <br />
                 Organization Contact Email:{" "}
                 {isNewOrganization ? (
                   <strong>{sponsorContactEmail}</strong>
                 ) : (
-                  <strong>{organizationContact?.email}</strong>
+                  <strong>{contactEmail}</strong>
                 )}{" "}
                 <br />
                 Participants Count: <strong>{participants?.length}</strong>

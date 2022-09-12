@@ -9,24 +9,25 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useUpdateApplicationMutation } from "../../Features/api/applicationApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelected } from "../../Features/lists/applicationTableSlice";
+import useIsAdmin from "../../Hooks/useIsAdmin";
 
-const ApplicationApprove = ({ application }) => {
+const ApplicationApprove = ({ applicationId }) => {
   const dispatch = useDispatch();
-  const { user, token } = useSelector((state) => state.auth);
+  const { userId, isAdmin } = useIsAdmin();
   const { dense } = useSelector((state) => state.applicationTable);
   const [updateApplication, { isSuccess, isLoading, isError, error }] =
     useUpdateApplicationMutation();
 
-  const canApprove = [!isLoading, !isError, token].every(Boolean);
+  const canApprove = [!isLoading, !isError, isAdmin].every(Boolean);
   const [open, setOpen] = useState(false);
   const handleDialog = () => {
     setOpen(!open);
   };
   const handleApproval = async () => {
     await updateApplication({
-      id: application.id,
+      id: applicationId,
       status: "Approved",
-      approvedBy: user.id,
+      approvedBy: userId,
     });
     {
       isSuccess && setOpen(!open);

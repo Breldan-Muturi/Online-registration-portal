@@ -6,7 +6,6 @@ import ListItemText from "@mui/material/ListItemText";
 import Tooltip from "@mui/material/Tooltip";
 import Fade from "@mui/material/Fade";
 import ListItemButton from "@mui/material/ListItemButton";
-// import menuItems from "../../Helpers/SidebarMenu";
 import ExitToApp from "@mui/icons-material/ExitToApp";
 import grey from "@mui/material/colors/grey";
 import SidebarDrawer from "../../Custom/SidebarDrawer";

@@ -1,13 +1,16 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { selectCourseById } from "../../Features/api/courseApiSlice";
+import { useGetCoursesQuery } from "../../Features/api/courseApiSlice";
 
 const CourseSummary = () => {
   const { courseId } = useParams();
-  const course = useSelector((state) => selectCourseById(state, courseId));
-  return <Typography>{course.description}</Typography>;
+  const { description } = useGetCoursesQuery("courses", {
+    selectFromResult: ({ data }) => ({
+      description: data?.entities[courseId].description,
+    }),
+  });
+  return <Typography>{description}</Typography>;
 };
 
 export default CourseSummary;

@@ -6,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import OrganizationCustom from "./OrganizationCustom";
-import OrganizationList from "../Components/Dropdowns/Organizations/OrganizationList";
+import OrganizationList from "../Components/Dropdowns/FormLabels/OrganizationList";
 import SponsorTypes from "../Helpers/SponsorTypes";
 import { useDispatch, useSelector } from "react-redux";
 import {

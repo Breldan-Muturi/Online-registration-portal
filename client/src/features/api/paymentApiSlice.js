@@ -49,6 +49,24 @@ export const paymentsApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: [{ type: "Payment", id: "LIST" }],
     }),
 
+    updatePayment: builder.mutation({
+      query: (payment) => ({
+        url: `/api/payments/${payment.id}`,
+        method: "PATCH",
+        body: payment,
+      }),
+      invalidateTags: (result, error, arg) => [{ type: "Payment", id: arg.id }],
+    }),
+
+    updateSelectedPayments: builder.mutation({
+      query: (selectedPayments) => ({
+        url: `/api/payments/selected`,
+        method: "PATCH",
+        body: selectedPayments,
+      }),
+      invalidateTags: [{ type: "Payments", id: "LIST" }],
+    }),
+
     deletePayment: builder.mutation({
       query: (paymentId) => ({
         url: `/api/payments/${paymentId}`,
@@ -78,6 +96,8 @@ export const {
   useGetPaymentsQuery,
   useGetPaymentsByApplicationQuery,
   useCreatePaymentMutation,
+  useUpdatePaymentMutation,
+  useUpdateSelectedPaymentsMutation,
   useDeletePaymentMutation,
   useDeleteSelectedPaymentsMutation,
 } = paymentsApiSlice;

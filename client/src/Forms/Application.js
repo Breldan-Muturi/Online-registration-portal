@@ -6,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import OrganizationCustom from "./OrganizationCustom";
-import OrganizationList from "../Components/Dropdowns/Organizations/OrganizationList";
+import OrganizationList from "../Components/Dropdowns/FormLabels/OrganizationList";
 import SponsorTypes from "../Helpers/SponsorTypes";
 import deliveryTypes from "../Helpers/DeliveryTypes";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,17 +22,22 @@ import {
   reset,
 } from "../Features/forms/customApplicationSlice";
 import ParticipantsInfo from "./ParticipantsInfo";
-import ReviewApplication from "../Modals/ReviewApplication/ReviewApplication";
+import ReviewApplication from "../Modals/Application/ReviewApplication";
 import { useParams } from "react-router-dom";
-import { selectSessionsById } from "../Features/api/sessionApiSlice";
+import { useGetSessionsQuery } from "../Features/api/sessionApiSlice";
 import options from "../Helpers/DateOptions";
 
 const Application = () => {
   const dispatch = useDispatch();
-  const { courseId, sessionId } = useParams();
-  const { venue, startDate, endDate } = useSelector((state) =>
-    selectSessionsById(state, sessionId)
-  );
+  const { courseId } = useParams();
+  const sessionId = useSelector((state) => state.nav.sessionId);
+  const {
+    session: { venue, startDate, endDate },
+  } = useGetSessionsQuery("sessions", {
+    selectFromResult: ({ data }) => ({
+      session: data?.entities[sessionId],
+    }),
+  });
   const sessionStart = new Date(startDate).toDateString("en-us", options);
   const sessionEnd = new Date(endDate).toDateString("en-us", options);
   const { sponsorType, isNewOrganization, deliveryType } = useSelector(

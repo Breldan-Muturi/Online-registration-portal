@@ -11,21 +11,25 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import Pagination from "@mui/material/Pagination";
 import { useSelector } from "react-redux";
-import { selectCompletedCourseById } from "../../Features/api/completedCoursesApiSlice";
+import {
+  selectCompletedCourseById,
+  useGetCompletedCoursesQuery,
+} from "../../Features/api/completedCoursesApiSlice";
 
 const SubmittedEvidence = ({ completedCourseId }) => {
-  const completedCourse = useSelector((state) =>
-    selectCompletedCourseById(state, completedCourseId)
-  );
   const expandedCompletion = useSelector(
     (state) => state.completedCourseList.expandedCompletion
   );
-  const evidence = completedCourse.evidence;
   const [page, setPage] = useState(1);
+  const { evidence } = useGetCompletedCoursesQuery("completedCourses", {
+    selectFromResult: ({ data }) => ({
+      evidence: data?.entities[completedCourseId].evidence,
+    }),
+  });
   const count = Math.ceil(evidence.length / 3);
   return (
     <Collapse
-      in={expandedCompletion === completedCourse._id}
+      in={expandedCompletion === completedCourseId}
       timeout="auto"
       unmountOnExit
     >
@@ -33,9 +37,7 @@ const SubmittedEvidence = ({ completedCourseId }) => {
         {evidence
           .slice((page - 1) * 3, (page - 1) * 3 + 3)
           .map((evidence, index) => {
-            const name = evidence.name;
-            const size = evidence.size;
-            const url = evidence.path;
+            const { name, size, path: url } = evidence;
             return (
               <React.Fragment key={index}>
                 <ListItem

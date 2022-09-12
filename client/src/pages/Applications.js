@@ -21,135 +21,34 @@ import {
   setRowsPerPage,
   toggleDense,
 } from "../Features/lists/applicationTableSlice";
-import {
-  selectApplicationIds,
-  selectCourseApplicationIds,
-  selectOrganizationApplicationIds,
-  selectParticipantApplicationIds,
-  selectParticipantCourseApplicationIds,
-  useGetApplicationsQuery,
-} from "../Features/api/applicationApiSlice";
-import { useGetUsersQuery } from "../Features/api/usersApiSlice";
-import {
-  selectCourseById,
-  useGetCoursesQuery,
-} from "../Features/api/courseApiSlice";
-import { useGetPaymentsQuery } from "../Features/api/paymentApiSlice";
+import { useGetApplicationsQuery } from "../Features/api/applicationApiSlice";
 import { useParams } from "react-router-dom";
-import { selectCurrentUser } from "../Features/global/authSlice";
-import {
-  selectOrganizationById,
-  useGetOrganizationsQuery,
-} from "../Features/api/organizationApiSlice";
-import { ROLES } from "../Config/roles";
+import useIsAdmin from "../Hooks/useIsAdmin";
 
 const Applications = () => {
-  const {
-    data: applications,
-    isLoading: isApplicationsLoading,
-    isSuccess: isApplicationsSuccess,
-    isError: isApplicationsError,
-    error: errorApplications,
-  } = useGetApplicationsQuery();
-
-  const {
-    isLoading: isUsersLoading,
-    isSuccess: isUsersSuccess,
-    isError: isUsersError,
-    error: errorUsers,
-  } = useGetUsersQuery();
-
-  const {
-    isLoading: isCoursesLoading,
-    isSuccess: isCoursesSuccess,
-    isError: isCoursesError,
-    error: errorCourses,
-  } = useGetCoursesQuery();
-
-  const {
-    isLoading: isPaymentsLoading,
-    isSuccess: isPaymentsSuccess,
-    isError: isPaymentsError,
-    error: errorPayments,
-  } = useGetPaymentsQuery();
-
-  const {
-    isLoading: isOrganizationsLoading,
-    isSuccess: isOrganizationsSuccess,
-    isError: isOrganizationsError,
-    error: errorOrganizations,
-  } = useGetOrganizationsQuery();
-
-  const success = [
-    isApplicationsSuccess,
-    isPaymentsSuccess,
-    isUsersSuccess,
-    isCoursesSuccess,
-    isOrganizationsSuccess,
-  ].every(Boolean);
-
-  const loading = [
-    isApplicationsLoading,
-    isUsersLoading,
-    isCoursesLoading,
-    isPaymentsLoading,
-    isOrganizationsLoading,
-  ].some(Boolean);
-
-  const hasError = [
-    isApplicationsError,
-    isUsersError,
-    isCoursesError,
-    isPaymentsError,
-    isOrganizationsError,
-  ].some(Boolean);
-
-  const error =
-    errorApplications?.data?.message ||
-    errorPayments?.data?.message ||
-    errorUsers?.data?.message ||
-    errorCourses?.data?.message ||
-    errorOrganizations?.data?.message;
-
   const dispatch = useDispatch();
+  const { userId, isAdmin } = useIsAdmin();
   const { dense, page, rowsPerPage } = useSelector(
     (state) => state.applicationTable
   );
-
-  const user = useSelector(selectCurrentUser);
+  const {
+    data: applications,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetApplicationsQuery("applications", {
+    pollingInterval: 60000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
+  });
 
   const { courseId, organizationId } = useParams();
-  const course = useSelector((state) => selectCourseById(state, courseId));
-  const organization = useSelector((state) =>
-    selectOrganizationById(state, organizationId)
-  );
 
-  const portalApplications = useSelector(selectApplicationIds);
-
-  const courseApplications = useSelector((state) =>
-    selectCourseApplicationIds(state, courseId)
-  );
-
-  const organizationApplications = useSelector((state) =>
-    selectOrganizationApplicationIds(state, organizationId)
-  );
-
-  const participantApplications = useSelector((state) =>
-    selectParticipantApplicationIds(state, user.id)
-  );
-
-  const participantCourseApplications = useSelector((state) =>
-    selectParticipantCourseApplicationIds(state, {
-      courseId,
-      participantId: user.id,
-    })
-  );
-
-  let ids;
-  let title;
   let content;
 
-  if (loading) {
+  if (isLoading) {
     content = (
       <Stack direction="row" alignItems="center">
         <CircularProgress />
@@ -158,127 +57,154 @@ const Applications = () => {
     );
   }
 
-  if (hasError) {
+  if (isError) {
     content = (
       <Typography color="error">{`Something went wrong loading applications ${error}`}</Typography>
     );
   }
 
-  if (success) {
-    ids = Object.values(user?.roles).includes(ROLES.Admin)
-      ? (courseId && courseApplications) ||
-        (organizationId && organizationApplications) ||
-        portalApplications
-      : (courseId && participantCourseApplications) ||
-        (organizationId && organizationApplications) ||
-        participantApplications;
+  if (isSuccess) {
+    const { ids, entities } = applications;
+    let applicationIds;
+    let title;
 
-    title = ids.length
-      ? Object.values(user?.roles).includes(ROLES.Admin)
-        ? (courseId && `Applications submitted for ${course.title}`) ||
-          (organizationId &&
-            `Applications Submitted by ${organization.name}`) ||
-          `Submitted Applications`
-        : (courseId && `Your applications for ${course.title}`) ||
-          (organizationId && `${organization.name} Applications`) ||
-          "My Applications"
-      : Object.values(user?.roles).includes(ROLES.Admin)
-      ? (courseId &&
-          `There are no applications for ${course.title} at this time`) ||
-        (organizationId &&
-          `There are no applications by ${organization.name} at this time`) ||
-        "There are no applications submitted to the portal at this time"
-      : (courseId &&
-          `You have not submitted an application for ${course.title}`) ||
-        (organizationId &&
-          `${organization.name} has not submitted any application`) ||
-        "You have not submitted any applications";
-  }
+    if (courseId) {
+      if (isAdmin) {
+        applicationIds = ids.filter(
+          (applicationId) => entities[applicationId].courseId === courseId
+        );
+        title = applicationIds.length
+          ? `${applicationIds.length} Application${
+              applicationIds.length > 1 && "s"
+            } submitted for this course`
+          : "There are no applications submitted for this course";
+      } else {
+        applicationIds = ids.filter(
+          (applicationId) =>
+            entities[applicationId].courseId === courseId &&
+            entities[applicationId].createdBy === userId
+        );
+        title = applicationIds.length
+          ? `Your ${applicationIds.length} application${
+              applicationIds.length > 1 && "s"
+            } for this course`
+          : "You are not participating any applications for this course";
+      }
+    }
 
-  if (success & !ids?.length) {
-    content = (
-      <Typography color="error" variant="h2">
-        {title}
-      </Typography>
-    );
-  }
+    if (organizationId) {
+      applicationIds = ids.filter(
+        (applicationId) => entities[applicationId].sponsorId === organizationId
+      );
+      title = applicationIds.length
+        ? `${applicationIds.length} Application${
+            applicationIds.length > 1 && "s"
+          } submitted by this organization`
+        : "This organization has not submitted any applications";
+    }
 
-  if (success && ids?.length) {
-    const applicationContent = ids
-      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-      .map((applicationId) => (
-        <ApplicationRow key={applicationId} applicationId={applicationId} />
-      ));
+    if (!organizationId && !courseId) {
+      if (isAdmin) {
+        applicationIds = [...ids];
+        title = `${
+          applicationIds.length ? applicationIds.length : "There are no"
+        } application${
+          applicationIds.length !== 1 && "s"
+        } submitted through the portal`;
+      } else {
+        applicationIds = ids.filter(
+          (applicationId) => entities[applicationId].createdBy === userId
+        );
+        title = `You have ${!applicationIds.length && "not"} submitted ${
+          applicationIds.length ? applicationIds.length : "any"
+        } applicaton${applicationIds.length !== 1 && "s"}`;
+      }
+    }
 
-    const handleChangePage = (event, newPage) => {
-      dispatch(setPage(newPage));
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-      dispatch(setRowsPerPage(parseInt(event.target.value, 10)));
-      dispatch(setPage(0));
-    };
-
-    const handleChangeDense = () => {
-      dispatch(toggleDense());
-    };
-
-    // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows =
-      page > 0 ? Math.max(0, (1 + page) * rowsPerPage - ids.length) : 0;
-
-    content = (
-      <>
-        <Typography color="primary" variant="h2">
+    if (!applicationIds?.length) {
+      content = (
+        <Typography color="error" variant="h2">
           {title}
         </Typography>
-        <Stack>
-          <Paper sx={{ width: "100%", overflow: "hidden" }}>
-            <TableContainer sx={{ maxHeight: "calc(100vh - 160px)" }}>
-              <Table
-                stickyHeader
-                size={dense ? "small" : "medium"}
-                aria-label="Applications table"
-              >
-                <TableHead>
-                  <TableRow>
-                    {applicationColumns.map((mappedColumn) => (
-                      <MainTableCell
-                        key={mappedColumn.id}
-                        align={mappedColumn.align}
-                        style={{ minWidth: mappedColumn.minWidth }}
-                      >
-                        {mappedColumn.label}
-                      </MainTableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>{applicationContent}</TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              style={{
-                borderTop: "solid 1px rgb(224, 224, 224)",
-                minHeight: dense && "30px",
-              }}
-              showFirstButton
-              showLastButton
-              rowsPerPageOptions={[5, 10, 20]}
-              component="div"
-              count={ids.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
+      );
+    }
+    if (applicationIds?.length) {
+      const applicationContent = applicationIds
+        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+        .map((applicationId) => (
+          <ApplicationRow key={applicationId} applicationId={applicationId} />
+        ));
+
+      const handleChangePage = (event, newPage) => {
+        dispatch(setPage(newPage));
+      };
+
+      const handleChangeRowsPerPage = (event) => {
+        dispatch(setRowsPerPage(parseInt(event.target.value, 10)));
+        dispatch(setPage(0));
+      };
+
+      const handleChangeDense = () => {
+        dispatch(toggleDense());
+      };
+
+      // Avoid a layout jump when reaching the last page with empty rows.
+      const emptyRows =
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - ids.length) : 0;
+
+      content = (
+        <>
+          <Typography color="primary" variant="h2">
+            {title}
+          </Typography>
+          <Stack>
+            <Paper sx={{ width: "100%", overflow: "hidden" }}>
+              <TableContainer sx={{ maxHeight: "calc(100vh - 160px)" }}>
+                <Table
+                  stickyHeader
+                  size={dense ? "small" : "medium"}
+                  aria-label="Applications table"
+                >
+                  <TableHead>
+                    <TableRow>
+                      {applicationColumns.map((mappedColumn) => (
+                        <MainTableCell
+                          key={mappedColumn.id}
+                          align={mappedColumn.align}
+                          style={{ minWidth: mappedColumn.minWidth }}
+                        >
+                          {mappedColumn.label}
+                        </MainTableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>{applicationContent}</TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                style={{
+                  borderTop: "solid 1px rgb(224, 224, 224)",
+                  minHeight: dense && "30px",
+                }}
+                showFirstButton
+                showLastButton
+                rowsPerPageOptions={[5, 10, 20]}
+                component="div"
+                count={ids.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Paper>
+            <FormControlLabel
+              control={<Switch checked={dense} onChange={handleChangeDense} />}
+              label="Dense view"
             />
-          </Paper>
-          <FormControlLabel
-            control={<Switch checked={dense} onChange={handleChangeDense} />}
-            label="Dense view"
-          />
-        </Stack>
-      </>
-    );
+          </Stack>
+        </>
+      );
+    }
   }
 
   return (

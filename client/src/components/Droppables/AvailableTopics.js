@@ -1,15 +1,28 @@
 import React, { useState } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
-import Pagination from "@mui/lab/Pagination";
+import Pagination from "@mui/material/Pagination";
 import TopicCard from "../../Components/Cards/TopicCard/TopicCard";
 import clsx from "clsx";
 import useStyles from "./styles";
 import { Droppable } from "@hello-pangea/dnd";
+import { useDispatch, useSelector } from "react-redux";
+import { setAvailableTopicsPage } from "../../Features/forms/customApplicationSlice";
+import { useGetTopicsQuery } from "../../Features/api/topicApiSlice";
 
-const AvailableTopics = ({ availableTopics }) => {
+const AvailableTopics = () => {
   const classes = useStyles();
-  const [availablePage, setAvailablePage] = useState(1);
+  const dispatch = useDispatch();
+  const { selectedTopicIds, availableTopicsPage } = useSelector(
+    (state) => state.customApplication
+  );
+  const { availableTopicIds } = useGetTopicsQuery("topics", {
+    selectFromResult: ({ data }) => ({
+      availableTopicIds: data?.ids.filter(
+        (topicId) => !selectedTopicIds.includes(topicId)
+      ),
+    }),
+  });
   return (
     <Droppable droppableId="topicItems">
       {(provided, snapshot) => (
@@ -25,20 +38,19 @@ const AvailableTopics = ({ availableTopics }) => {
           {...provided.droppableProps}
         >
           <Typography>Available Topics</Typography>
-          {availableTopics
-            .slice((availablePage - 1) * 4, (availablePage - 1) * 4 + 4)
-            .map((mappedTopic, index) => (
-              <TopicCard
-                key={mappedTopic._id}
-                index={index}
-                topic={mappedTopic}
-              />
+          {availableTopicIds
+            .slice(
+              (availableTopicsPage - 1) * 4,
+              (availableTopicsPage - 1) * 4 + 4
+            )
+            .map((topicId, index) => (
+              <TopicCard key={topicId} index={index} topicId={topicId} />
             ))}
           {provided.placeholder}
-          {Math.ceil(availableTopics?.length / 4) > 1 && (
+          {Math.ceil(availableTopicIds?.length / 4) > 1 && (
             <Pagination
-              count={Math.ceil(availableTopics?.length / 4)}
-              onChange={(_, value) => setAvailablePage(value)}
+              count={Math.ceil(availableTopicIds?.length / 4)}
+              onChange={(_, value) => dispatch(setAvailableTopicsPage(value))}
             />
           )}
         </Grid>

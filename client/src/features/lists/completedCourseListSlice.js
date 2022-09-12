@@ -3,8 +3,9 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   selectedCompletions: [],
   expandedCompletion: "",
-  modalCompletion: "",
-  modalAllCompletions: false,
+  modalNewCompletion: false,
+  modalDeleteCompletion: "",
+  modalSelectedCompletions: false,
 };
 
 export const completedCourseListSlice = createSlice({
@@ -20,17 +21,24 @@ export const completedCourseListSlice = createSlice({
           )
         : state.selectedCompletions.concat(action.payload);
     },
-    expandCompletion: (state, action) => {
-      state.expandedCompletion = action.payload;
-    },
-    openCompletionModal: (state, action) => {
-      state.modalCompletion = action.payload;
-    },
     selectAllCompletions: (state, action) => {
-      state.selectedCompletions = action.payload;
+      state.selectedCompletions = state.selectedCompletions.length
+        ? []
+        : action.payload;
     },
-    toggleAllCompletionsModal: (state) => {
-      state.modalAllCompletions = !state.modalAllCompletions;
+    expandCompletion: (state, action) => {
+      state.expandedCompletion =
+        state.expandedCompletion === action.payload ? "" : action.payload;
+    },
+    newCompletionModal: (state) => {
+      state.modalNewCompletion = !state.modalNewCompletion;
+    },
+    deleteCompletionModal: (state, action) => {
+      state.modalDeleteCompletion =
+        state.modalDeleteCompletion === action.payload ? "" : action.payload;
+    },
+    toggleSelectedCompletionsModal: (state) => {
+      state.modalSelectedCompletions = !state.modalSelectedCompletions;
     },
   },
 });
@@ -38,9 +46,10 @@ export const completedCourseListSlice = createSlice({
 export const {
   toggleCompletion,
   expandCompletion,
-  openCompletionModal,
+  newCompletionModal,
+  deleteCompletionModal,
   selectAllCompletions,
-  toggleAllCompletionsModal,
+  toggleSelectedCompletionsModal,
 } = completedCourseListSlice.actions;
 
 export default completedCourseListSlice.reducer;

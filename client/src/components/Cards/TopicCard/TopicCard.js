@@ -15,28 +15,39 @@ import ExpandIconCustom from "../../../Custom/ExpandIconCustom";
 import { Draggable } from "@hello-pangea/dnd";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  toggleExpandedTopic,
   addSelectedTopicId,
   removeSelectedTopicId,
 } from "../../../Features/forms/customApplicationSlice";
-import { selectCourseById } from "../../../Features/api/courseApiSlice";
+import { useGetCoursesQuery } from "../../../Features/api/courseApiSlice";
+import { useGetTopicsQuery } from "../../../Features/api/topicApiSlice";
 
-const TopicCard = ({ index, topic }) => {
+const TopicCard = ({ index, topicId }) => {
   const classes = useStyles();
-  const course = useSelector((state) =>
-    selectCourseById(state, topic.courseId)
-  );
   const dispatch = useDispatch();
-  const { selectedTopicIds } = useSelector((state) => state.customApplication);
-  const isAdded = selectedTopicIds.includes(topic._id);
-  const [expanded, setExpanded] = useState(false);
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
+  const { selectedTopicIds, expandedTopics } = useSelector(
+    (state) => state.customApplication
+  );
+  const {
+    topic: { title, description, courseId },
+  } = useGetTopicsQuery("topics", {
+    selectFromResult: ({ data }) => ({
+      topic: data?.entities[topicId],
+    }),
+  });
+  const { courseTitle } = useGetCoursesQuery("courses", {
+    selectFromResult: ({ data }) => ({
+      courseTitle: data?.entities[courseId]?.title ?? "Independent course",
+    }),
+  });
+  const isAdded = selectedTopicIds.includes(topicId);
+  const expanded = expandedTopics.includes(topicId);
+
   return (
-    <Draggable key={topic._id} draggableId={topic._id} index={index}>
+    <Draggable key={topicId} draggableId={topicId} index={index}>
       {(provided) => (
         <Card
-          key={topic._id}
+          key={topicId}
           variant="outlined"
           classes={{ root: classes.card }}
           ref={provided.innerRef}
@@ -45,11 +56,11 @@ const TopicCard = ({ index, topic }) => {
         >
           <CardHeader
             classes={{ root: classes.header }}
-            title={topic.title}
+            title={title}
             titleTypographyProps={{ variant: "h3" }}
             subheader={
               <Typography variant="subtitle2" color="primary">
-                {`Course: ${course?.title || "Independent course"}`}
+                {courseTitle}
               </Typography>
             }
             action={
@@ -62,7 +73,7 @@ const TopicCard = ({ index, topic }) => {
                 <ExpandIconCustom
                   color="primary"
                   expanded={expanded}
-                  onClick={handleExpandClick}
+                  onClick={() => dispatch(toggleExpandedTopic(topicId))}
                   aria-expanded={expanded}
                   aria-label="view-topic-details"
                 >
@@ -71,9 +82,13 @@ const TopicCard = ({ index, topic }) => {
               </Tooltip>
             }
           />
-          <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <Collapse
+            in={expandedTopics.includes(topicId)}
+            timeout="auto"
+            unmountOnExit
+          >
             <CardContent>
-              <Typography>{topic.description}</Typography>
+              <Typography>{description}</Typography>
             </CardContent>
           </Collapse>
           <CardActions classes={{ root: classes.actions }}>
@@ -86,8 +101,8 @@ const TopicCard = ({ index, topic }) => {
               onClick={() =>
                 dispatch(
                   isAdded
-                    ? removeSelectedTopicId(topic._id)
-                    : addSelectedTopicId(topic._id)
+                    ? removeSelectedTopicId(topicId)
+                    : addSelectedTopicId(topicId)
                 )
               }
             >

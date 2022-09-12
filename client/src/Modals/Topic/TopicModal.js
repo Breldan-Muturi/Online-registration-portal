@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "@mui/material/Button";
+import UploadFileOutlined from "@mui/icons-material/UploadFileOutlined";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import AppBar from "@mui/material/AppBar";
@@ -38,9 +39,9 @@ const TopicModal = ({ courseId }) => {
   return (
     <div>
       <Button
-        className={classes.submit}
+        size="small"
+        startIcon={<UploadFileOutlined />}
         onClick={() => dispatch(toggleModal())}
-        variant="contained"
       >
         Create a new topic
       </Button>

@@ -8,19 +8,20 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import HighlightOffOutlined from "@mui/icons-material/HighlightOffOutlined";
 import { selectEveryParticipant } from "../Features/lists/participantListSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { selectApplicationsById } from "../Features/api/applicationApiSlice";
+import { useGetApplicationsQuery } from "../Features/api/applicationApiSlice";
 import Participant from "../Components/ListItem/Participant";
 
 const Participants = ({ applicationId }) => {
   const dispatch = useDispatch();
   const { dense } = useSelector((state) => state.applicationTable);
-  const { participants: participantIds } = useSelector((state) =>
-    selectApplicationsById(state, applicationId)
-  );
   const { selectedParticipants } = useSelector(
     (state) => state.participantList
   );
-  console.log(selectedParticipants);
+  const { participantIds } = useGetApplicationsQuery("applications", {
+    selectFromResult: ({ data }) => ({
+      participantIds: data?.entities[applicationId].participants,
+    }),
+  });
   let content;
 
   if (participantIds.length) {

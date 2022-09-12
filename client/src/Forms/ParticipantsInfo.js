@@ -5,20 +5,20 @@ import Grid from "@mui/material/Unstable_Grid2";
 import Typography from "@mui/material/Typography";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import UserList from "../Components/Dropdowns/UserList/UserList";
+import UserList from "../Components/Dropdowns/FormLabels/UserList";
 import SelectedUsers from "../CardList/Users/SelectedUsers";
 import {
   toggleIsOnlyParticipant,
   setParticipants,
-  addSingleParticipant,
 } from "../Features/forms/customApplicationSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentUser } from "../Features/global/authSlice";
 import { useGetUsersQuery } from "../Features/api/usersApiSlice";
+import { toggleParticipant } from "../Features/lists/participantListSlice";
+import useIsAdmin from "../Hooks/useIsAdmin";
 const ParticipantsInfo = () => {
   const dispatch = useDispatch();
   const { isLoading, isSuccess, isError, error } = useGetUsersQuery();
-  const user = useSelector(selectCurrentUser);
+  const { userId } = useIsAdmin();
   const { participants, isOnlyParticipant } = useSelector(
     (state) => state.customApplication
   );
@@ -65,15 +65,15 @@ const ParticipantsInfo = () => {
             control={
               <Checkbox
                 checked={
-                  participants.length === 1 && participants.includes(user.id)
+                  participants.length === 1 && participants.includes(userId)
                 }
                 onChange={() => (
                   // eslint-disable-next-line
                   dispatch(toggleIsOnlyParticipant()),
                   dispatch(
-                    participants.includes(user.id)
+                    participants.includes(userId)
                       ? setParticipants([])
-                      : addSingleParticipant(user.id)
+                      : toggleParticipant(userId)
                   )
                 )}
                 name="isOnlyParticipant"

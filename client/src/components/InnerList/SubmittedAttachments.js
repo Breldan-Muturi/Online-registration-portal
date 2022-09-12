@@ -11,23 +11,26 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import Pagination from "@mui/material/Pagination";
 import { useSelector } from "react-redux";
+import { useGetPaymentsQuery } from "../../Features/api/paymentApiSlice";
 
-const SubmittedAttachments = ({ payment }) => {
+const SubmittedAttachments = ({ paymentId }) => {
   const expandedPayment = useSelector(
     (state) => state.paymentList.expandedPayment
   );
-  const attachments = payment.attachments;
+  const { attachments } = useGetPaymentsQuery("payments", {
+    selectFromResult: ({ data }) => ({
+      attachments: data?.entities[paymentId].attachments,
+    }),
+  });
   const [page, setPage] = useState(1);
   const count = Math.ceil(attachments.length / 3);
   return (
-    <Collapse in={expandedPayment === payment._id} timeout="auto" unmountOnExit>
+    <Collapse in={expandedPayment === paymentId} timeout="auto" unmountOnExit>
       <List dense>
         {attachments
           .slice((page - 1) * 3, (page - 1) * 3 + 3)
           .map((attachment, index) => {
-            const name = attachment.name;
-            const size = attachment.size;
-            const url = attachment.path;
+            const { name, size, path: url } = attachment;
             return (
               <React.Fragment key={index}>
                 <ListItem

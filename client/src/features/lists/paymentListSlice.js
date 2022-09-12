@@ -4,8 +4,12 @@ const initialState = {
   selectedApplication: "",
   selectedPayments: [],
   expandedPayment: "",
-  modalPayment: "",
-  modalSelectedPayments: false,
+  modalApprovePayment: "",
+  modalApproveSelectedPayments: false,
+  modalRejectPayment: "",
+  modalRejectSelectedPayments: false,
+  modalDeletePayment: "",
+  modalDeleteSelectedPayments: false,
 };
 
 export const paymentListSlice = createSlice({
@@ -28,11 +32,23 @@ export const paymentListSlice = createSlice({
     expandPayment: (state, action) => {
       state.expandedPayment = action.payload;
     },
-    toggleModalPayment: (state, action) => {
-      state.modalPayment = action.payload;
+    toggleModalApprovePayment: (state, action) => {
+      state.modalApprovePayment = action.payload;
     },
-    toggleModalSelectedPayments: (state) => {
-      state.modalSelectedPayments = !state.modalSelectedPayments;
+    toggleModalApproveSelectedPayments: (state) => {
+      state.modalApproveSelectedPayments = !state.modalApproveSelectedPayments;
+    },
+    toggleModalRejectPayment: (state, action) => {
+      state.modalRejectPayment = action.payload;
+    },
+    toggleModalRejectSelectedPayments: (state) => {
+      state.modalRejectSelectedPayments = !state.modalRejectSelectedPayments;
+    },
+    toggleModalDeletePayment: (state, action) => {
+      state.modalDeletePayment = action.payload;
+    },
+    toggleModalDeleteSelectedPayments: (state) => {
+      state.modalDeleteSelectedPayments = !state.modalDeleteSelectedPayments;
     },
   },
 });
@@ -42,8 +58,12 @@ export const {
   selectEveryPayment,
   togglePayment,
   expandPayment,
-  toggleModalPayment,
-  toggleModalSelectedPayments,
+  toggleModalApprovePayment,
+  toggleModalApproveSelectedPayments,
+  toggleModalRejectPayment,
+  toggleModalRejectSelectedPayments,
+  toggleModalDeletePayment,
+  toggleModalDeleteSelectedPayments,
 } = paymentListSlice.actions;
 
 export default paymentListSlice.reducer;

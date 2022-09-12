@@ -1,4 +1,5 @@
 import React from "react";
+import Grid from "@mui/material/Unstable_Grid2";
 import SendIcon from "@mui/icons-material/Send";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -9,85 +10,119 @@ import Typography from "@mui/material/Typography";
 import ApplyButton from "../../../Custom/ApplyButton";
 import useStyles from "./styles";
 import { toggleModal } from "../../../Features/global/authSlice";
-import {
-  selectCourseById,
-  selectCourseIds,
-} from "../../../Features/api/courseApiSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { selectCurrentToken } from "../../../Features/global/authSlice";
+import options from "../../../Helpers/DateOptions";
+import { useGetCoursesQuery } from "../../../Features/api/courseApiSlice";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useGetSessionsQuery } from "../../../Features/api/sessionApiSlice";
+import useIsAdmin from "../../../Hooks/useIsAdmin";
+import DeleteSession from "../../Dialogs/DeleteSession";
+import EditSession from "../../../Modals/Session/EditSession";
+import { setSessionApplication } from "../../../Features/global/navSlice";
 
-const SessionItem = ({ session }) => {
+const SessionItem = ({ sessionId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const token = useSelector(selectCurrentToken);
-  const course = useSelector((state) =>
-    selectCourseById(state, session.courseId)
-  );
-  const isAvailableCourse = useSelector(selectCourseIds).includes(
-    session.courseId
-  );
-  const options = { year: "numeric", month: "short", day: "numeric" };
-  const startDate = new Date(session.startDate).toDateString("en-us", options);
-  const endDate = new Date(session.endDate).toDateString("en-us", options);
-  const title = `${startDate} to ${endDate}`;
-  const onPremisesFee = session.onPremisesFee
-    .toString()
-    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-  const onlineFee = session.onlineFee
-    .toString()
-    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+  const { token, isAdmin } = useIsAdmin();
+  const {
+    session: {
+      startDate,
+      endDate,
+      courseId,
+      onPremisesFee,
+      onPremisesSlots,
+      onPremisesSlotsTaken,
+      venue,
+      onlineFee,
+      onlineSlots,
+      onlineSlotsTaken,
+    },
+  } = useGetSessionsQuery("sessions", {
+    selectFromResult: ({ data }) => ({
+      session: data?.entities[sessionId],
+    }),
+  });
+
+  const start = new Date(startDate).toDateString("en-US", options);
+  const end = new Date(endDate).toDateString("en-US", options);
+
+  const { courseTitle, isAvailableCourse } = useGetCoursesQuery("courses", {
+    selectFromResult: ({ data }) => ({
+      courseTitle: data?.entities[courseId]?.title ?? "No associated course",
+      isAvailableCourse: data?.ids.includes(courseId),
+    }),
+  });
+
+  const title = `${start} to ${end}`;
 
   const handleClick = () => {
-    if (!session && !token) {
+    if (!sessionId && !token) {
       dispatch(toggleModal());
-    } else if (session && !token) {
+    } else if (sessionId && !token) {
       navigate("/");
-    } else if (session && token && isAvailableCourse) {
-      navigate(`/course/${session.courseId}/sessions/${session.id}`);
+    } else if (sessionId && token && isAvailableCourse) {
+      navigate(`/course/${courseId}`);
+      dispatch(setSessionApplication(sessionId));
     }
   };
 
   return (
-    <Card className={classes.card}>
-      <CardHeader title={title} classes={{ title: classes.title }} />
-      <Divider variant="middle" />
-      <CardContent>
-        <Typography sx={{ fontWeight: "bold", marginBottom: "16px" }}>
-          {course?.title}
-        </Typography>
-        <Typography>
-          On Premises Fee: <b>Ksh {onPremisesFee}</b>
-        </Typography>
-        <Typography>
-          Session venue: <b>{session.venue}</b>
-        </Typography>
-        <Typography>
-          On Premises Slots:{" "}
-          <b>
-            {session.onPremisesSlots - session.onPremisesSlotsTaken}/
-            {session.onPremisesSlots}
-          </b>
-        </Typography>
-        <Typography>
-          Online Fee: <b>Ksh {onlineFee}</b>
-        </Typography>
-        <Typography>
-          Online Slots:{" "}
-          <b>
-            {session.onlineSlots - session.onlineSlotsTaken}/
-            {session.onlineSlots}
-          </b>
-        </Typography>
-      </CardContent>
-      <ApplyButton onClick={handleClick}>
-        <CardActions className={classes.actions}>
-          <Typography>Apply Now</Typography>
-          <SendIcon />
-        </CardActions>
-      </ApplyButton>
-    </Card>
+    <Grid xs={4}>
+      <Card className={classes.card}>
+        <CardHeader title={title} classes={{ title: classes.title }} />
+        <Divider variant="middle" />
+        <CardContent>
+          <Typography sx={{ fontWeight: "bold", marginBottom: "16px" }}>
+            {courseTitle}
+          </Typography>
+          <Typography>
+            On Premises Fee:{" "}
+            <b>
+              Ksh{" "}
+              {onPremisesFee
+                .toString()
+                .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}
+            </b>
+          </Typography>
+          <Typography>
+            Session venue: <b>{venue}</b>
+          </Typography>
+          <Typography>
+            On Premises Slots:{" "}
+            <b>
+              {onPremisesSlots - onPremisesSlotsTaken}/{onPremisesSlots}
+            </b>
+          </Typography>
+          <Typography>
+            Online Fee:{" "}
+            <b>
+              Ksh{" "}
+              {onlineFee.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}
+            </b>
+          </Typography>
+          <Typography>
+            Online Slots:{" "}
+            <b>
+              {onlineSlots - onlineSlotsTaken}/{onlineSlots}
+            </b>
+          </Typography>
+        </CardContent>
+        {isAdmin ? (
+          <CardActions sx={{ marginTop: "auto", marginLeft: "auto" }}>
+            <EditSession sessionId={sessionId} />
+            <DeleteSession sessionId={sessionId} />
+          </CardActions>
+        ) : (
+          <ApplyButton onClick={handleClick}>
+            <CardActions className={classes.actions}>
+              <Typography>Apply Now</Typography>
+              <SendIcon />
+            </CardActions>
+          </ApplyButton>
+        )}
+      </Card>
+    </Grid>
   );
 };
 

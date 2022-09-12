@@ -11,16 +11,20 @@ import Assignment from "@mui/icons-material/Assignment";
 import Delete from "@mui/icons-material/Delete";
 import CustomAvatar from "../../Custom/CustomAvatar";
 import useStyles from "./styles";
-import { selectOrganizationById } from "../../Features/api/organizationApiSlice";
-import { useSelector } from "react-redux";
+import { useGetOrganizationsQuery } from "../../Features/api/organizationApiSlice";
 import useIsAdmin from "../../Hooks/useIsAdmin";
 
 const Organization = ({ organizationId, index, organizationsCount }) => {
   const classes = useStyles();
   const { isAdmin, isOrgAdmin } = useIsAdmin(organizationId);
-  const { name, organizationLogo } = useSelector((state) =>
-    selectOrganizationById(state, organizationId)
-  );
+  const {
+    organization: { name, organizationLogo },
+  } = useGetOrganizationsQuery("organizations", {
+    selectFromResult: ({ data }) => ({
+      organization: data?.entities[organizationId],
+    }),
+  });
+
   return (
     <>
       <ListItem

@@ -12,13 +12,13 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { useDeleteCompletedCourseMutation } from "../../Features/api/completedCoursesApiSlice";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { openCompletionModal } from "../../Features/lists/completedCourseListSlice";
+import { deleteCompletionModal } from "../../Features/lists/completedCourseListSlice";
 
 const DeleteCompletion = ({ completedCourseId }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const modalCompletion = useSelector(
-    (state) => state.completedCourseList.modalCompletion
+  const modalDeleteCompletion = useSelector(
+    (state) => state.completedCourseList.modalDeleteCompletion
   );
   const [deleteCompletedCourse, { isSuccess, isLoading, isError }] =
     useDeleteCompletedCourseMutation();
@@ -37,9 +37,7 @@ const DeleteCompletion = ({ completedCourseId }) => {
           aria-labelledby="delete-course-completion"
           onClick={() =>
             dispatch(
-              openCompletionModal(
-                modalCompletion === completedCourseId ? "" : completedCourseId
-              )
+              deleteCompletionModal(completedCourseId)
             )
           }
         >
@@ -47,8 +45,8 @@ const DeleteCompletion = ({ completedCourseId }) => {
         </IconButton>
       </Tooltip>
       <Dialog
-        open={modalCompletion === completedCourseId}
-        onClose={() => dispatch(openCompletionModal(""))}
+        open={modalDeleteCompletion === completedCourseId}
+        onClose={() => dispatch(deleteCompletionModal(completedCourseId))}
         aria-labelledby="course-deletion-dialog"
         aria-describedby="delete-this-course"
       >
@@ -65,7 +63,7 @@ const DeleteCompletion = ({ completedCourseId }) => {
         <DialogActions>
           <Button
             color="inherit"
-            onClick={() => dispatch(openCompletionModal(""))}
+            onClick={() => dispatch(deleteCompletionModal(completedCourseId))}
           >
             Dismiss
           </Button>

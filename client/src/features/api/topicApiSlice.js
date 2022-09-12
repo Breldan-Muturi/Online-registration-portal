@@ -67,6 +67,15 @@ export const topicApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: [{ type: "Topic", id: "LIST" }],
     }),
 
+    updateTopic: builder.mutation({
+      query: ({ topicData, topicId }) => ({
+        url: `/api/topics/${topicId}`,
+        method: "PATCH",
+        body: topicData,
+      }),
+      invalidatesTags: (result, error, arg) => [{ type: "Topic", id: arg.id }],
+    }),
+
     deleteTopic: builder.mutation({
       query: ({ _id }) => ({
         url: `/api/topics/${_id}`,
@@ -74,6 +83,15 @@ export const topicApiSlice = apiSlice.injectEndpoints({
         body: { _id },
       }),
       invalidatesTags: [{ type: "Topic", id: "LIST" }],
+    }),
+
+    deleteSelectedTopics: builder.mutation({
+      query: (selected) => ({
+        url: `/api/topics/selected`,
+        method: "DELETE",
+        body: selected,
+      }),
+      invalidateTags: (result, error, arg) => [{ type: "Topic", id: "LIST" }],
     }),
   }),
 });
@@ -83,7 +101,9 @@ export const {
   useGetTopicsByCourseIdQuery,
   useListTopicsQuery,
   useCreateTopicMutation,
+  useUpdateTopicMutation,
   useDeleteTopicMutation,
+  useDeleteSelectedTopicsMutation,
 } = topicApiSlice;
 
 export const selectTopicsResult = topicApiSlice.endpoints.getTopics.select();

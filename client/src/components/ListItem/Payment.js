@@ -9,36 +9,52 @@ import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import ExpandIconCustom from "../../Custom/ExpandIconCustom";
 import SubmittedAttachments from "../../Components/InnerList/SubmittedAttachments";
-import { selectPaymentById } from "../../Features/api/paymentApiSlice";
+import { useGetPaymentsQuery } from "../../Features/api/paymentApiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  selectApplication,
   togglePayment,
   expandPayment,
 } from "../../Features/lists/paymentListSlice";
 import DeletePayment from "../Dialogs/DeletePayment";
 import CustomListIcon from "../../Custom/CustomListIcon";
+import useIsAdmin from "../../Hooks/useIsAdmin";
+import ApprovePayment from "../Dialogs/ApprovePayment";
+import RejectPayment from "../Dialogs/RejectPayment";
 
 const Payment = ({ paymentId }) => {
   const dispatch = useDispatch();
-  const payment = useSelector((state) => selectPaymentById(state, paymentId));
+  const { userId, isAdmin } = useIsAdmin();
+  const {
+    payment: { amount, method, status, payee },
+    attachmentsCount,
+  } = useGetPaymentsQuery("payments", {
+    selectFromResult: ({ data }) => ({
+      payment: data?.entities[paymentId],
+      attachmentsCount: data?.entities[paymentId].attachments.length,
+    }),
+  });
   const { selectedPayments, expandedPayment } = useSelector(
     (state) => state.paymentList
   );
   const { dense } = useSelector((state) => state.applicationTable);
-  const amount = payment.amount
-    .toString()
-    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   const labelId = `${
     selectedPayments.includes(paymentId) ? "Deselect" : "Select"
-  } payment of Ksh ${amount}`;
+  } payment of Ksh ${amount
+    .toString()
+    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}`;
   return (
     <>
       <ListItem
         secondaryAction={
           <>
-            <DeletePayment paymentId={paymentId} />
-            {payment.attachments.length > 0 && (
+            {isAdmin && (
+              <>
+                <ApprovePayment paymentId={paymentId} />
+                <RejectPayment paymentId={paymentId} />
+              </>
+            )}
+            {payee === userId && <DeletePayment paymentId={paymentId} />}
+            {attachmentsCount > 0 && (
               <Tooltip
                 arrow
                 title={
@@ -76,7 +92,6 @@ const Payment = ({ paymentId }) => {
         <CustomListIcon
           onClick={() => {
             dispatch(togglePayment(paymentId));
-            dispatch(selectApplication(payment.applicationId));
           }}
         >
           <Checkbox
@@ -91,30 +106,30 @@ const Payment = ({ paymentId }) => {
         </CustomListIcon>
         <ListItemText
           disableTypography
-          primary={`Ksh ${amount} - ${payment.method}`}
+          primary={`Ksh ${amount
+            .toString()
+            .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")} - ${method}`}
           secondary={
             <Stack direction="row" gap={3}>
               <Typography
                 variant="body2"
                 color={
-                  (payment.status === "Rejected" && "error") ||
-                  (payment.status === "Approved" && "primary")
+                  (status === "Rejected" && "error") ||
+                  (status === "Approved" && "primary")
                 }
               >
-                {payment.status}
+                {status}
               </Typography>
-              {payment.attachments.length > 0 && (
-                <Typography variant="body2">{`${
-                  payment.attachments.length
-                } Attachment${
-                  payment.attachments.length > 1 && "s"
+              {attachmentsCount > 0 && (
+                <Typography variant="body2">{`${attachmentsCount} Attachment${
+                  attachmentsCount > 1 && "s"
                 }`}</Typography>
               )}
             </Stack>
           }
         />
       </ListItem>
-      <SubmittedAttachments payment={payment} />
+      <SubmittedAttachments paymentId={paymentId} />
       {expandedPayment !== paymentId && <Divider component="li" />}
     </>
   );
